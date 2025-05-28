@@ -80,6 +80,7 @@
         version = kernelVer;
         modDirVersion = "${kernelVer}-stb-cbm";
         src = kernelSrc;
+        allowImportFromDerivation = true;
         configfile = mergeConfig {
           inherit kernelSrc;
           arch = "arm64";
@@ -94,7 +95,16 @@
             "${mt81xx-kernel}/misc.cbm/options/additional-options-special.cfg"
           ];
         };
-        kernelPatches = listPatches "${mt81xx-kernel}/misc.cbm/patches/v6.12";
+        kernelPatches = (listPatches "${mt81xx-kernel}/misc.cbm/patches/v6.12") ++ [
+          {
+            name = "remove-panfrost-purge-log-spam";
+            patch = "${kernel-extra-patches}/remove-panfrost-purge-log-spam/v6.12.12.patch";
+          }
+          {
+            name = "fix-kernel-version";
+            patch = "${kernel-extra-patches}/fix-kernel-version/v6.12.5.patch";
+          }
+        ];
       };
     }
     // flake-utils.lib.eachDefaultSystem (
