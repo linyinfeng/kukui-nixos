@@ -34,6 +34,22 @@
         "type": "github"
       }
     },
+    "kernel-extra-patches": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1747427556,
+        "narHash": "sha256-3AAu6Wdj/A6DLZgJEIpvdRGdzJqiJxfvQ2FOZ5a5K2w=",
+        "owner": "hexdump0815",
+        "repo": "kernel-extra-patches",
+        "rev": "5d540f8cb39dce9f177e40b875141fcda8633d35",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hexdump0815",
+        "repo": "kernel-extra-patches",
+        "type": "github"
+      }
+    },
     "mt81xx-kernel": {
       "flake": false,
       "locked": {
@@ -70,6 +86,7 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "kernel-config-options": "kernel-config-options",
+        "kernel-extra-patches": "kernel-extra-patches",
         "mt81xx-kernel": "mt81xx-kernel",
         "nixpkgs": "nixpkgs"
       }
