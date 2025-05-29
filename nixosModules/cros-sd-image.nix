@@ -3,16 +3,18 @@
   pkgs,
   lib,
   inputs,
+  ...
 }:
 let
   rootVolumeLabel = "NIXOS_ROOT";
   rootfsImage = pkgs.callPackage "${inputs.nixpkgs}/nixos/lib/make-ext4-fs.nix" {
+    inherit (config.crosSdImage) storePaths;
     volumeLabel = rootVolumeLabel;
     compressImage = config.crosSdImage.compressImage;
   };
-  kpartImage = pkgs.callPackage ./kpart.nix {
-    kernel = config.boot.kernelPackages.kernel;
-    kernelParams = config.boot.kernelParams;
+  kpartImage = pkgs.callPackage ../packages/kpart.nix {
+    inherit (config.boot) kernelParams;
+    inherit (config.boot.kernelPackages) kernel;
     dtbFilter = [
       "/dtbs/mediatek/mt8173-elm-*.dtb"
       "/dtbs/mediatek/mt8183-kukui-*.dtb"
@@ -20,6 +22,7 @@ let
       "/dtbs/mediatek/mt8192-asurada-*.dtb"
       "/dtbs/mediatek/mt8195-cherry-*.dtb"
     ];
+    initrd = "${config.system.build.initialRamdisk}/initrd";
   };
 in
 {
@@ -60,7 +63,7 @@ in
   };
 
   config = {
-    hardware.enableAllHardware = true;
+    boot.loader.grub.enable = false;
 
     fileSystems = {
       "/" = {
@@ -74,14 +77,17 @@ in
       {
         stdenvNoCC,
       }:
-      stdenvNoCC.mkDerivation {
-        name = config.image.fileName;
+      stdenvNoCC.mkDerivation rec {
+        name = "nixos-cros-sd";
 
         nativeBuildInputs =
           with pkgs;
           [
             e2fsprogs
             e2tools
+            util-linux
+            vboot_reference
+            gptfdisk
           ]
           ++ lib.optional config.crosSdImage.compressImage pkgs.zstd;
 
@@ -89,7 +95,7 @@ in
 
         buildCommand = ''
           mkdir -p $out/nix-support $out/sd-image
-          export img=$out/sd-image/${config.image.baseName}.img
+          export img=$out/sd-image/${name}.img
 
           echo "${pkgs.stdenv.buildPlatform.system}" > $out/nix-support/system
           if test -n "$compressImage"; then
@@ -108,10 +114,10 @@ in
           ''}
 
           gapSectors=8192
-          bootSize=512 # MiB
+          tailSectors=2048
           kernelSize=128 # MiB
           rootSectors=$(du -B 512 --apparent-size $root_fs | awk '{ print $1 }')
-          imageSize=$((rootSectors * 512 + kernelSize * 2 * 1024 * 1024 + bootSize * 1024 * 1024 + gapSectors))
+          imageSize=$((rootSectors * 512 + kernelSize * 2 * 1024 * 1024 + gapSectors * 512 + tailSectors * 512))
           truncate -s $imageSize $img
 
           sgdisk -Z $img
@@ -120,32 +126,67 @@ in
 
           # MiB to Sectors: MiB * 2048
           kernelSectors=$((kernelSize * 2048))
-          bootSectors=$((bootSize * 2048))
 
           kernelABegin=$gapSectors
           kernelBBegin=$((kernelABegin + kernelSectors))
-          bootBegin=$((kernelBBegin + kernelSectors))
-          rootBegin=$((bootBegin + bootSectors))
+          rootBegin=$((kernelBBegin + kernelSectors))
+
+          echo "  gapSectors     = $gapSectors"
+          echo "  kernelSize     = $kernelSize MiB"
+          echo "  rootSectors    = $rootSectors sectors"
+          echo "  rootSize       = $(($rootSectors / 2048)) MiB"
+          echo "  imageSize      = $imageSize bytes = $((imageSize / 1024 / 1024)) MiB"
+          echo "  kernelSectors  = $kernelSectors sectors"
+          echo "  kernelABegin   = $kernelABegin"
+          echo "  kernelBBegin   = $kernelBBegin"
+          echo "  rootBegin      = $rootBegin"
 
           cgpt add -i 1 -t kernel -b $kernelABegin -s $kernelSectors -l KernelA -S 1 -T 2 -P 10 $img
           cgpt add -i 2 -t kernel -b $kernelBBegin -s $kernelSectors -l KernelB -S 0 -T 2 -P 5 $img
-          cgpt add -i 3 -t data -b $bootBegin -s $bootSectors -l BOOT $img
-          cgpt add -i 4 -t data -b $rootBegin -s $rootSectors -l ${rootVolumeLabel} $img
+          cgpt add -i 3 -t data -b $rootBegin -s $rootSectors -l ${rootVolumeLabel} $img
 
           # Copy the kernel kpart into the first kernel partition
           dd conv=notrunc if=$kpart of=$img seek=$kernelABegin count=$kernelSectors
-
-          # Create a boot partition into boot.img
-          $boot=boot.img
-          truncate -s ''${bootSize}M $boot
-          mkfs.ext4 -O ^has_journal -L BOOT $boot
-          # TODO: Populate and write the boot partition
-          dd conv=notrunc if=$boot of=$img seek=$bootBegin count=$bootSectors
 
           # Write root partition
           dd conv=notrunc if=$root_fs of=$img seek=$rootBegin count=$rootSectors
         '';
       }
     ) { };
+
+    boot.postBootCommands =
+      let
+        expandOnBoot = lib.optionalString config.crosSdImage.expandOnBoot ''
+          # Figure out device names for the boot device and root filesystem.
+          rootPart=$(${pkgs.util-linux}/bin/findmnt -n -o SOURCE /)
+          bootDevice=$(lsblk -npo PKNAME $rootPart)
+          partNum=$(lsblk -npo MAJ:MIN $rootPart | ${pkgs.gawk}/bin/awk -F: '{print $2}')
+
+          # Resize the root partition and the filesystem to fit the disk
+          echo ",+," | sfdisk -N$partNum --no-reread $bootDevice
+          ${pkgs.parted}/bin/partprobe
+          ${pkgs.e2fsprogs}/bin/resize2fs $rootPart
+        '';
+        nixPathRegistrationFile = config.crosSdImage.nixPathRegistrationFile;
+      in
+      ''
+        # On the first boot do some maintenance tasks
+        if [ -f ${nixPathRegistrationFile} ]; then
+          set -euo pipefail
+          set -x
+
+          ${expandOnBoot}
+
+          # Register the contents of the initial Nix store
+          ${config.nix.package.out}/bin/nix-store --load-db < ${nixPathRegistrationFile}
+
+          # nixos-rebuild also requires a "system" profile and an /etc/NIXOS tag.
+          touch /etc/NIXOS
+          ${config.nix.package.out}/bin/nix-env -p /nix/var/nix/profiles/system --set /run/current-system
+
+          # Prevents this from running on later boots.
+          rm -f ${nixPathRegistrationFile}
+        fi
+      '';
   };
 }

@@ -23,67 +23,22 @@
       self,
       nixpkgs,
       flake-utils,
-      mt81xx-kernel,
-      kernel-config-options,
-      kernel-extra-patches,
-    }:
-    let
-      pkgs = import nixpkgs {
-        system = "aarch64-linux";
-      };
-      lib = pkgs.lib;
-      listPatches =
-        path:
-        builtins.map
-          (_p: {
-            name = lib.strings.removeSuffix ".patch" _p;
-            patch = path + "/${_p}";
-          })
-          (
-            builtins.attrNames (
-              lib.attrsets.filterAttrs (path: type: type == "regular" && lib.strings.hasSuffix ".patch" path) (
-                builtins.readDir path
-              )
-            )
-          );
-      kernelVer = "6.12.28";
-      kernelSrc = pkgs.fetchurl {
-        url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${kernelVer}.tar.xz";
-        hash = "sha256-6KCZGCVirs/3gd5yznaUYecG2Xr0LXQN/yDrRQ3Vdx4=";
-      };
-    in
+      ...
+    }@inputs:
     {
-      packages.aarch64-linux = {
-        kukui-kernel = pkgs.linuxManualConfig {
-          version = kernelVer;
-          modDirVersion = "${kernelVer}-stb-cbm";
-          src = kernelSrc;
-          allowImportFromDerivation = true;
-          configfile = pkgs.callPackage ./merge-config.nix {
-            inherit kernelSrc;
-            arch = "arm64";
-            extraConfigs = [
-              "${kernel-config-options}/chromebooks-aarch64.cfg"
-              "${kernel-config-options}/mediatek.cfg"
-              "${kernel-config-options}/docker-options.cfg"
-              "${kernel-config-options}/options-to-remove-generic.cfg"
-              "${mt81xx-kernel}/misc.cbm/options/options-to-remove-special.cfg"
-              "${kernel-config-options}/additional-options-generic.cfg"
-              "${kernel-config-options}/additional-options-aarch64.cfg"
-              "${mt81xx-kernel}/misc.cbm/options/additional-options-special.cfg"
-            ];
-          };
-          kernelPatches = (listPatches "${mt81xx-kernel}/misc.cbm/patches/v6.12") ++ [
-            {
-              name = "remove-panfrost-purge-log-spam";
-              patch = "${kernel-extra-patches}/remove-panfrost-purge-log-spam/v6.12.12.patch";
-            }
-            {
-              name = "fix-kernel-version";
-              patch = "${kernel-extra-patches}/fix-kernel-version/v6.12.5.patch";
-            }
-          ];
+      nixosConfigurations.kukui = nixpkgs.lib.nixosSystem {
+        system = "aarch64-linux";
+        specialArgs = {
+          inherit inputs;
+          inherit (self) overlays;
         };
+        modules = [
+          ./nixosModules/cros-sd-image.nix
+          ./nixosConfigurations/kukui.nix
+        ];
+      };
+      overlays = {
+        allow-missing-kmodules = import ./overlays/allow-missing-kmodules.nix;
       };
     }
     // flake-utils.lib.eachDefaultSystem (
