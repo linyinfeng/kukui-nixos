@@ -46,28 +46,6 @@
               )
             )
           );
-      mergeConfig =
-        {
-          kernelSrc,
-          arch,
-          extraConfigs,
-        }:
-        let
-          drv = pkgs.stdenvNoCC.mkDerivation {
-            name = "merged-config";
-            src = kernelSrc;
-            dontConfigure = true;
-            buildPhase = ''
-              export ARCH=${arch}
-              scripts/kconfig/merge_config.sh -m arch/${arch}/configs/defconfig ${pkgs.lib.strings.concatStringsSep " " extraConfigs}
-            '';
-            installPhase = ''
-              mkdir $out
-              cp .config $out
-            '';
-          };
-        in
-        "${drv}/.config";
       kernelVer = "6.12.28";
       kernelSrc = pkgs.fetchurl {
         url = "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${kernelVer}.tar.xz";
@@ -81,7 +59,7 @@
           modDirVersion = "${kernelVer}-stb-cbm";
           src = kernelSrc;
           allowImportFromDerivation = true;
-          configfile = mergeConfig {
+          configfile = pkgs.callPackage ./merge-config.nix {
             inherit kernelSrc;
             arch = "arm64";
             extraConfigs = [
