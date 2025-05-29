@@ -54,8 +54,7 @@
         }:
         let
           drv = pkgs.stdenvNoCC.mkDerivation {
-            pname = "merged-config";
-            version = "1.0.0";
+            name = "merged-config";
             src = kernelSrc;
             dontConfigure = true;
             buildPhase = ''
@@ -76,35 +75,48 @@
       };
     in
     {
-      packages.aarch64-linux.kukui-kernel = pkgs.linuxManualConfig {
-        version = kernelVer;
-        modDirVersion = "${kernelVer}-stb-cbm";
-        src = kernelSrc;
-        allowImportFromDerivation = true;
-        configfile = mergeConfig {
-          inherit kernelSrc;
-          arch = "arm64";
-          extraConfigs = [
-            "${kernel-config-options}/chromebooks-aarch64.cfg"
-            "${kernel-config-options}/mediatek.cfg"
-            "${kernel-config-options}/docker-options.cfg"
-            "${kernel-config-options}/options-to-remove-generic.cfg"
-            "${mt81xx-kernel}/misc.cbm/options/options-to-remove-special.cfg"
-            "${kernel-config-options}/additional-options-generic.cfg"
-            "${kernel-config-options}/additional-options-aarch64.cfg"
-            "${mt81xx-kernel}/misc.cbm/options/additional-options-special.cfg"
+      packages.aarch64-linux = {
+        kukui-kernel = pkgs.linuxManualConfig {
+          version = kernelVer;
+          modDirVersion = "${kernelVer}-stb-cbm";
+          src = kernelSrc;
+          allowImportFromDerivation = true;
+          configfile = mergeConfig {
+            inherit kernelSrc;
+            arch = "arm64";
+            extraConfigs = [
+              "${kernel-config-options}/chromebooks-aarch64.cfg"
+              "${kernel-config-options}/mediatek.cfg"
+              "${kernel-config-options}/docker-options.cfg"
+              "${kernel-config-options}/options-to-remove-generic.cfg"
+              "${mt81xx-kernel}/misc.cbm/options/options-to-remove-special.cfg"
+              "${kernel-config-options}/additional-options-generic.cfg"
+              "${kernel-config-options}/additional-options-aarch64.cfg"
+              "${mt81xx-kernel}/misc.cbm/options/additional-options-special.cfg"
+            ];
+          };
+          kernelPatches = (listPatches "${mt81xx-kernel}/misc.cbm/patches/v6.12") ++ [
+            {
+              name = "remove-panfrost-purge-log-spam";
+              patch = "${kernel-extra-patches}/remove-panfrost-purge-log-spam/v6.12.12.patch";
+            }
+            {
+              name = "fix-kernel-version";
+              patch = "${kernel-extra-patches}/fix-kernel-version/v6.12.5.patch";
+            }
           ];
         };
-        kernelPatches = (listPatches "${mt81xx-kernel}/misc.cbm/patches/v6.12") ++ [
-          {
-            name = "remove-panfrost-purge-log-spam";
-            patch = "${kernel-extra-patches}/remove-panfrost-purge-log-spam/v6.12.12.patch";
-          }
-          {
-            name = "fix-kernel-version";
-            patch = "${kernel-extra-patches}/fix-kernel-version/v6.12.5.patch";
-          }
-        ];
+        kukui-kpart = pkgs.callPackage ./kpart.nix {
+          kernel = self.packages.aarch64-linux.kukui-kernel;
+          cmdline = "${mt81xx-kernel}/misc.cbm/misc/cmdline";
+          dtbFilter = [
+            "/dtbs/mediatek/mt8173-elm-*.dtb"
+            "/dtbs/mediatek/mt8183-kukui-*.dtb"
+            "/dtbs/mediatek/mt8186-corsola-*.dtb"
+            "/dtbs/mediatek/mt8192-asurada-*.dtb"
+            "/dtbs/mediatek/mt8195-cherry-*.dtb"
+          ];
+        };
       };
     }
     // flake-utils.lib.eachDefaultSystem (
