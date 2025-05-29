@@ -84,17 +84,6 @@
             }
           ];
         };
-        kukui-kpart = pkgs.callPackage ./kpart.nix {
-          kernel = self.packages.aarch64-linux.kukui-kernel;
-          cmdline = "${mt81xx-kernel}/misc.cbm/misc/cmdline";
-          dtbFilter = [
-            "/dtbs/mediatek/mt8173-elm-*.dtb"
-            "/dtbs/mediatek/mt8183-kukui-*.dtb"
-            "/dtbs/mediatek/mt8186-corsola-*.dtb"
-            "/dtbs/mediatek/mt8192-asurada-*.dtb"
-            "/dtbs/mediatek/mt8195-cherry-*.dtb"
-          ];
-        };
       };
     }
     // flake-utils.lib.eachDefaultSystem (

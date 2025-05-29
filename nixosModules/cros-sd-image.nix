@@ -1,0 +1,161 @@
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+}:
+let
+  rootVolumeLabel = "NIXOS_ROOT";
+  rootfsImage = pkgs.callPackage "${inputs.nixpkgs}/nixos/lib/make-ext4-fs.nix" {
+    volumeLabel = rootVolumeLabel;
+    compressImage = config.crosSdImage.compressImage;
+  };
+  kpartImage = pkgs.callPackage ./kpart.nix {
+    kernel = config.boot.kernelPackages.kernel;
+    kernelParams = config.boot.kernelParams;
+    dtbFilter = [
+      "/dtbs/mediatek/mt8173-elm-*.dtb"
+      "/dtbs/mediatek/mt8183-kukui-*.dtb"
+      "/dtbs/mediatek/mt8186-corsola-*.dtb"
+      "/dtbs/mediatek/mt8192-asurada-*.dtb"
+      "/dtbs/mediatek/mt8195-cherry-*.dtb"
+    ];
+  };
+in
+{
+  options.crosSdImage = {
+    storePaths = lib.mkOption {
+      type = with lib.types; listOf package;
+      example = lib.literalExpression "[ pkgs.stdenv ]";
+      description = ''
+        Derivations to be included in the Nix store in the generated SD image.
+      '';
+    };
+
+    populateRootCommands = lib.mkOption {
+      example = lib.literalExpression "''\${config.boot.loader.generic-extlinux-compatible.populateCmd} -c \${config.system.build.toplevel} -d ./files/boot''";
+      description = ''
+        Shell commands to populate the ./files directory.
+        All files in that directory are copied to the
+        root (/) partition on the SD image. Use this to
+        populate the ./files/boot (/boot) directory.
+      '';
+    };
+
+    compressImage = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Whether the SD image should be compressed using
+        {command}`zstd`.
+      '';
+    };
+
+    expandOnBoot = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Whether to configure the sd image to expand it's partition on boot.
+      '';
+    };
+
+    nixPathRegistrationFile = lib.mkOption {
+      type = lib.types.str;
+      default = "/nix-path-registration";
+      description = ''
+        Location of the file containing the input for nix-store --load-db once the machine has booted.
+        If overriding fileSystems."/" then you should to set this to the root mount + /nix-path-registration
+      '';
+    };
+  };
+
+  config = {
+    hardware.enableAllHardware = true;
+
+    fileSystems = {
+      "/" = {
+        device = "/dev/disk/by-label/${rootVolumeLabel}";
+        fsType = "ext4";
+      };
+    };
+
+    crosSdImage.storePaths = [ config.system.build.toplevel ];
+    system.build.crosSdImage = pkgs.callPackage (
+      {
+        stdenvNoCC,
+      }:
+      stdenvNoCC.mkDerivation {
+        name = config.image.fileName;
+
+        nativeBuildInputs =
+          with pkgs;
+          [
+            e2fsprogs
+            e2tools
+          ]
+          ++ lib.optional config.crosSdImage.compressImage pkgs.zstd;
+
+        inherit (config.crosSdImage) compressImage;
+
+        buildCommand = ''
+          mkdir -p $out/nix-support $out/sd-image
+          export img=$out/sd-image/${config.image.baseName}.img
+
+          echo "${pkgs.stdenv.buildPlatform.system}" > $out/nix-support/system
+          if test -n "$compressImage"; then
+            echo "file sd-image $img.zst" >> $out/nix-support/hydra-build-products
+          else
+            echo "file sd-image $img" >> $out/nix-support/hydra-build-products
+          fi
+
+          root_fs=${rootfsImage}
+          kpart=${kpartImage}
+
+          ${lib.optionalString config.crosSdImage.compressImage ''
+            root_fs=./root-fs.img
+            echo "Decompressing rootfs image"
+            zstd -d --no-progress "${rootfsImage}" -o $root_fs
+          ''}
+
+          gapSectors=8192
+          bootSize=512 # MiB
+          kernelSize=128 # MiB
+          rootSectors=$(du -B 512 --apparent-size $root_fs | awk '{ print $1 }')
+          imageSize=$((rootSectors * 512 + kernelSize * 2 * 1024 * 1024 + bootSize * 1024 * 1024 + gapSectors))
+          truncate -s $imageSize $img
+
+          sgdisk -Z $img
+          sgdisk -C -e -G $img
+          cgpt create $img
+
+          # MiB to Sectors: MiB * 2048
+          kernelSectors=$((kernelSize * 2048))
+          bootSectors=$((bootSize * 2048))
+
+          kernelABegin=$gapSectors
+          kernelBBegin=$((kernelABegin + kernelSectors))
+          bootBegin=$((kernelBBegin + kernelSectors))
+          rootBegin=$((bootBegin + bootSectors))
+
+          cgpt add -i 1 -t kernel -b $kernelABegin -s $kernelSectors -l KernelA -S 1 -T 2 -P 10 $img
+          cgpt add -i 2 -t kernel -b $kernelBBegin -s $kernelSectors -l KernelB -S 0 -T 2 -P 5 $img
+          cgpt add -i 3 -t data -b $bootBegin -s $bootSectors -l BOOT $img
+          cgpt add -i 4 -t data -b $rootBegin -s $rootSectors -l ${rootVolumeLabel} $img
+
+          # Copy the kernel kpart into the first kernel partition
+          dd conv=notrunc if=$kpart of=$img seek=$kernelABegin count=$kernelSectors
+
+          # Create a boot partition into boot.img
+          $boot=boot.img
+          truncate -s ''${bootSize}M $boot
+          mkfs.ext4 -O ^has_journal -L BOOT $boot
+          # TODO: Populate and write the boot partition
+          dd conv=notrunc if=$boot of=$img seek=$bootBegin count=$bootSectors
+
+          # Write root partition
+          dd conv=notrunc if=$root_fs of=$img seek=$rootBegin count=$rootSectors
+        '';
+      }
+    ) { };
+  };
+}

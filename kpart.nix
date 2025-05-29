@@ -31,7 +31,6 @@ stdenvNoCC.mkDerivation {
   '';
 
   installPhase = ''
-    mkdir $out
     cp vmlinux.kpart $out
   '';
 }
