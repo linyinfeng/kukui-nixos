@@ -34,6 +34,7 @@
         };
         modules = [
           ./nixosModules/cros-sd-image.nix
+          ./nixosModules/hardware-config.nix
           ./nixosConfigurations/kukui.nix
         ];
       };

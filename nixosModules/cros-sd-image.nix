@@ -13,7 +13,7 @@ let
     compressImage = config.crosSdImage.compressImage;
   };
   kpartImage = pkgs.callPackage ../packages/kpart.nix {
-    inherit (config.boot) kernelParams;
+    kernelParams = config.boot.kernelParams ++ [ "init=${config.system.build.toplevel}/init" ];
     inherit (config.boot.kernelPackages) kernel;
     dtbFilter = [
       "/dtbs/mediatek/mt8173-elm-*.dtb"
