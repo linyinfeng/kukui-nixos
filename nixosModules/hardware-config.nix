@@ -17,9 +17,6 @@
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
-  # Debug
-  boot.consoleLogLevel = 7;
-  boot.initrd.verbose = true;
   boot.kernelParams = [
     "console=tty1"
     "rootwait"
