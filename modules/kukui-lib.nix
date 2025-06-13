@@ -1,0 +1,5 @@
+{ selfLib }:
+{ ... }:
+{
+  lib.kukui = selfLib;
+}

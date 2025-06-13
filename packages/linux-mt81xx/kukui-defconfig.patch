@@ -1,0 +1,29 @@
+From 21d571673236a5d948059770029fb66429cda591 Mon Sep 17 00:00:00 2001
+From: Lin Yinfeng <lin.yinfeng@outlook.com>
+Date: Sat, 14 Jun 2025 13:41:23 +0800
+Subject: [PATCH] kukui defconfig
+
+---
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 5fdbfea7a5b2..f7c6ecc4b083 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -1406,7 +1406,7 @@ CONFIG_SOUNDWIRE_QCOM=m
+ CONFIG_FSL_DPAA=y
+ CONFIG_FSL_MC_DPIO=y
+ CONFIG_FSL_RCPM=y
+-CONFIG_MTK_CMDQ=m
++CONFIG_MTK_CMDQ=y
+ CONFIG_MTK_DEVAPC=m
+ CONFIG_MTK_PMIC_WRAP=y
+ CONFIG_MTK_SVS=m
+@@ -1724,3 +1724,4 @@ CONFIG_CORESIGHT_STM=m
+ CONFIG_CORESIGHT_CPU_DEBUG=m
+ CONFIG_CORESIGHT_CTI=m
+ CONFIG_MEMTEST=y
++CONFIG_BACKLIGHT_CLASS_DEVICE=y
+--
+2.49.0
