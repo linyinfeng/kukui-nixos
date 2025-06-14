@@ -138,6 +138,7 @@
                     { nixpkgs.buildPlatform = system; }
                   ];
                 };
+                # TODO working in progress
                 systemCommonConfig = testSystem.extendModules {
                   modules = [
                     {
@@ -156,8 +157,8 @@
                 nixos-test-toplevel = testSystem.config.system.build.toplevel;
                 nixos-test-disko = testSystem.config.system.build.destroyScript;
 
-                nixos-test-common-kernel = systemCommonConfig.config.boot.kernelPackages.kernel;
-                nixos-test-common-toplevel = systemCommonConfig.config.system.build.toplevel;
+                # nixos-test-common-kernel = systemCommonConfig.config.boot.kernelPackages.kernel;
+                # nixos-test-common-toplevel = systemCommonConfig.config.system.build.toplevel;
               };
           };
       }
