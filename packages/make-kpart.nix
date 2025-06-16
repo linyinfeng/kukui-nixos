@@ -25,7 +25,7 @@ writeShellApplication {
     boot_json="$1"
 
     init="$(jq --raw-output '."org.nixos.bootspec.v1".init' "$boot_json")"
-    jq --raw-output '["'"$init"'"] + ."org.nixos.bootspec.v1".kernelParams | join(" ")' "$boot_json" >cmdline
+    jq --raw-output '["'"init=$init"'"] + ."org.nixos.bootspec.v1".kernelParams | join(" ")' "$boot_json" >cmdline
     initrd="$(jq --raw-output '."org.nixos.bootspec.v1".initrd' "$boot_json")"
     kernel="$(jq --raw-output '."org.nixos.bootspec.v1".kernel' "$boot_json")"
     dtbs="$(jq --raw-output '."${kukuiNamespace}".dtbs' "$boot_json")"

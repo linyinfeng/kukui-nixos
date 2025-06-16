@@ -2,12 +2,11 @@
   config,
   pkgs,
   lib,
-  inputs,
   ...
 }:
 let
   rootVolumeLabel = "NIXOS_ROOT";
-  rootfsImage = pkgs.callPackage "${inputs.nixpkgs}/nixos/lib/make-ext4-fs.nix" {
+  rootfsImage = pkgs.callPackage "${pkgs.path}/nixos/lib/make-ext4-fs.nix" {
     inherit (config.crosSdImage) storePaths;
     volumeLabel = rootVolumeLabel;
     compressImage = config.crosSdImage.compressImage;
