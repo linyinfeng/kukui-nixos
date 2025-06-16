@@ -6,8 +6,8 @@
   ubootTools,
   lib,
 
-  kukuiNamespace ? import ../lib/bootspec-namespace.nix,
   verbose ? false,
+  kukuiNamespace ? import ../lib/bootspec-namespace.nix,
 }:
 writeShellApplication {
   name = "make-kpart";
@@ -25,14 +25,14 @@ writeShellApplication {
     boot_json="$1"
 
     init="$(jq --raw-output '."org.nixos.bootspec.v1".init' "$boot_json")"
-    jq --raw-output '["'"$init"'"]] + ."org.nixos.bootspec.v1".kernelParams | join(" ")' "$boot_json" >cmdline
+    jq --raw-output '["'"$init"'"] + ."org.nixos.bootspec.v1".kernelParams | join(" ")' "$boot_json" >cmdline
     initrd="$(jq --raw-output '."org.nixos.bootspec.v1".initrd' "$boot_json")"
-    kernel="$(jq --raw-output '."".kernel' "$boot_json")"
+    kernel="$(jq --raw-output '."org.nixos.bootspec.v1".kernel' "$boot_json")"
     dtbs="$(jq --raw-output '."${kukuiNamespace}".dtbs' "$boot_json")"
     dtb_args=()
-    for dtb in "$dtbs"*; do
+    while read -r dtb; do
       dtb_args+=('--device-tree' "$dtb")
-    done
+    done < <(find "$dtbs" -type f -name "*.dtb")
 
     mkimage \
       --dtcopts "-I dts -O dtb -p 2048" \

@@ -48,6 +48,7 @@
     }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } (
       {
+        config,
         self,
         inputs,
         lib,
@@ -78,33 +79,41 @@
                 imports = lib.attrValues modules;
               };
             };
-          nixosConfigurations.test = inputs.nixpkgs.lib.nixosSystem {
-            modules = [
-              self.nixosModules.default
-              inputs.disko.nixosModules.disko
-              ./profiles/disko.nix
-              (
-                { ... }:
-                {
-                  kukui.disko = {
-                    device = "/tmp/test.img";
-                    partitions = {
-                      root = {
-                        priority = 3;
-                        size = "100%";
-                        content = {
-                          type = "filesystem";
-                          format = "ext4";
-                          mountpoint = "/";
+          nixosConfigurations = {
+            test = inputs.nixpkgs.lib.nixosSystem {
+              modules = [
+                self.nixosModules.default
+                inputs.disko.nixosModules.disko
+                ./profiles/disko.nix
+                (
+                  { ... }:
+                  {
+                    kukui.disko = {
+                      # device = "/dev/mmcblk0";
+                      device = "/dev/sda";
+                      partitions = {
+                        root = {
+                          priority = 3;
+                          size = "100%";
+                          content = {
+                            type = "filesystem";
+                            format = "ext4";
+                            mountpoint = "/";
+                          };
                         };
                       };
                     };
-                  };
-                  nixpkgs.overlays = [ self.overlays.default ];
-                  system.stateVersion = "25.05";
-                }
-              )
-            ];
+                    nixpkgs.overlays = [ self.overlays.default ];
+                    system.stateVersion = "25.05";
+                  }
+                )
+              ];
+            };
+            test-cross = config.flake.nixosConfigurations.test.extendModules {
+              modules = [
+                { nixpkgs.buildPlatform = "x86_64-linux"; }
+              ];
+            };
           };
         };
         perSystem =
@@ -138,27 +147,11 @@
                     { nixpkgs.buildPlatform = system; }
                   ];
                 };
-                # TODO working in progress
-                systemCommonConfig = testSystem.extendModules {
-                  modules = [
-                    {
-                      kukui.kernel.overrides = {
-                        enableCommonConfig = true;
-                        # TOD fix errors
-                        ignoreConfigErrors = true;
-                      };
-                    }
-                  ];
-                };
               in
               {
                 nixos-test-kernel = testSystem.config.boot.kernelPackages.kernel;
                 nixos-test-configfile = testSystem.config.boot.kernelPackages.kernel.configfile;
                 nixos-test-toplevel = testSystem.config.system.build.toplevel;
-                nixos-test-disko = testSystem.config.system.build.destroyScript;
-
-                # nixos-test-common-kernel = systemCommonConfig.config.boot.kernelPackages.kernel;
-                # nixos-test-common-toplevel = systemCommonConfig.config.system.build.toplevel;
               };
           };
       }

@@ -10,11 +10,11 @@ in
     };
     diskName = lib.mkOption {
       type = lib.types.str;
-      default = "main";
+      default = "kukui";
     };
     kernelPartitionSize = lib.mkOption {
       type = lib.types.str;
-      default = "128MiB"; # set relatively large partitions for nixos
+      default = "128M"; # set relatively large partitions for nixos
     };
     partitions = lib.mkOption {
       type = lib.types.anything;
@@ -23,7 +23,7 @@ in
   };
   config = {
     disko.devices = {
-      disk.main = {
+      disk.${cfg.diskName} = {
         type = "disk";
         inherit (cfg) device;
         content = {
@@ -32,7 +32,7 @@ in
             # https://www.chromium.org/chromium-os/developer-library/reference/device/disk-format
             kernelA = {
               priority = 0;
-              start = "2MiB";
+              start = "2M";
               size = cfg.kernelPartitionSize;
               type = gptTypes.crosKernel;
             };
@@ -45,6 +45,6 @@ in
         };
       };
     };
-    kukui.boot.kernelDevice = "disk-${cfg.diskName}-kernelA";
+    kukui.boot.kernelDevice = "/dev/disk/by-partlabel/disk-${cfg.diskName}-kernelA";
   };
 }
