@@ -105,6 +105,7 @@
                         };
                       };
                     };
+                    nixpkgs.hostPlatform = "aarch64-linux";
                     nixpkgs.overlays = [ self.overlays.default ];
                     system.stateVersion = "25.05";
                   }

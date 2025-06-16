@@ -21,7 +21,6 @@ in
     };
   };
   config = {
-    nixpkgs.hostPlatform = "aarch64-linux";
     boot.kernelPackages = pkgs.linuxPackagesFor linux;
     hardware.deviceTree.filter = "mt81*.dtb";
     boot.initrd = {
