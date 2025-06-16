@@ -28,17 +28,8 @@
       url = "github:edolstra/flake-compat";
       flake = false;
     };
-
-    mt81xx-kernel = {
-      url = "github:hexdump0815/linux-mainline-mediatek-mt81xx-kernel";
-      flake = false;
-    };
-    kernel-config-options = {
-      url = "github:hexdump0815/kernel-config-options";
-      flake = false;
-    };
-    kernel-extra-patches = {
-      url = "github:hexdump0815/kernel-extra-patches";
+    pmaports = {
+      url = "gitlab:postmarketOS/pmaports?host=gitlab.postmarketos.org";
       flake = false;
     };
   };
@@ -68,7 +59,7 @@
         flake = {
           lib = import ./lib { inherit (inputs.nixpkgs) lib; } // {
             sources = {
-              inherit (inputs) kernel-config-options mt81xx-kernel kernel-extra-patches;
+              inherit (inputs) pmaports;
             };
           };
           nixosModules =

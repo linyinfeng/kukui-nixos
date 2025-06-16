@@ -6,6 +6,7 @@
 let
   inherit (pkgs) pkgsCross hostPlatform lib;
   kukuiPkgs = if hostPlatform.isAarch64 then pkgs else pkgsCross.aarch64-multiplatform;
+  inherit (lib.kernel) module;
 in
 kukuiPkgs.linux_6_12.override (old: {
   enableCommonConfig = false;
@@ -16,23 +17,14 @@ kukuiPkgs.linux_6_12.override (old: {
       # simply turn off LOCALVERSION so that we can ignore modDirVersion
       LOCALVERSION = lib.kernel.unset;
 
-      # the options can be selected by common config, just unset
-      IPV6_TUNNEL = lib.kernel.unset;
-      CRYPTO_CURVE25519 = lib.kernel.unset;
-      NET_FOU = lib.kernel.unset;
+      # extra fixes due to defconfig mismatch
+      MHI_BUS = module;
+      STM = module;
     };
   kernelPatches =
     (old.kernelPatches or [ ])
-    ++ (selfLib.listPatches "${inputs.mt81xx-kernel}/misc.cbm/patches/v6.12")
+    ++ (selfLib.listPatches "${inputs.pmaports}/device/community/linux-postmarketos-mediatek-mt8183")
     ++ [
-      {
-        name = "remove-panfrost-purge-log-spam";
-        patch = "${inputs.kernel-extra-patches}/remove-panfrost-purge-log-spam/v6.12.12.patch";
-      }
-      {
-        name = "fix-kernel-version";
-        patch = "${inputs.kernel-extra-patches}/fix-kernel-version/v6.12.5.patch";
-      }
       {
         name = "kukui-extra-defconfig";
         patch = ./linux-mt81xx/kukui-defconfig.patch;

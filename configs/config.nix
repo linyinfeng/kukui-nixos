@@ -13,7 +13,7 @@ in
   ## General setup
   "COMPILE_TEST" = no; # Compile also drivers which will not load
   "WERROR" = no; # Compile the kernel with warnings as errors
-  "LOCALVERSION" = freeform "-stb-cbm"; # Local version - append to kernel release
+  "LOCALVERSION" = freeform "-mt8183"; # Local version - append to kernel release
   "LOCALVERSION_AUTO" = no; # Automatically append version information to the version string
   "DEFAULT_HOSTNAME" = freeform "(none)"; # Default hostname
   "SYSVIPC" = yes; # System V IPC
@@ -41,6 +41,7 @@ in
   "BPF_JIT_ALWAYS_ON" = no; # Permanently enable BPF JIT and remove BPF interpreter
   "BPF_UNPRIV_DEFAULT_OFF" = yes; # Disable unprivileged BPF by default
   "BPF_PRELOAD" = no; # Preload BPF file system with kernel specific program and map iterators
+  "BPF_LSM" = no; # Enable BPF LSM Instrumentation
   ### General setup: end of BPF subsystem
 
   "PREEMPT_NONE" = no; # No Forced Preemption (Server)
@@ -56,7 +57,7 @@ in
   "BSD_PROCESS_ACCT" = yes; # BSD Process Accounting
   "BSD_PROCESS_ACCT_V3" = yes; # BSD Process Accounting version 3 file format
   "TASKSTATS" = yes; # Export task/process statistics through netlink
-  "TASK_DELAY_ACCT" = yes; # Enable per-task delay accounting
+  "TASK_DELAY_ACCT" = no; # Enable per-task delay accounting
   "TASK_XACCT" = yes; # Enable extended accounting over taskstats
   "TASK_IO_ACCOUNTING" = yes; # Enable per-task storage I/O accounting
   "PSI" = yes; # Pressure stall information tracking
@@ -77,7 +78,8 @@ in
   "PRINTK_INDEX" = no; # Printk indexing debugfs interface
 
   ### General setup -> Scheduler features
-  "UCLAMP_TASK" = no; # Enable utilization clamping for RT/FAIR tasks
+  "UCLAMP_TASK" = yes; # Enable utilization clamping for RT/FAIR tasks
+  "UCLAMP_BUCKETS_COUNT" = freeform "5"; # Number of supported utilization clamp buckets
   ### General setup: end of Scheduler features
 
   "NUMA_BALANCING" = yes; # Memory placement aware NUMA scheduler
@@ -90,7 +92,8 @@ in
   "CGROUP_SCHED" = yes; # CPU controller
   "FAIR_GROUP_SCHED" = yes; # Group scheduling for SCHED_OTHER
   "CFS_BANDWIDTH" = yes; # CPU bandwidth provisioning for FAIR_GROUP_SCHED
-  "RT_GROUP_SCHED" = yes; # Group scheduling for SCHED_RR/FIFO
+  "RT_GROUP_SCHED" = no; # Group scheduling for SCHED_RR/FIFO
+  "UCLAMP_TASK_GROUP" = yes; # Utilization clamping per group of tasks
   "CGROUP_PIDS" = yes; # PIDs controller
   "CGROUP_RDMA" = no; # RDMA controller
   "CGROUP_FREEZER" = yes; # Freezer controller
@@ -113,7 +116,7 @@ in
   "NET_NS" = yes; # Network namespace
   "CHECKPOINT_RESTORE" = yes; # Checkpoint/restore support
   "SCHED_AUTOGROUP" = yes; # Automatic process group scheduling
-  "RELAY" = yes; # Kernel->user space relay support (formerly relayfs)
+  "RELAY" = no; # Kernel->user space relay support (formerly relayfs)
   "BLK_DEV_INITRD" = yes; # Initial RAM filesystem and RAM disk (initramfs/initrd) support
   "RD_GZIP" = yes; # Support initial ramdisk/ramfs compressed using gzip
   "RD_BZIP2" = yes; # Support initial ramdisk/ramfs compressed using bzip2
@@ -148,7 +151,7 @@ in
 
   ## Platform selection
   "ARCH_ACTIONS" = no; # Actions Semi Platforms
-  "ARCH_AIROHA" = yes; # Airoha SoC Support
+  "ARCH_AIROHA" = no; # Airoha SoC Support
   "ARCH_SUNXI" = no; # Allwinner sunxi 64-bit SoC Family
   "ARCH_ALPINE" = no; # Annapurna Labs Alpine platform
   "ARCH_APPLE" = no; # Apple Silicon SoC family
@@ -196,7 +199,7 @@ in
   "ARM64_ERRATUM_824069" = yes; # Cortex-A53: 824069: Cache line might not be marked as clean after a CleanShared snoop
   "ARM64_ERRATUM_819472" = yes; # Cortex-A53: 819472: Store exclusive instructions might cause data corruption
   "ARM64_ERRATUM_832075" = yes; # Cortex-A57: 832075: possible deadlock on mixing exclusive memory accesses with device loads
-  "ARM64_ERRATUM_834220" = no; # Cortex-A57: 834220: Stage 2 translation fault might be incorrectly reported in presence of a Stage 1 fault (rare)
+  "ARM64_ERRATUM_834220" = yes; # Cortex-A57: 834220: Stage 2 translation fault might be incorrectly reported in presence of a Stage 1 fault (rare)
   "ARM64_ERRATUM_1742098" = yes; # Cortex-A57/A72: 1742098: ELR recorded incorrectly on interrupt taken between cryptographic instructions in a sequence
   "ARM64_ERRATUM_845719" = yes; # Cortex-A53: 845719: a load might read incorrect data
   "ARM64_ERRATUM_843419" = yes; # Cortex-A53: 843419: A load or store might access an incorrect address
@@ -205,17 +208,17 @@ in
   "ARM64_ERRATUM_1165522" = yes; # Cortex-A76: 1165522: Speculative AT instruction using out-of-context translation regime could cause subsequent request to generate an incorrect translation
   "ARM64_ERRATUM_1319367" = yes; # Cortex-A57/A72: 1319537: Speculative AT instruction using out-of-context translation regime could cause subsequent request to generate an incorrect translation
   "ARM64_ERRATUM_1530923" = yes; # Cortex-A55: 1530923: Speculative AT instruction using out-of-context translation regime could cause subsequent request to generate an incorrect translation
-  "ARM64_ERRATUM_2441007" = no; # Cortex-A55: Completion of affected memory accesses might not be guaranteed by completion of a TLBI (rare)
-  "ARM64_ERRATUM_1286807" = no; # Cortex-A76: Modification of the translation table for a virtual address might lead to read-after-read ordering violation (rare)
+  "ARM64_ERRATUM_2441007" = yes; # Cortex-A55: Completion of affected memory accesses might not be guaranteed by completion of a TLBI (rare)
+  "ARM64_ERRATUM_1286807" = yes; # Cortex-A76: Modification of the translation table for a virtual address might lead to read-after-read ordering violation (rare)
   "ARM64_ERRATUM_1463225" = yes; # Cortex-A76: Software Step might prevent interrupt recognition
-  "ARM64_ERRATUM_1542419" = no; # Neoverse-N1: workaround mis-ordering of instruction fetches (rare)
+  "ARM64_ERRATUM_1542419" = yes; # Neoverse-N1: workaround mis-ordering of instruction fetches (rare)
   "ARM64_ERRATUM_1508412" = yes; # Cortex-A77: 1508412: workaround deadlock on sequence of NC/Device load and store exclusive or PAR read
   "ARM64_ERRATUM_2051678" = yes; # Cortex-A510: 2051678: disable Hardware Update of the page table dirty bit
   "ARM64_ERRATUM_2077057" = yes; # Cortex-A510: 2077057: workaround software-step corrupting SPSR_EL2
   "ARM64_ERRATUM_2658417" = yes; # Cortex-A510: 2658417: remove BF16 support due to incorrect result
   "ARM64_ERRATUM_2054223" = yes; # Cortex-A710: 2054223: workaround TSB instruction failing to flush trace
   "ARM64_ERRATUM_2067961" = yes; # Neoverse-N2: 2067961: workaround TSB instruction failing to flush trace
-  "ARM64_ERRATUM_2441009" = no; # Cortex-A510: Completion of affected memory accesses might not be guaranteed by completion of a TLBI (rare)
+  "ARM64_ERRATUM_2441009" = yes; # Cortex-A510: Completion of affected memory accesses might not be guaranteed by completion of a TLBI (rare)
   "ARM64_ERRATUM_2457168" = yes; # Cortex-A510: 2457168: workaround for AMEVCNTR01 incrementing incorrectly
   "ARM64_ERRATUM_2645198" = yes; # Cortex-A715: 2645198: Workaround possible [ESR|FAR]_ELx corruption
   "ARM64_ERRATUM_2966298" = yes; # Cortex-A520: 2966298: workaround for speculatively executed unprivileged load
@@ -243,15 +246,15 @@ in
   "ARM64_16K_PAGES" = no; # 16KB
   "ARM64_64K_PAGES" = no; # 64KB
   "ARM64_VA_BITS_39" = no; # 39-bit
-  "ARM64_VA_BITS_48" = no; # 48-bit
-  "ARM64_VA_BITS_52" = yes; # 52-bit
-  "ARM64_PA_BITS_52" = yes; # 52-bit
+  "ARM64_VA_BITS_48" = yes; # 48-bit
+  "ARM64_VA_BITS_52" = no; # 52-bit
+  "ARM64_PA_BITS_48" = yes; # 48-bit
   "CPU_BIG_ENDIAN" = no; # Build big-endian kernel
   "CPU_LITTLE_ENDIAN" = yes; # Build little-endian kernel
   "SCHED_MC" = yes; # Multi-core scheduler support
   "SCHED_CLUSTER" = no; # Cluster scheduler support
   "SCHED_SMT" = yes; # SMT scheduler support
-  "NR_CPUS" = freeform "512"; # Maximum number of CPUs (2-4096)
+  "NR_CPUS" = freeform "256"; # Maximum number of CPUs (2-4096)
   "HOTPLUG_CPU" = yes; # Support for hot-pluggable CPUs
   "NUMA" = yes; # NUMA Memory Allocation and Scheduler Support
   "NODES_SHIFT" = freeform "4"; # Maximum NUMA Nodes (as a power of 2)
@@ -313,8 +316,9 @@ in
   ## end of Kernel Features
 
   ## Boot options
-  "EFI" = no; # UEFI runtime support
+  "EFI" = yes; # UEFI runtime support
   "COMPRESSED_INSTALL" = no; # Install compressed image by default
+  "DMI" = yes; # Enable support for SMBIOS (DMI) tables
   ## end of Boot options
 
   ## Power management options
@@ -325,7 +329,9 @@ in
   "HIBERNATION_COMP_LZ4" = no; # lz4
   "PM_AUTOSLEEP" = no; # Opportunistic sleep
   "PM_USERSPACE_AUTOSLEEP" = no; # Userspace opportunistic sleep
-  "PM_WAKELOCKS" = no; # User space wakeup sources interface
+  "PM_WAKELOCKS" = yes; # User space wakeup sources interface
+  "PM_WAKELOCKS_LIMIT" = freeform "100"; # Maximum number of user space wakeup sources (0 = no limit)
+  "PM_WAKELOCKS_GC" = yes; # Garbage collector for user space wakeup sources
   "PM" = yes; # Device power management core functionality
   "PM_DEBUG" = no; # Power Management Debug Support
   "WQ_POWER_EFFICIENT_DEFAULT" = yes; # Enable workqueue power-efficient mode by default
@@ -349,10 +355,10 @@ in
   ### CPU Power Management -> CPU Frequency scaling
   "CPU_FREQ" = yes; # CPU Frequency scaling
   "CPU_FREQ_STAT" = yes; # CPU frequency transition statistics
-  "CPU_FREQ_DEFAULT_GOV_PERFORMANCE" = yes; # performance
+  "CPU_FREQ_DEFAULT_GOV_PERFORMANCE" = no; # performance
   "CPU_FREQ_DEFAULT_GOV_POWERSAVE" = no; # powersave
   "CPU_FREQ_DEFAULT_GOV_USERSPACE" = no; # userspace
-  "CPU_FREQ_DEFAULT_GOV_ONDEMAND" = no; # ondemand
+  "CPU_FREQ_DEFAULT_GOV_ONDEMAND" = yes; # ondemand
   "CPU_FREQ_DEFAULT_GOV_CONSERVATIVE" = no; # conservative
   "CPU_FREQ_DEFAULT_GOV_SCHEDUTIL" = no; # schedutil
   "CPU_FREQ_GOV_PERFORMANCE" = yes; # 'performance' governor
@@ -365,11 +371,12 @@ in
   "CPUFREQ_DT_PLATDEV" = yes; # Generic DT based cpufreq platdev driver
   "ARM_SCPI_CPUFREQ" = yes; # SCPI based CPUfreq driver
   "ARM_MEDIATEK_CPUFREQ" = yes; # CPU Frequency scaling support for MediaTek SoCs
-  "ARM_MEDIATEK_CPUFREQ_HW" = yes; # MediaTek CPUFreq HW driver
+  "ARM_MEDIATEK_CPUFREQ_HW" = module; # MediaTek CPUFreq HW driver
   "ARM_SCMI_CPUFREQ" = yes; # SCMI based CPUfreq driver
   ### CPU Power Management: end of CPU Frequency scaling
   ## end of CPU Power Management
 
+  "ACPI" = no; # ACPI (Advanced Configuration and Power Interface) Support
   "VIRTUALIZATION" = yes; # Virtualization
   "KVM" = yes; # Kernel-based Virtual Machine (KVM) support
   "NVHE_EL2_DEBUG" = no; # Debug mode for non-VHE EL2 object
@@ -410,7 +417,12 @@ in
   "MODVERSIONS" = no; # Module versioning support
   "MODULE_SRCVERSION_ALL" = no; # Source checksum for all modules
   "MODULE_SIG" = no; # Module signature verification
-  "MODULE_COMPRESS" = no; # Module compression
+  "MODULE_COMPRESS" = yes; # Module compression
+  "MODULE_COMPRESS_GZIP" = no; # GZIP
+  "MODULE_COMPRESS_XZ" = no; # XZ
+  "MODULE_COMPRESS_ZSTD" = yes; # ZSTD
+  "MODULE_COMPRESS_ALL" = yes; # Automatically compress all modules
+  "MODULE_DECOMPRESS" = no; # Support in-kernel module decompression
   "MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS" = no; # Allow loading of modules with missing namespace imports
   "MODPROBE_PATH" = freeform "/sbin/modprobe"; # Path to modprobe binary
   "TRIM_UNUSED_KSYMS" = no; # Trim unused exported kernel symbols
@@ -436,16 +448,14 @@ in
   ### IO Schedulers
   "MQ_IOSCHED_DEADLINE" = yes; # MQ deadline I/O scheduler
   "MQ_IOSCHED_KYBER" = yes; # Kyber I/O scheduler
-  "IOSCHED_BFQ" = yes; # BFQ I/O scheduler
-  "BFQ_GROUP_IOSCHED" = yes; # BFQ hierarchical scheduling support
-  "BFQ_CGROUP_DEBUG" = no; # BFQ IO controller debugging
+  "IOSCHED_BFQ" = no; # BFQ I/O scheduler
   ### end of IO Schedulers
 
   ## Executable file formats
   "BINFMT_ELF" = yes; # Kernel support for ELF binaries
   "CORE_DUMP_DEFAULT_ELF_HEADERS" = no; # Write ELF core dumps with partial segments
   "BINFMT_SCRIPT" = yes; # Kernel support for scripts starting with #!
-  "BINFMT_MISC" = module; # Kernel support for MISC binaries
+  "BINFMT_MISC" = yes; # Kernel support for MISC binaries
   ## end of Executable file formats
 
   ## Memory Management options
@@ -459,9 +469,9 @@ in
   "ZSWAP_COMPRESSOR_DEFAULT_LZ4" = no; # LZ4
   "ZSWAP_COMPRESSOR_DEFAULT_LZ4HC" = no; # LZ4HC
   "ZSWAP_COMPRESSOR_DEFAULT_ZSTD" = no; # zstd
-  "ZSWAP_ZPOOL_DEFAULT_ZBUD" = no; # zbud
+  "ZSWAP_ZPOOL_DEFAULT_ZBUD" = yes; # zbud
   "ZSWAP_ZPOOL_DEFAULT_Z3FOLD_DEPRECATED" = no; # z3foldi (DEPRECATED)
-  "ZSWAP_ZPOOL_DEFAULT_ZSMALLOC" = yes; # zsmalloc
+  "ZSWAP_ZPOOL_DEFAULT_ZSMALLOC" = no; # zsmalloc
   "ZBUD" = yes; # 2:1 compression allocator (zbud)
   "Z3FOLD_DEPRECATED" = no; # 3:1 compression allocator (z3fold) (DEPRECATED)
   "ZSMALLOC" = yes; # N:1 compression allocator (zsmalloc)
@@ -481,9 +491,7 @@ in
   "SHUFFLE_PAGE_ALLOCATOR" = no; # Page allocator randomization
   "COMPAT_BRK" = no; # Disable heap randomization
   "SPARSEMEM_VMEMMAP" = yes; # Sparse Memory virtual memmap
-  "MEMORY_HOTPLUG" = yes; # Memory hotplug
-  "MEMORY_HOTPLUG_DEFAULT_ONLINE" = no; # Online the newly added memory blocks by default
-  "MEMORY_HOTREMOVE" = yes; # Allow for memory hot remove
+  "MEMORY_HOTPLUG" = no; # Memory hotplug
   "BALLOON_COMPACTION" = yes; # Allow for balloon memory compaction/migration
   "COMPACTION" = yes; # Allow for memory compaction
   "PAGE_REPORTING" = yes; # Free page reporting
@@ -498,18 +506,18 @@ in
   "TRANSPARENT_HUGEPAGE_MADVISE" = no; # madvise
   "TRANSPARENT_HUGEPAGE_NEVER" = no; # never
   "READ_ONLY_THP_FOR_FS" = no; # Read-only THP for filesystems (EXPERIMENTAL)
-  "CMA" = no; # Contiguous Memory Allocator
+  "CMA" = yes; # Contiguous Memory Allocator
+  "CMA_DEBUGFS" = no; # CMA debugfs interface
+  "CMA_SYSFS" = no; # CMA information through sysfs interface
+  "CMA_AREAS" = freeform "19"; # Maximum count of the CMA areas
   "DEFERRED_STRUCT_PAGE_INIT" = no; # Defer initialisation of struct pages to kthreads
   "IDLE_PAGE_TRACKING" = no; # Enable idle page tracking
-  "ZONE_DEVICE" = no; # Device memory (pmem, HMM, etc...) hotplug support
   "PERCPU_STATS" = no; # Collect percpu memory statistics
   "GUP_TEST" = no; # Enable infrastructure for get_user_pages()-related unit tests
   "DMAPOOL_TEST" = no; # Enable a module to run time tests on dma_pool
   "ANON_VMA_NAME" = no; # Anonymous VMA name support
   "USERFAULTFD" = no; # Enable userfaultfd() system call
-  "LRU_GEN" = yes; # Multi-Gen LRU
-  "LRU_GEN_ENABLED" = yes; # Enable by default
-  "LRU_GEN_STATS" = no; # Full stats for debugging
+  "LRU_GEN" = no; # Multi-Gen LRU
   "NUMA_EMU" = no; # NUMA emulation
 
   ### Memory Management options -> Data Access Monitoring
@@ -521,9 +529,9 @@ in
 
   ### Networking options
   "PACKET" = yes; # Packet socket
-  "PACKET_DIAG" = module; # Packet: sockets monitoring interface
+  "PACKET_DIAG" = no; # Packet: sockets monitoring interface
   "UNIX" = yes; # Unix domain sockets
-  "UNIX_DIAG" = yes; # UNIX: socket monitoring interface
+  "UNIX_DIAG" = no; # UNIX: socket monitoring interface
   "TLS" = no; # Transport Layer Security support
   "XFRM_USER" = module; # Transformation user configuration interface
   "XFRM_INTERFACE" = no; # Transformation virtual interface
@@ -546,7 +554,7 @@ in
   "NET_IPIP" = no; # IP: tunneling
   "NET_IPGRE_DEMUX" = no; # IP: GRE demultiplexer
   "IP_MROUTE" = no; # IP: multicast routing
-  "SYN_COOKIES" = yes; # IP: TCP syncookie support
+  "SYN_COOKIES" = no; # IP: TCP syncookie support
   "NET_IPVTI" = no; # Virtual (secure) IP: tunneling
   "NET_FOU" = no; # IP: Foo (IP protocols) over UDP
   "NET_FOU_IP_TUNNELS" = no; # IP: FOU encapsulation of IP tunnels
@@ -592,36 +600,33 @@ in
   "NETFILTER_INGRESS" = yes; # Netfilter ingress support
   "NETFILTER_EGRESS" = yes; # Netfilter egress support
   "NETFILTER_NETLINK_HOOK" = no; # Netfilter base hook dump support
-  "NETFILTER_NETLINK_ACCT" = module; # Netfilter NFACCT over NFNETLINK interface
-  "NETFILTER_NETLINK_QUEUE" = module; # Netfilter NFQUEUE over NFNETLINK interface
-  "NETFILTER_NETLINK_LOG" = module; # Netfilter LOG over NFNETLINK interface
+  "NETFILTER_NETLINK_ACCT" = no; # Netfilter NFACCT over NFNETLINK interface
+  "NETFILTER_NETLINK_QUEUE" = no; # Netfilter NFQUEUE over NFNETLINK interface
+  "NETFILTER_NETLINK_LOG" = no; # Netfilter LOG over NFNETLINK interface
   "NETFILTER_NETLINK_OSF" = module; # Netfilter OSF over NFNETLINK interface
   "NF_CONNTRACK" = module; # Netfilter connection tracking support
   "NF_LOG_SYSLOG" = module; # Syslog packet logging
   "NF_CONNTRACK_MARK" = yes; # Connection mark tracking support
-  "NF_CONNTRACK_ZONES" = yes; # Connection tracking zones
+  "NF_CONNTRACK_ZONES" = no; # Connection tracking zones
   "NF_CONNTRACK_PROCFS" = yes; # Supply CT list in procfs (OBSOLETE)
   "NF_CONNTRACK_EVENTS" = yes; # Connection tracking events
-  "NF_CONNTRACK_TIMEOUT" = yes; # Connection tracking timeout
-  "NF_CONNTRACK_TIMESTAMP" = yes; # Connection tracking timestamping
-  "NF_CONNTRACK_LABELS" = yes; # Connection tracking labels
+  "NF_CONNTRACK_TIMEOUT" = no; # Connection tracking timeout
+  "NF_CONNTRACK_TIMESTAMP" = no; # Connection tracking timestamping
+  "NF_CONNTRACK_LABELS" = no; # Connection tracking labels
   "NF_CT_PROTO_DCCP" = yes; # DCCP protocol connection tracking support
   "NF_CT_PROTO_SCTP" = yes; # SCTP protocol connection tracking support
   "NF_CT_PROTO_UDPLITE" = yes; # UDP-Lite protocol connection tracking support
-  "NF_CONNTRACK_AMANDA" = module; # Amanda backup protocol support
+  "NF_CONNTRACK_AMANDA" = no; # Amanda backup protocol support
   "NF_CONNTRACK_FTP" = module; # FTP protocol support
-  "NF_CONNTRACK_H323" = module; # H.323 protocol support
-  "NF_CONNTRACK_IRC" = module; # IRC protocol support
-  "NF_CONNTRACK_NETBIOS_NS" = module; # NetBIOS name service protocol support
-  "NF_CONNTRACK_SNMP" = module; # SNMP service protocol support
-  "NF_CONNTRACK_PPTP" = module; # PPtP protocol support
-  "NF_CONNTRACK_SANE" = module; # SANE protocol support
-  "NF_CONNTRACK_SIP" = module; # SIP protocol support
+  "NF_CONNTRACK_H323" = no; # H.323 protocol support
+  "NF_CONNTRACK_IRC" = no; # IRC protocol support
+  "NF_CONNTRACK_NETBIOS_NS" = no; # NetBIOS name service protocol support
+  "NF_CONNTRACK_SNMP" = no; # SNMP service protocol support
+  "NF_CONNTRACK_PPTP" = no; # PPtP protocol support
+  "NF_CONNTRACK_SANE" = no; # SANE protocol support
+  "NF_CONNTRACK_SIP" = no; # SIP protocol support
   "NF_CONNTRACK_TFTP" = module; # TFTP protocol support
-  "NF_CT_NETLINK" = module; # Connection tracking netlink interface
-  "NF_CT_NETLINK_TIMEOUT" = module; # Connection tracking timeout tuning via Netlink
-  "NF_CT_NETLINK_HELPER" = module; # Connection tracking helpers in user-space via Netlink
-  "NETFILTER_NETLINK_GLUE_CT" = yes; # NFQUEUE and NFLOG integration with Connection Tracking
+  "NF_CT_NETLINK" = no; # Connection tracking netlink interface
   "NF_NAT" = module; # Network Address Translation support
   "NF_TABLES" = module; # Netfilter nf_tables support
   "NF_TABLES_INET" = yes; # Netfilter nf_tables mixed IPv4/IPv6 tables support
@@ -636,19 +641,20 @@ in
   "NFT_REDIR" = module; # Netfilter nf_tables redirect support
   "NFT_NAT" = module; # Netfilter nf_tables nat module
   "NFT_TUNNEL" = module; # Netfilter nf_tables tunnel module
-  "NFT_QUEUE" = module; # Netfilter nf_tables queue module
   "NFT_QUOTA" = module; # Netfilter nf_tables quota module
   "NFT_REJECT" = module; # Netfilter nf_tables reject support
   "NFT_COMPAT" = module; # Netfilter x_tables over nf_tables module
   "NFT_HASH" = module; # Netfilter nf_tables hash module
+  "NFT_FIB_INET" = module; # Netfilter nf_tables fib inet support
   "NFT_XFRM" = module; # Netfilter nf_tables xfrm/IPSec security association matching
   "NFT_SOCKET" = module; # Netfilter nf_tables socket match support
   "NFT_OSF" = module; # Netfilter nf_tables passive OS fingerprint support
   "NFT_TPROXY" = module; # Netfilter nf_tables tproxy support
-  "NFT_SYNPROXY" = module; # Netfilter nf_tables SYNPROXY expression support
+  "NFT_SYNPROXY" = no; # Netfilter nf_tables SYNPROXY expression support
   "NF_DUP_NETDEV" = module; # Netfilter packet duplication support
   "NFT_DUP_NETDEV" = module; # Netfilter nf_tables netdev packet duplication support
   "NFT_FWD_NETDEV" = module; # Netfilter nf_tables netdev packet forwarding support
+  "NFT_FIB_NETDEV" = module; # Netfilter nf_tables netdev fib lookups support
   "NFT_REJECT_NETDEV" = module; # Netfilter nf_tables netdev REJECT support
   "NF_FLOW_TABLE_INET" = module; # Netfilter flow table mixed IPv4/IPv6 module
   "NF_FLOW_TABLE" = module; # Netfilter flow table module
@@ -656,78 +662,76 @@ in
   "NETFILTER_XTABLES" = module; # Netfilter Xtables support (required for ip_tables)
   "NETFILTER_XTABLES_COMPAT" = yes; # Netfilter Xtables 32bit support
   "NETFILTER_XT_MARK" = module; # nfmark target and match support
-  "NETFILTER_XT_CONNMARK" = module; # ctmark target and match support
-  "NETFILTER_XT_TARGET_AUDIT" = module; # AUDIT target support
+  "NETFILTER_XT_CONNMARK" = no; # ctmark target and match support
+  "NETFILTER_XT_TARGET_AUDIT" = no; # AUDIT target support
   "NETFILTER_XT_TARGET_CHECKSUM" = module; # CHECKSUM target support
-  "NETFILTER_XT_TARGET_CLASSIFY" = module; # "CLASSIFY" target support
-  "NETFILTER_XT_TARGET_CONNMARK" = module; # "CONNMARK" target support
-  "NETFILTER_XT_TARGET_CT" = module; # "CT" target support
-  "NETFILTER_XT_TARGET_DSCP" = module; # "DSCP" and "TOS" target support
-  "NETFILTER_XT_TARGET_HL" = module; # "HL" hoplimit target support
-  "NETFILTER_XT_TARGET_HMARK" = module; # "HMARK" target support
-  "NETFILTER_XT_TARGET_IDLETIMER" = module; # IDLETIMER target support
-  "NETFILTER_XT_TARGET_LED" = module; # "LED" target support
+  "NETFILTER_XT_TARGET_CLASSIFY" = no; # "CLASSIFY" target support
+  "NETFILTER_XT_TARGET_CONNMARK" = no; # "CONNMARK" target support
+  "NETFILTER_XT_TARGET_CT" = no; # "CT" target support
+  "NETFILTER_XT_TARGET_DSCP" = no; # "DSCP" and "TOS" target support
+  "NETFILTER_XT_TARGET_HL" = no; # "HL" hoplimit target support
+  "NETFILTER_XT_TARGET_HMARK" = no; # "HMARK" target support
+  "NETFILTER_XT_TARGET_IDLETIMER" = no; # IDLETIMER target support
+  "NETFILTER_XT_TARGET_LED" = no; # "LED" target support
   "NETFILTER_XT_TARGET_LOG" = module; # LOG target support
-  "NETFILTER_XT_TARGET_MARK" = module; # "MARK" target support
+  "NETFILTER_XT_TARGET_MARK" = no; # "MARK" target support
   "NETFILTER_XT_NAT" = module; # "SNAT and DNAT" targets support
-  "NETFILTER_XT_TARGET_NETMAP" = module; # "NETMAP" target support
-  "NETFILTER_XT_TARGET_NFLOG" = module; # "NFLOG" target support
-  "NETFILTER_XT_TARGET_NFQUEUE" = module; # "NFQUEUE" target Support
-  "NETFILTER_XT_TARGET_NOTRACK" = no; # "NOTRACK" target support (DEPRECATED)
-  "NETFILTER_XT_TARGET_RATEEST" = module; # "RATEEST" target support
+  "NETFILTER_XT_TARGET_NETMAP" = no; # "NETMAP" target support
+  "NETFILTER_XT_TARGET_NFLOG" = no; # "NFLOG" target support
+  "NETFILTER_XT_TARGET_NFQUEUE" = no; # "NFQUEUE" target Support
+  "NETFILTER_XT_TARGET_RATEEST" = no; # "RATEEST" target support
   "NETFILTER_XT_TARGET_REDIRECT" = module; # REDIRECT target support
   "NETFILTER_XT_TARGET_MASQUERADE" = module; # MASQUERADE target support
-  "NETFILTER_XT_TARGET_TEE" = module; # "TEE" - packet cloning to alternate destination
-  "NETFILTER_XT_TARGET_TPROXY" = module; # "TPROXY" target transparent proxying support
-  "NETFILTER_XT_TARGET_TRACE" = module; # "TRACE" target support
+  "NETFILTER_XT_TARGET_TEE" = no; # "TEE" - packet cloning to alternate destination
+  "NETFILTER_XT_TARGET_TPROXY" = no; # "TPROXY" target transparent proxying support
   "NETFILTER_XT_TARGET_TCPMSS" = module; # "TCPMSS" target support
-  "NETFILTER_XT_TARGET_TCPOPTSTRIP" = module; # "TCPOPTSTRIP" target support
+  "NETFILTER_XT_TARGET_TCPOPTSTRIP" = no; # "TCPOPTSTRIP" target support
   "NETFILTER_XT_MATCH_ADDRTYPE" = module; # "addrtype" address type match support
-  "NETFILTER_XT_MATCH_BPF" = module; # "bpf" match support
-  "NETFILTER_XT_MATCH_CGROUP" = module; # "control group" match support
-  "NETFILTER_XT_MATCH_CLUSTER" = module; # "cluster" match support
+  "NETFILTER_XT_MATCH_BPF" = no; # "bpf" match support
+  "NETFILTER_XT_MATCH_CGROUP" = no; # "control group" match support
+  "NETFILTER_XT_MATCH_CLUSTER" = no; # "cluster" match support
   "NETFILTER_XT_MATCH_COMMENT" = module; # "comment" match support
-  "NETFILTER_XT_MATCH_CONNBYTES" = module; # "connbytes" per-connection counter match support
-  "NETFILTER_XT_MATCH_CONNLABEL" = module; # "connlabel" match support
-  "NETFILTER_XT_MATCH_CONNLIMIT" = module; # "connlimit" match support
-  "NETFILTER_XT_MATCH_CONNMARK" = module; # "connmark" connection mark match support
+  "NETFILTER_XT_MATCH_CONNBYTES" = no; # "connbytes" per-connection counter match support
+  "NETFILTER_XT_MATCH_CONNLABEL" = no; # "connlabel" match support
+  "NETFILTER_XT_MATCH_CONNLIMIT" = no; # "connlimit" match support
+  "NETFILTER_XT_MATCH_CONNMARK" = no; # "connmark" connection mark match support
   "NETFILTER_XT_MATCH_CONNTRACK" = module; # "conntrack" connection tracking match support
-  "NETFILTER_XT_MATCH_CPU" = module; # "cpu" match support
-  "NETFILTER_XT_MATCH_DCCP" = module; # "dccp" protocol match support
-  "NETFILTER_XT_MATCH_DEVGROUP" = module; # "devgroup" match support
-  "NETFILTER_XT_MATCH_DSCP" = module; # "dscp" and "tos" match support
-  "NETFILTER_XT_MATCH_ECN" = module; # "ecn" match support
-  "NETFILTER_XT_MATCH_ESP" = module; # "esp" match support
-  "NETFILTER_XT_MATCH_HASHLIMIT" = module; # "hashlimit" match support
-  "NETFILTER_XT_MATCH_HELPER" = module; # "helper" match support
-  "NETFILTER_XT_MATCH_HL" = module; # "hl" hoplimit/TTL match support
-  "NETFILTER_XT_MATCH_IPCOMP" = module; # "ipcomp" match support
-  "NETFILTER_XT_MATCH_IPRANGE" = module; # "iprange" address range match support
+  "NETFILTER_XT_MATCH_CPU" = no; # "cpu" match support
+  "NETFILTER_XT_MATCH_DCCP" = no; # "dccp" protocol match support
+  "NETFILTER_XT_MATCH_DEVGROUP" = no; # "devgroup" match support
+  "NETFILTER_XT_MATCH_DSCP" = no; # "dscp" and "tos" match support
+  "NETFILTER_XT_MATCH_ECN" = no; # "ecn" match support
+  "NETFILTER_XT_MATCH_ESP" = no; # "esp" match support
+  "NETFILTER_XT_MATCH_HASHLIMIT" = no; # "hashlimit" match support
+  "NETFILTER_XT_MATCH_HELPER" = no; # "helper" match support
+  "NETFILTER_XT_MATCH_HL" = no; # "hl" hoplimit/TTL match support
+  "NETFILTER_XT_MATCH_IPCOMP" = no; # "ipcomp" match support
+  "NETFILTER_XT_MATCH_IPRANGE" = no; # "iprange" address range match support
   "NETFILTER_XT_MATCH_IPVS" = module; # "ipvs" match support
-  "NETFILTER_XT_MATCH_L2TP" = module; # "l2tp" match support
-  "NETFILTER_XT_MATCH_LENGTH" = module; # "length" match support
-  "NETFILTER_XT_MATCH_LIMIT" = module; # "limit" match support
-  "NETFILTER_XT_MATCH_MAC" = module; # "mac" address match support
+  "NETFILTER_XT_MATCH_L2TP" = no; # "l2tp" match support
+  "NETFILTER_XT_MATCH_LENGTH" = no; # "length" match support
+  "NETFILTER_XT_MATCH_LIMIT" = no; # "limit" match support
+  "NETFILTER_XT_MATCH_MAC" = no; # "mac" address match support
   "NETFILTER_XT_MATCH_MARK" = module; # "mark" match support
   "NETFILTER_XT_MATCH_MULTIPORT" = module; # "multiport" Multiple port match support
-  "NETFILTER_XT_MATCH_NFACCT" = module; # "nfacct" match support
-  "NETFILTER_XT_MATCH_OSF" = module; # "osf" Passive OS fingerprint match
-  "NETFILTER_XT_MATCH_OWNER" = module; # "owner" match support
-  "NETFILTER_XT_MATCH_POLICY" = module; # IPsec "policy" match support
-  "NETFILTER_XT_MATCH_PHYSDEV" = module; # "physdev" match support
-  "NETFILTER_XT_MATCH_PKTTYPE" = module; # "pkttype" packet type match support
-  "NETFILTER_XT_MATCH_QUOTA" = module; # "quota" match support
-  "NETFILTER_XT_MATCH_RATEEST" = module; # "rateest" match support
-  "NETFILTER_XT_MATCH_REALM" = module; # "realm" match support
-  "NETFILTER_XT_MATCH_RECENT" = module; # "recent" match support
-  "NETFILTER_XT_MATCH_SCTP" = module; # "sctp" protocol match support
-  "NETFILTER_XT_MATCH_SOCKET" = module; # "socket" match support
-  "NETFILTER_XT_MATCH_STATE" = module; # "state" match support
+  "NETFILTER_XT_MATCH_NFACCT" = no; # "nfacct" match support
+  "NETFILTER_XT_MATCH_OSF" = no; # "osf" Passive OS fingerprint match
+  "NETFILTER_XT_MATCH_OWNER" = no; # "owner" match support
+  "NETFILTER_XT_MATCH_POLICY" = no; # IPsec "policy" match support
+  "NETFILTER_XT_MATCH_PHYSDEV" = no; # "physdev" match support
+  "NETFILTER_XT_MATCH_PKTTYPE" = no; # "pkttype" packet type match support
+  "NETFILTER_XT_MATCH_QUOTA" = no; # "quota" match support
+  "NETFILTER_XT_MATCH_RATEEST" = no; # "rateest" match support
+  "NETFILTER_XT_MATCH_REALM" = no; # "realm" match support
+  "NETFILTER_XT_MATCH_RECENT" = no; # "recent" match support
+  "NETFILTER_XT_MATCH_SCTP" = no; # "sctp" protocol match support
+  "NETFILTER_XT_MATCH_SOCKET" = no; # "socket" match support
+  "NETFILTER_XT_MATCH_STATE" = no; # "state" match support
   "NETFILTER_XT_MATCH_STATISTIC" = module; # "statistic" match support
-  "NETFILTER_XT_MATCH_STRING" = module; # "string" match support
+  "NETFILTER_XT_MATCH_STRING" = no; # "string" match support
   "NETFILTER_XT_MATCH_TCPMSS" = module; # "tcpmss" match support
-  "NETFILTER_XT_MATCH_TIME" = module; # "time" match support
-  "NETFILTER_XT_MATCH_U32" = module; # "u32" match support
+  "NETFILTER_XT_MATCH_TIME" = no; # "time" match support
+  "NETFILTER_XT_MATCH_U32" = no; # "u32" match support
   ##### end of Core Netfilter Configuration
 
   "IP_SET" = no; # IP set support
@@ -735,8 +739,8 @@ in
   "IP_VS_IPV6" = no; # IPv6 support for IPVS
   "IP_VS_DEBUG" = no; # IP virtual server debugging
   "IP_VS_TAB_BITS" = freeform "12"; # IPVS connection table size (the Nth power of 2)
-  "IP_VS_PROTO_TCP" = no; # TCP load balancing support
-  "IP_VS_PROTO_UDP" = no; # UDP load balancing support
+  "IP_VS_PROTO_TCP" = yes; # TCP load balancing support
+  "IP_VS_PROTO_UDP" = yes; # UDP load balancing support
   "IP_VS_PROTO_ESP" = no; # ESP load balancing support
   "IP_VS_PROTO_AH" = no; # AH load balancing support
   "IP_VS_PROTO_SCTP" = no; # SCTP load balancing support
@@ -756,98 +760,78 @@ in
   "IP_VS_TWOS" = no; # weighted random twos choice least-connection scheduling
   "IP_VS_SH_TAB_BITS" = freeform "8"; # IPVS source hashing table size (the Nth power of 2)
   "IP_VS_MH_TAB_INDEX" = freeform "12"; # IPVS maglev hashing table index of size (the prime numbers)
+  "IP_VS_FTP" = no; # FTP protocol helper
   "IP_VS_NFCT" = yes; # Netfilter connection tracking
 
   ##### IP: Netfilter Configuration
   "NF_SOCKET_IPV4" = module; # IPv4 socket lookup support
   "NF_TPROXY_IPV4" = module; # IPv4 tproxy support
   "NF_TABLES_IPV4" = yes; # IPv4 nf_tables support
-  "NFT_DUP_IPV4" = no; # IPv4 nf_tables packet duplication support
-  "NFT_FIB_IPV4" = no; # nf_tables fib / ip route lookup support
+  "NFT_DUP_IPV4" = module; # IPv4 nf_tables packet duplication support
+  "NFT_FIB_IPV4" = module; # nf_tables fib / ip route lookup support
   "NF_TABLES_ARP" = yes; # ARP nf_tables support
   "NF_DUP_IPV4" = module; # Netfilter IPv4 packet duplication to alternate destination
-  "NF_LOG_ARP" = module; # ARP packet logging
-  "NF_LOG_IPV4" = module; # IPv4 packet logging
+  "NF_LOG_ARP" = no; # ARP packet logging
+  "NF_LOG_IPV4" = no; # IPv4 packet logging
   "NF_REJECT_IPV4" = module; # IPv4 packet rejection
-  "NF_NAT_SNMP_BASIC" = module; # Basic SNMP-ALG support
   "IP_NF_IPTABLES" = module; # IP tables support (required for filtering/masq/NAT)
-  "IP_NF_MATCH_AH" = module; # "ah" match support
-  "IP_NF_MATCH_ECN" = module; # "ecn" match support
-  "IP_NF_MATCH_RPFILTER" = module; # "rpfilter" reverse path filter match support
-  "IP_NF_MATCH_TTL" = module; # "ttl" match support
+  "IP_NF_MATCH_AH" = no; # "ah" match support
+  "IP_NF_MATCH_ECN" = no; # "ecn" match support
+  "IP_NF_MATCH_RPFILTER" = no; # "rpfilter" reverse path filter match support
+  "IP_NF_MATCH_TTL" = no; # "ttl" match support
   "IP_NF_FILTER" = module; # Packet filtering
   "IP_NF_TARGET_REJECT" = module; # REJECT target support
-  "IP_NF_TARGET_SYNPROXY" = module; # SYNPROXY target support
+  "IP_NF_TARGET_SYNPROXY" = no; # SYNPROXY target support
   "IP_NF_NAT" = module; # iptables NAT support
   "IP_NF_TARGET_MASQUERADE" = module; # MASQUERADE target support
-  "IP_NF_TARGET_NETMAP" = module; # NETMAP target support
+  "IP_NF_TARGET_NETMAP" = no; # NETMAP target support
   "IP_NF_TARGET_REDIRECT" = module; # REDIRECT target support
   "IP_NF_MANGLE" = module; # Packet mangling
-  "IP_NF_TARGET_ECN" = module; # ECN target support
-  "IP_NF_TARGET_TTL" = module; # "TTL" target support
-  "IP_NF_RAW" = module; # raw table support (required for NOTRACK/TRACE)
-  "IP_NF_SECURITY" = module; # Security table
-  "IP_NF_ARPFILTER" = module; # arptables-legacy packet filtering support
-  "IP_NF_ARP_MANGLE" = module; # ARP payload mangling
+  "IP_NF_TARGET_ECN" = no; # ECN target support
+  "IP_NF_TARGET_TTL" = no; # "TTL" target support
+  "IP_NF_RAW" = no; # raw table support (required for NOTRACK/TRACE)
+  "IP_NF_SECURITY" = no; # Security table
+  "IP_NF_ARPFILTER" = no; # arptables-legacy packet filtering support
+  "IP_NF_ARP_MANGLE" = no; # ARP payload mangling
   ##### end of IP: Netfilter Configuration
 
   ##### IPv6: Netfilter Configuration
   "NF_SOCKET_IPV6" = module; # IPv6 socket lookup support
   "NF_TPROXY_IPV6" = module; # IPv6 tproxy support
   "NF_TABLES_IPV6" = yes; # IPv6 nf_tables support
-  "NFT_DUP_IPV6" = no; # IPv6 nf_tables packet duplication support
-  "NFT_FIB_IPV6" = no; # nf_tables fib / ipv6 route lookup support
+  "NFT_DUP_IPV6" = module; # IPv6 nf_tables packet duplication support
+  "NFT_FIB_IPV6" = module; # nf_tables fib / ipv6 route lookup support
   "NF_DUP_IPV6" = module; # Netfilter IPv6 packet duplication to alternate destination
   "NF_REJECT_IPV6" = module; # IPv6 packet rejection
   "NF_LOG_IPV6" = module; # IPv6 packet logging
   "IP6_NF_IPTABLES" = module; # IP6 tables support (required for filtering)
-  "IP6_NF_MATCH_AH" = module; # "ah" match support
-  "IP6_NF_MATCH_EUI64" = module; # "eui64" address check
-  "IP6_NF_MATCH_FRAG" = module; # "frag" Fragmentation header match support
-  "IP6_NF_MATCH_OPTS" = module; # "hbh" hop-by-hop and "dst" opts header match support
-  "IP6_NF_MATCH_HL" = module; # "hl" hoplimit match support
-  "IP6_NF_MATCH_IPV6HEADER" = module; # "ipv6header" IPv6 Extension Headers Match
-  "IP6_NF_MATCH_MH" = module; # "mh" match support
-  "IP6_NF_MATCH_RPFILTER" = module; # "rpfilter" reverse path filter match support
-  "IP6_NF_MATCH_RT" = module; # "rt" Routing header match support
-  "IP6_NF_MATCH_SRH" = module; # "srh" Segment Routing header match support
-  "IP6_NF_TARGET_HL" = module; # "HL" hoplimit target support
+  "IP6_NF_MATCH_AH" = no; # "ah" match support
+  "IP6_NF_MATCH_EUI64" = no; # "eui64" address check
+  "IP6_NF_MATCH_FRAG" = no; # "frag" Fragmentation header match support
+  "IP6_NF_MATCH_OPTS" = no; # "hbh" hop-by-hop and "dst" opts header match support
+  "IP6_NF_MATCH_HL" = no; # "hl" hoplimit match support
+  "IP6_NF_MATCH_IPV6HEADER" = no; # "ipv6header" IPv6 Extension Headers Match
+  "IP6_NF_MATCH_MH" = no; # "mh" match support
+  "IP6_NF_MATCH_RPFILTER" = no; # "rpfilter" reverse path filter match support
+  "IP6_NF_MATCH_RT" = no; # "rt" Routing header match support
+  "IP6_NF_MATCH_SRH" = no; # "srh" Segment Routing header match support
+  "IP6_NF_TARGET_HL" = no; # "HL" hoplimit target support
   "IP6_NF_FILTER" = module; # Packet filtering
   "IP6_NF_TARGET_REJECT" = module; # REJECT target support
-  "IP6_NF_TARGET_SYNPROXY" = module; # SYNPROXY target support
+  "IP6_NF_TARGET_SYNPROXY" = no; # SYNPROXY target support
   "IP6_NF_MANGLE" = module; # Packet mangling
-  "IP6_NF_RAW" = module; # raw table support (required for TRACE)
-  "IP6_NF_SECURITY" = module; # Security table
+  "IP6_NF_RAW" = no; # raw table support (required for TRACE)
+  "IP6_NF_SECURITY" = no; # Security table
   "IP6_NF_NAT" = module; # ip6tables NAT support
   "IP6_NF_TARGET_MASQUERADE" = module; # MASQUERADE target support
-  "IP6_NF_TARGET_NPT" = module; # NPT (Network Prefix translation) target support
+  "IP6_NF_TARGET_NPT" = no; # NPT (Network Prefix translation) target support
   ##### end of IPv6: Netfilter Configuration
 
   "NF_TABLES_BRIDGE" = module; # Ethernet Bridge nf_tables support
-  "NFT_BRIDGE_META" = module; # Netfilter nf_table bridge meta support
+  "NFT_BRIDGE_META" = no; # Netfilter nf_table bridge meta support
   "NFT_BRIDGE_REJECT" = module; # Netfilter nf_tables bridge reject support
-  "NF_CONNTRACK_BRIDGE" = module; # IPv4/IPV6 bridge connection tracking support
-  "BRIDGE_NF_EBTABLES" = module; # Ethernet Bridge tables (ebtables) support
-  "BRIDGE_EBT_BROUTE" = module; # ebt: broute table support
-  "BRIDGE_EBT_T_FILTER" = module; # ebt: filter table support
-  "BRIDGE_EBT_T_NAT" = module; # ebt: nat table support
-  "BRIDGE_EBT_802_3" = module; # ebt: 802.3 filter support
-  "BRIDGE_EBT_AMONG" = module; # ebt: among filter support
-  "BRIDGE_EBT_ARP" = module; # ebt: ARP filter support
-  "BRIDGE_EBT_IP" = module; # ebt: IP filter support
-  "BRIDGE_EBT_IP6" = module; # ebt: IP6 filter support
-  "BRIDGE_EBT_LIMIT" = module; # ebt: limit match support
-  "BRIDGE_EBT_MARK" = module; # ebt: mark filter support
-  "BRIDGE_EBT_PKTTYPE" = module; # ebt: packet type filter support
-  "BRIDGE_EBT_STP" = module; # ebt: STP filter support
-  "BRIDGE_EBT_VLAN" = module; # ebt: 802.1Q VLAN filter support
-  "BRIDGE_EBT_ARPREPLY" = module; # ebt: arp reply target support
-  "BRIDGE_EBT_DNAT" = module; # ebt: dnat target support
-  "BRIDGE_EBT_MARK_T" = module; # ebt: mark target support
-  "BRIDGE_EBT_REDIRECT" = module; # ebt: redirect target support
-  "BRIDGE_EBT_SNAT" = module; # ebt: snat target support
-  "BRIDGE_EBT_LOG" = module; # ebt: log support
-  "BRIDGE_EBT_NFLOG" = module; # ebt: nflog support
+  "NF_CONNTRACK_BRIDGE" = no; # IPv4/IPV6 bridge connection tracking support
+  "BRIDGE_NF_EBTABLES" = no; # Ethernet Bridge tables (ebtables) support
   "IP_DCCP" = no; # The DCCP Protocol
   "IP_SCTP" = no; # The SCTP Protocol
   "RDS" = no; # The Reliable Datagram Sockets Protocol
@@ -893,7 +877,7 @@ in
   "6LOWPAN" = no; # 6LoWPAN Support
   "IEEE802154" = no; # IEEE Std 802.15.4 Low-Rate Wireless Personal Area Networks support
   "NET_SCHED" = yes; # QoS and/or fair queueing
-  "NET_SCH_HTB" = yes; # Hierarchical Token Bucket (HTB)
+  "NET_SCH_HTB" = no; # Hierarchical Token Bucket (HTB)
   "NET_SCH_HFSC" = no; # Hierarchical Fair Service Curve (HFSC)
   "NET_SCH_PRIO" = no; # Multi Band Priority Queueing (PRIO)
   "NET_SCH_MULTIQ" = no; # Hardware Multiqueue-aware Multi Band Queuing (MULTIQ)
@@ -959,7 +943,7 @@ in
   "BATMAN_ADV" = no; # B.A.T.M.A.N. Advanced Meshing Protocol
   "OPENVSWITCH" = no; # Open vSwitch
   "VSOCKETS" = no; # Virtual Socket protocol
-  "NETLINK_DIAG" = module; # NETLINK: socket monitoring interface
+  "NETLINK_DIAG" = no; # NETLINK: socket monitoring interface
   "MPLS" = no; # MultiProtocol Label Switching
   "NET_NSH" = no; # Network Service Header (NSH) protocol
   "HSR" = no; # High-availability Seamless Redundancy (HSR & PRP)
@@ -968,7 +952,6 @@ in
   "QRTR" = module; # Qualcomm IPC Router support
   "QRTR_SMD" = module; # SMD IPC Router channels
   "QRTR_TUN" = module; # TUN device for Qualcomm IPC Router
-  "QRTR_MHI" = module; # MHI IPC Router channels
   "NET_NCSI" = no; # NCSI interface support
   "PCPU_DEV_REFCNT" = yes; # Use percpu variables to maintain network device refcount
   "MAX_SKB_FRAGS" = freeform "17"; # Maximum number of fragments per skb_shared_info
@@ -982,6 +965,7 @@ in
 
   #### Networking options -> Network testing
   "NET_PKTGEN" = no; # Packet Generator (USE WITH CAUTION)
+  "NET_DROP_MONITOR" = no; # Network packet drop alerting service
   #### Networking options: end of Network testing
   ### end of Networking options
 
@@ -996,9 +980,7 @@ in
   "BT_BREDR" = yes; # Bluetooth Classic (BR/EDR) features
   "BT_RFCOMM" = module; # RFCOMM protocol support
   "BT_RFCOMM_TTY" = yes; # RFCOMM TTY support
-  "BT_BNEP" = module; # BNEP protocol support
-  "BT_BNEP_MC_FILTER" = no; # Multicast filter support
-  "BT_BNEP_PROTO_FILTER" = no; # Protocol filter support
+  "BT_BNEP" = no; # BNEP protocol support
   "BT_HIDP" = module; # HIDP protocol support
   "BT_LE" = no; # Bluetooth Low Energy (LE) features
   "BT_LEDS" = yes; # Enable LED triggers
@@ -1006,7 +988,6 @@ in
   "BT_AOSPEXT" = no; # Enable Android Open Source Project extensions
   "BT_DEBUGFS" = no; # Export Bluetooth internals in debugfs
   "BT_SELFTEST" = no; # Bluetooth self testing support
-  "BT_FEATURE_DEBUG" = no; # Enable runtime option for debugging statements
 
   #### Bluetooth device drivers
   "BT_HCIBTUSB" = module; # HCI USB driver
@@ -1022,7 +1003,7 @@ in
   "BT_HCIUART_BCSP" = no; # BCSP protocol support
   "BT_HCIUART_ATH3K" = no; # Atheros AR300x serial support
   "BT_HCIUART_LL" = yes; # HCILL protocol support
-  "BT_HCIUART_3WIRE" = yes; # Three-wire UART (H5) protocol support
+  "BT_HCIUART_3WIRE" = no; # Three-wire UART (H5) protocol support
   "BT_HCIUART_INTEL" = no; # Intel protocol support
   "BT_HCIUART_BCM" = yes; # Broadcom protocol support
   "BT_HCIUART_RTL" = no; # Realtek protocol support
@@ -1041,7 +1022,7 @@ in
   "BT_MTKSDIO" = module; # MediaTek HCI SDIO driver
   "BT_MTKUART" = module; # MediaTek HCI UART driver
   "BT_VIRTIO" = no; # Virtio Bluetooth driver
-  "BT_NXPUART" = module; # NXP protocol support
+  "BT_NXPUART" = no; # NXP protocol support
   "BT_INTEL_PCIE" = no; # Intel HCI PCIe driver
   #### end of Bluetooth device drivers
 
@@ -1054,15 +1035,21 @@ in
   "CFG80211_DEVELOPER_WARNINGS" = no; # enable developer warnings
   "CFG80211_DEFAULT_PS" = yes; # enable powersave by default
   "CFG80211_DEBUGFS" = no; # cfg80211 DebugFS entries
-  "LIB80211_DEBUG" = no; # lib80211 debugging messages
+  "CFG80211_WEXT" = yes; # cfg80211 wireless extensions compatibility
   "MAC80211" = module; # Generic IEEE 802.11 Networking Stack (mac80211)
   "MAC80211_RC_DEFAULT_MINSTREL" = yes; # Minstrel
   "MAC80211_MESH" = no; # Enable mac80211 mesh networking support
   "MAC80211_LEDS" = yes; # Enable LED triggers
+  "MAC80211_MESSAGE_TRACING" = no; # Trace all mac80211 debug messages
   "MAC80211_DEBUG_MENU" = no; # Select mac80211 debugging features
   "RFKILL" = module; # RF switch subsystem support
   "RFKILL_GPIO" = no; # GPIO RFKILL driver
-  "NET_9P" = no; # Plan 9 Resource Sharing Support (9P2000)
+  "NET_9P" = yes; # Plan 9 Resource Sharing Support (9P2000)
+  "NET_9P_FD" = yes; # 9P FD Transport
+  "NET_9P_VIRTIO" = yes; # 9P Virtio Transport
+  "NET_9P_XEN" = no; # 9P Xen Transport
+  "NET_9P_USBG" = no; # 9P USB Gadget Transport
+  "NET_9P_DEBUG" = no; # Debug information
   "CAIF" = no; # CAIF support
   "CEPH_LIB" = no; # Ceph core library
   "NFC" = module; # NFC subsystem support
@@ -1131,7 +1118,7 @@ in
   "PCI_FTPCI100" = no; # Faraday Technology FTPCI100 PCI controller
   "PCI_HOST_GENERIC" = yes; # Generic PCI host controller
   "PCIE_MEDIATEK" = no; # MediaTek PCIe controller
-  "PCIE_MEDIATEK_GEN3" = module; # MediaTek Gen3 PCIe controller
+  "PCIE_MEDIATEK_GEN3" = no; # MediaTek Gen3 PCIe controller
   "PCI_XGENE" = yes; # X-Gene PCIe controller
   "PCI_XGENE_MSI" = yes; # X-Gene v1 PCIe MSI feature
   "PCIE_XILINX" = no; # Xilinx AXI PCIe controller
@@ -1171,7 +1158,8 @@ in
   "RAPIDIO" = no; # RapidIO support
 
   ### Device Drivers -> Generic Driver Options
-  "UEVENT_HELPER" = no; # Support for uevent helper
+  "UEVENT_HELPER" = yes; # Support for uevent helper
+  "UEVENT_HELPER_PATH" = freeform "/sbin/hotplug"; # path to uevent helper
   "DEVTMPFS" = yes; # Maintain a devtmpfs filesystem to mount at /dev
   "DEVTMPFS_MOUNT" = yes; # Automount devtmpfs at /dev, after the kernel mounted the rootfs
   "DEVTMPFS_SAFE" = no; # Use nosuid,noexec mount options on devtmpfs
@@ -1180,10 +1168,11 @@ in
 
   #### Device Drivers -> Generic Driver Options -> Firmware loader
   "FW_LOADER" = yes; # Firmware loading facility
+  "FW_LOADER_DEBUG" = yes; # Log filenames and checksums for loaded firmware
   "FW_LOADER_USER_HELPER" = yes; # Enable the firmware sysfs fallback mechanism
   "FW_LOADER_USER_HELPER_FALLBACK" = no; # Force the firmware sysfs fallback mechanism when possible
   "FW_LOADER_COMPRESS" = yes; # Enable compressed firmware support
-  "FW_LOADER_COMPRESS_XZ" = yes; # Enable XZ-compressed firmware support
+  "FW_LOADER_COMPRESS_XZ" = no; # Enable XZ-compressed firmware support
   "FW_LOADER_COMPRESS_ZSTD" = yes; # Enable ZSTD-compressed firmware support
   "FW_CACHE" = yes; # Enable firmware caching during suspend
   "FW_UPLOAD" = no; # Enable users to initiate firmware updates using sysfs
@@ -1200,9 +1189,7 @@ in
   ### Device Drivers -> Bus devices
   "MOXTET" = no; # CZ.NIC Turris Mox module configuration bus
   "VEXPRESS_CONFIG" = no; # Versatile Express configuration bus
-  "MHI_BUS" = module; # Modem Host Interface (MHI) bus
-  "MHI_BUS_DEBUG" = no; # Debugfs support for the MHI bus
-  "MHI_BUS_PCI_GENERIC" = module; # MHI PCI controller driver
+  "MHI_BUS" = no; # Modem Host Interface (MHI) bus
   "MHI_BUS_EP" = no; # Modem Host Interface (MHI) bus Endpoint implementation
   ### Device Drivers: end of Bus devices
   "CONNECTOR" = no; # Connector - unified userspace <-> kernelspace linker
@@ -1230,14 +1217,31 @@ in
   #### Device Drivers -> Firmware Drivers: end of ARM System Control and Management Interface Protocol
 
   "ARM_SCPI_PROTOCOL" = yes; # ARM System Control and Power Interface (SCPI) Message Protocol
+  "DMIID" = yes; # Export DMI identification via sysfs to userspace
+  "DMI_SYSFS" = no; # DMI table support in sysfs
   "FW_CFG_SYSFS" = no; # QEMU fw_cfg device support in sysfs
-  "MTK_ADSP_IPC" = module; # MTK ADSP IPC Protocol driver
+  "SYSFB_SIMPLEFB" = no; # Mark VGA/VBE/EFI FB as generic system framebuffer
   "ARM_FFA_TRANSPORT" = no; # Arm Firmware Framework for Armv8-A
   "GOOGLE_FIRMWARE" = yes; # Google Firmware Drivers
-  "GOOGLE_CBMEM" = module; # CBMEM entries in sysfs
-  "GOOGLE_COREBOOT_TABLE" = yes; # Coreboot Table Access
-  "GOOGLE_MEMCONSOLE_COREBOOT" = yes; # Firmware Memory Console
-  "GOOGLE_VPD" = yes; # Vital Product Data
+  "GOOGLE_CBMEM" = no; # CBMEM entries in sysfs
+  "GOOGLE_COREBOOT_TABLE" = module; # Coreboot Table Access
+  "GOOGLE_FRAMEBUFFER_COREBOOT" = module; # Coreboot Framebuffer
+  "GOOGLE_MEMCONSOLE_COREBOOT" = module; # Firmware Memory Console
+  "GOOGLE_VPD" = module; # Vital Product Data
+
+  #### Device Drivers -> Firmware Drivers -> EFI (Extensible Firmware Interface) Support
+  "EFI_ZBOOT" = no; # Enable the generic EFI decompressor
+  "EFI_ARMSTUB_DTB_LOADER" = yes; # Enable the DTB loader
+  "EFI_BOOTLOADER_CONTROL" = no; # EFI Bootloader Control
+  "EFI_CAPSULE_LOADER" = yes; # EFI capsule loader
+  "EFI_TEST" = no; # EFI Runtime Service Tests Support
+  "RESET_ATTACK_MITIGATION" = no; # Reset memory attack mitigation
+  "EFI_DISABLE_PCI_DMA" = no; # Clear Busmaster bit on PCI bridges during ExitBootServices()
+  "EFI_DISABLE_RUNTIME" = no; # Disable EFI runtime services support by default
+  "EFI_COCO_SECRET" = no; # EFI Confidential Computing Secret Area Support
+  #### Device Drivers -> Firmware Drivers: end of EFI (Extensible Firmware Interface) Support
+
+  "TEE_STMM_EFI" = no; # TEE-based EFI runtime variable service driver
   "ARM_PSCI_CHECKER" = no; # ARM PSCI checker
   "ARM_SMCCC_SOC_ID" = yes; # SoC bus device for the ARM SMCCC SOC_ID
   ### Device Drivers: end of Firmware Drivers
@@ -1286,14 +1290,12 @@ in
   #### end of RAM/ROM/Flash chip drivers
 
   #### Mapping drivers for chip access
-  "MTD_COMPLEX_MAPPINGS" = yes; # Support non-linear mappings of flash chips
+  "MTD_COMPLEX_MAPPINGS" = no; # Support non-linear mappings of flash chips
   "MTD_PHYSMAP" = yes; # Flash device in physical memory map
   "MTD_PHYSMAP_COMPAT" = no; # Physmap compat support
   "MTD_PHYSMAP_OF" = yes; # Memory device in physical memory map based on OF description
   "MTD_PHYSMAP_VERSATILE" = no; # ARM Versatile OF-based physical memory map handling
   "MTD_PHYSMAP_GEMINI" = no; # Cortina Gemini OF-based physical memory map handling
-  "MTD_PHYSMAP_GPIO_ADDR" = no; # GPIO-assisted Flash Chip Support
-  "MTD_PCI" = no; # PCI MTD driver
   "MTD_PLATRAM" = no; # Map driver for platform device RAM (mtd-ram)
   #### end of Mapping drivers for chip access
 
@@ -1352,14 +1354,8 @@ in
   "MTD_SPI_NOR_SWP_DISABLE" = no; # Disable SWP on any flashes (legacy behavior)
   "MTD_SPI_NOR_SWP_DISABLE_ON_VOLATILE" = yes; # Disable SWP on flashes w/ volatile protection bits
   "MTD_SPI_NOR_SWP_KEEP" = no; # Keep software write protection as is
-  "MTD_UBI" = module; # Enable UBI - Unsorted block images
-  "MTD_UBI_WL_THRESHOLD" = freeform "4096"; # UBI wear-leveling threshold
-  "MTD_UBI_BEB_LIMIT" = freeform "20"; # Maximum expected bad eraseblock count per 1024 eraseblocks
-  "MTD_UBI_FASTMAP" = no; # UBI Fastmap (Experimental feature)
-  "MTD_UBI_GLUEBI" = no; # MTD devices emulation driver (gluebi)
-  "MTD_UBI_BLOCK" = no; # Read-only block devices on top of UBI volumes
-  "MTD_UBI_NVMEM" = no; # UBI virtual NVMEM
-  "MTD_HYPERBUS" = module; # HyperBus support
+  "MTD_UBI" = no; # Enable UBI - Unsorted block images
+  "MTD_HYPERBUS" = no; # HyperBus support
   "OF" = yes; # Device Tree and Open Firmware support
   "OF_UNITTEST" = no; # Device Tree runtime unit tests
   "OF_OVERLAY" = no; # Device Tree overlays
@@ -1367,7 +1363,20 @@ in
   "BLK_DEV" = yes; # Block devices
   "BLK_DEV_NULL_BLK" = no; # Null test block driver
   "BLK_DEV_PCIESSD_MTIP32XX" = no; # Block Device Driver for Micron PCIe SSDs
-  "ZRAM" = no; # Compressed RAM block device support
+  "ZRAM" = module; # Compressed RAM block device support
+  "ZRAM_BACKEND_LZ4" = no; # lz4 compression support
+  "ZRAM_BACKEND_LZ4HC" = no; # lz4hc compression support
+  "ZRAM_BACKEND_ZSTD" = yes; # zstd compression support
+  "ZRAM_BACKEND_DEFLATE" = no; # deflate compression support
+  "ZRAM_BACKEND_842" = no; # 842 compression support
+  "ZRAM_BACKEND_LZO" = yes; # lzo and lzo-rle compression support
+  "ZRAM_DEF_COMP_LZORLE" = yes; # lzo-rle
+  "ZRAM_DEF_COMP_LZO" = no; # lzo
+  "ZRAM_DEF_COMP_ZSTD" = no; # zstd
+  "ZRAM_WRITEBACK" = no; # Write back incompressible or idle page to backing device
+  "ZRAM_TRACK_ENTRY_ACTIME" = no; # Track access time of zram entries
+  "ZRAM_MEMORY_TRACKING" = no; # Track zRam block status
+  "ZRAM_MULTI_COMP" = no; # Enable multiple compression streams
   "BLK_DEV_LOOP" = yes; # Loopback device support
   "BLK_DEV_LOOP_MIN_COUNT" = freeform "8"; # Number of loop devices to pre-create at init time
   "BLK_DEV_DRBD" = no; # DRBD Distributed Replicated Block Device support
@@ -1384,8 +1393,8 @@ in
   ### Device Drivers -> NVME Support
   "BLK_DEV_NVME" = module; # NVM Express block device
   "NVME_MULTIPATH" = no; # NVMe multipath support
-  "NVME_VERBOSE_ERRORS" = yes; # NVMe verbose error reporting
-  "NVME_HWMON" = yes; # NVMe hardware monitoring
+  "NVME_VERBOSE_ERRORS" = no; # NVMe verbose error reporting
+  "NVME_HWMON" = no; # NVMe hardware monitoring
   "NVME_FC" = no; # NVM Express over Fabrics FC host driver
   "NVME_TCP" = no; # NVM Express over Fabrics TCP host driver
   "NVME_HOST_AUTH" = no; # NVMe over Fabrics In-Band Authentication in host side
@@ -1418,8 +1427,6 @@ in
   "HISI_HIKEY_USB" = no; # USB GPIO Hub on HiSilicon Hikey 960/970 Platform
   "OPEN_DICE" = no; # Open Profile for DICE driver
   "VCPU_STALL_DETECTOR" = no; # Guest vCPU stall detector
-  "TPS6594_ESM" = module; # TI TPS6594 Error Signal Monitor support
-  "TPS6594_PFSM" = module; # TI TPS6594 Pre-configurable Finite State Machine support
   "NSM" = no; # Nitro (Enclaves) Security Module support
   "C2PORT" = no; # Silicon Labs C2 port support
 
@@ -1542,9 +1549,9 @@ in
   "ATA_VERBOSE_ERROR" = yes; # Verbose ATA error reporting
   "SATA_PMP" = yes; # SATA Port Multiplier support
   "SATA_AHCI" = yes; # AHCI SATA support
-  "SATA_MOBILE_LPM_POLICY" = freeform "3"; # Default SATA Link Power Management policy
+  "SATA_MOBILE_LPM_POLICY" = freeform "0"; # Default SATA Link Power Management policy
   "SATA_AHCI_PLATFORM" = yes; # Platform AHCI SATA support
-  "AHCI_DWC" = module; # Synopsys DWC AHCI SATA support
+  "AHCI_DWC" = no; # Synopsys DWC AHCI SATA support
   "AHCI_CEVA" = yes; # CEVA AHCI SATA support
   "AHCI_MTK" = no; # MediaTek AHCI SATA support
   "SATA_INIC162X" = no; # Initio 162x SATA support (Very Experimental)
@@ -1641,8 +1648,8 @@ in
   "DM_VERITY" = no; # Verity target support
   "DM_SWITCH" = no; # Switch target support (EXPERIMENTAL)
   "DM_LOG_WRITES" = no; # Log writes target support
-  "DM_INTEGRITY" = no; # Integrity target support
-  "DM_AUDIT" = no; # DM audit events
+  "DM_INTEGRITY" = module; # Integrity target support
+  "DM_AUDIT" = yes; # DM audit events
   "DM_VDO" = no; # VDO: deduplication and compression target
   "TARGET_CORE" = no; # Generic Target Core Mod (TCM) and ConfigFS Infrastructure
   "FUSION" = no; # Fusion MPT device support
@@ -1674,14 +1681,13 @@ in
   "AMT" = no; # Automatic Multicast Tunneling (AMT)
   "MACSEC" = no; # IEEE 802.1AE MAC-level encryption (MACsec)
   "NETCONSOLE" = no; # Network console logging support
-  "TUN" = module; # Universal TUN/TAP device driver support
+  "TUN" = yes; # Universal TUN/TAP device driver support
   "TUN_VNET_CROSS_LE" = no; # Support for cross-endian vnet headers on little-endian kernels
   "VETH" = module; # Virtual ethernet pair device
   "VIRTIO_NET" = yes; # Virtio network driver
   "NLMON" = no; # Virtual netlink monitoring device
   "NETKIT" = no; # BPF-programmable network device
   "NET_VRF" = no; # Virtual Routing and Forwarding (Lite)
-  "MHI_NET" = module; # MHI network driver
   "ARCNET" = no; # ARCnet support
 
   #### Distributed Switch Architecture drivers
@@ -1811,17 +1817,9 @@ in
   "NET_VENDOR_PENSANDO" = no; # Pensando devices
   "NET_VENDOR_QLOGIC" = no; # QLogic devices
   "NET_VENDOR_BROCADE" = no; # QLogic BR-series devices
-  "NET_VENDOR_QUALCOMM" = yes; # Qualcomm devices
-  "QCA7000_SPI" = no; # Qualcomm Atheros QCA7000 SPI support
-  "QCA7000_UART" = no; # Qualcomm Atheros QCA7000 UART support
-  "QCOM_EMAC" = module; # Qualcomm Technologies, Inc. EMAC Gigabit Ethernet support
-  "RMNET" = module; # RmNet MAP driver
+  "NET_VENDOR_QUALCOMM" = no; # Qualcomm devices
   "NET_VENDOR_RDC" = no; # RDC devices
-  "NET_VENDOR_REALTEK" = yes; # Realtek devices
-  "8139CP" = no; # RealTek RTL-8139 C+ PCI Fast Ethernet Adapter support
-  "8139TOO" = no; # RealTek RTL-8129/8130/8139 PCI Fast Ethernet Adapter support
-  "R8169" = module; # Realtek 8169/8168/8101/8125 ethernet support
-  "RTASE" = no; # Realtek Automotive Switch 9054/9068/9072/9075/9068/9071 PCIe Interface support
+  "NET_VENDOR_REALTEK" = no; # Realtek devices
   "NET_VENDOR_RENESAS" = no; # Renesas devices
   "NET_VENDOR_ROCKER" = no; # Rocker devices
   "NET_VENDOR_SAMSUNG" = no; # Samsung Ethernet devices
@@ -1870,7 +1868,7 @@ in
   "LSI_ET1011C_PHY" = no; # LSI ET1011C PHY
   "MARVELL_PHY" = module; # Marvell Alaska PHYs
   "MARVELL_10G_PHY" = module; # Marvell Alaska 10Gbit PHYs
-  "MARVELL_88Q2XXX_PHY" = module; # Marvell 88Q2XXX PHY
+  "MARVELL_88Q2XXX_PHY" = no; # Marvell 88Q2XXX PHY
   "MARVELL_88X2222_PHY" = no; # Marvell 88X2222 PHY
   "MAXLINEAR_GPHY" = no; # Maxlinear Ethernet PHYs
   "MEDIATEK_GE_PHY" = no; # MediaTek Gigabit Ethernet PHYs
@@ -1901,8 +1899,8 @@ in
   "DP83TC811_PHY" = no; # Texas Instruments DP83TC811 PHY
   "DP83848_PHY" = no; # Texas Instruments DP83848 PHY
   "DP83867_PHY" = module; # Texas Instruments DP83867 Gigabit PHY
-  "DP83869_PHY" = module; # Texas Instruments DP83869 Gigabit PHY
-  "DP83TD510_PHY" = module; # Texas Instruments DP83TD510 Ethernet 10Base-T1L PHY
+  "DP83869_PHY" = no; # Texas Instruments DP83869 Gigabit PHY
+  "DP83TD510_PHY" = no; # Texas Instruments DP83TD510 Ethernet 10Base-T1L PHY
   "DP83TG720_PHY" = no; # Texas Instruments DP83TG720 Ethernet 1000Base-T1 PHY
   "VITESSE_PHY" = module; # Vitesse PHYs
   "XILINX_GMII2RGMII" = no; # Xilinx GMII2RGMII converter driver
@@ -1925,10 +1923,7 @@ in
   "CAN_CTUCANFD_PLATFORM" = no; # CTU CAN-FD IP core platform (FPGA, SoC) driver
   "CAN_ESD_402_PCI" = no; # esd electronics gmbh CAN-PCI(e)/402 family
   "CAN_IFI_CANFD" = no; # IFI CAN_FD IP
-  "CAN_M_CAN" = module; # Bosch M_CAN support
-  "CAN_M_CAN_PCI" = no; # Generic PCI Bus based M_CAN driver
-  "CAN_M_CAN_PLATFORM" = module; # Bosch M_CAN support for io-mapped devices
-  "CAN_M_CAN_TCAN4X5X" = no; # TCAN4X5X M_CAN device
+  "CAN_M_CAN" = no; # Bosch M_CAN support
   "CAN_PEAK_PCIEFD" = no; # PEAK-System PCAN-PCIe FD cards
   "CAN_SJA1000" = no; # Philips/NXP SJA1000 devices
   "CAN_SOFTING" = no; # Softing Gmbh CAN generic support
@@ -1972,19 +1967,7 @@ in
   "PCS_XPCS" = no; # Synopsys DesignWare Ethernet XPCS
   #### end of PCS device drivers
 
-  "PPP" = yes; # PPP (point-to-point protocol) support
-  "PPP_BSDCOMP" = yes; # PPP BSD-Compress compression
-  "PPP_DEFLATE" = yes; # PPP Deflate compression
-  "PPP_FILTER" = yes; # PPP filtering
-  "PPP_MPPE" = yes; # PPP MPPE compression (encryption)
-  "PPP_MULTILINK" = yes; # PPP multilink support
-  "PPPOE" = yes; # PPP over Ethernet
-  "PPPOE_HASH_BITS_1" = no; # 1 bit (2 buckets)
-  "PPPOE_HASH_BITS_2" = no; # 2 bits (4 buckets)
-  "PPPOE_HASH_BITS_4" = no; # 4 bits (16 buckets)
-  "PPPOE_HASH_BITS_8" = yes; # 8 bits (256 buckets)
-  "PPP_ASYNC" = yes; # PPP support for async serial ports
-  "PPP_SYNC_TTY" = yes; # PPP support for sync tty ports
+  "PPP" = no; # PPP (point-to-point protocol) support
   "SLIP" = no; # SLIP (serial line) support
   "USB_NET_DRIVERS" = yes; # USB Network Adapters
   "USB_CATC" = no; # USB CATC NetMate-based Ethernet device support
@@ -2034,217 +2017,105 @@ in
   "ADM8211" = no; # ADMtek ADM8211 support
   "WLAN_VENDOR_ATH" = yes; # Atheros/Qualcomm devices
   "ATH_DEBUG" = no; # Atheros wireless debugging
-  "ATH5K" = module; # Atheros 5xxx wireless cards support
-  "ATH5K_DEBUG" = no; # Atheros 5xxx debugging
-  "ATH5K_PCI" = yes; # Atheros 5xxx PCI bus support
-  "ATH9K_BTCOEX_SUPPORT" = yes; # Atheros bluetooth coexistence support
-  "ATH9K" = module; # Atheros 802.11n wireless cards support
-  "ATH9K_PCI" = yes; # Atheros ath9k PCI/PCIe bus support
-  "ATH9K_AHB" = no; # Atheros ath9k AHB bus support
-  "ATH9K_DYNACK" = no; # Atheros ath9k ACK timeout estimation algorithm
-  "ATH9K_WOW" = no; # Wake on Wireless LAN support (EXPERIMENTAL)
-  "ATH9K_CHANNEL_CONTEXT" = no; # Channel Context support
-  "ATH9K_PCI_NO_EEPROM" = module; # Atheros ath9k pci loader for EEPROM-less chips
-  "ATH9K_HTC" = module; # Atheros HTC based wireless cards support
-  "ATH9K_HTC_DEBUGFS" = no; # Atheros ath9k_htc debugging
-  "ATH9K_HWRNG" = no; # Random number generator support
-  "CARL9170" = module; # Linux Community AR9170 802.11n USB support
-  "CARL9170_LEDS" = yes; # SoftLED Support
-  "CARL9170_HWRNG" = no; # Random number generator
-  "ATH6KL" = module; # Atheros mobile chipsets support
-  "ATH6KL_SDIO" = module; # Atheros ath6kl SDIO support
-  "ATH6KL_USB" = module; # Atheros ath6kl USB support
-  "ATH6KL_DEBUG" = no; # Atheros ath6kl debugging
-  "AR5523" = module; # Atheros AR5523 wireless driver support
-  "WIL6210" = module; # Wilocity 60g WiFi card wil6210 support
-  "WIL6210_ISR_COR" = yes; # Use Clear-On-Read mode for ISR registers for wil6210
-  "WIL6210_DEBUGFS" = yes; # wil6210 debugfs support
+  "ATH5K" = no; # Atheros 5xxx wireless cards support
+  "ATH5K_PCI" = no; # Atheros 5xxx PCI bus support
+  "ATH9K" = no; # Atheros 802.11n wireless cards support
+  "ATH9K_HTC" = no; # Atheros HTC based wireless cards support
+  "CARL9170" = no; # Linux Community AR9170 802.11n USB support
+  "ATH6KL" = no; # Atheros mobile chipsets support
+  "AR5523" = no; # Atheros AR5523 wireless driver support
+  "WIL6210" = no; # Wilocity 60g WiFi card wil6210 support
   "ATH10K" = module; # Atheros 802.11ac wireless cards support
   "ATH10K_PCI" = module; # Atheros ath10k PCI support
-  "ATH10K_AHB" = yes; # Atheros ath10k AHB support
+  "ATH10K_AHB" = no; # Atheros ath10k AHB support
   "ATH10K_SDIO" = module; # Atheros ath10k SDIO support
-  "ATH10K_USB" = module; # Atheros ath10k USB support (EXPERIMENTAL)
-  "ATH10K_DEBUG" = no; # Atheros ath10k debugging
-  "ATH10K_DEBUGFS" = no; # Atheros ath10k debugfs support
+  "ATH10K_USB" = no; # Atheros ath10k USB support (EXPERIMENTAL)
+  "ATH10K_DEBUG" = yes; # Atheros ath10k debugging
+  "ATH10K_DEBUGFS" = yes; # Atheros ath10k debugfs support
+  "ATH10K_SPECTRAL" = no; # Atheros ath10k spectral scan support
+  "ATH10K_TRACING" = no; # Atheros ath10k tracing support
   "WCN36XX" = module; # Qualcomm Atheros WCN3660/3680 support
   "WCN36XX_DEBUGFS" = no; # WCN36XX debugfs support
-  "ATH11K" = module; # Qualcomm Technologies 802.11ax chipset support
-  "ATH11K_AHB" = module; # Atheros ath11k AHB support
-  "ATH11K_PCI" = module; # Atheros ath11k PCI support
-  "ATH11K_DEBUG" = no; # QCA ath11k debugging
-  "ATH12K" = module; # Qualcomm Technologies Wi-Fi 7 support (ath12k)
-  "ATH12K_DEBUG" = no; # ath12k debugging
+  "ATH11K" = no; # Qualcomm Technologies 802.11ax chipset support
+  "ATH12K" = no; # Qualcomm Technologies Wi-Fi 7 support (ath12k)
   "WLAN_VENDOR_ATMEL" = yes; # Atmel devices
   "AT76C50X_USB" = no; # Atmel at76c503/at76c505/at76c505a USB cards
   "WLAN_VENDOR_BROADCOM" = yes; # Broadcom devices
-  "B43" = module; # Broadcom 43xx wireless support (mac80211 stack)
-  "B43_BUSES_BCMA_AND_SSB" = yes; # BCMA and SSB
-  "B43_BUSES_BCMA" = no; # BCMA only
-  "B43_BUSES_SSB" = no; # SSB only
-  "B43_SDIO" = yes; # Broadcom 43xx SDIO device support
-  "B43_PHY_G" = yes; # Support for G-PHY (802.11g) devices
-  "B43_PHY_N" = yes; # Support for N-PHY (the main 802.11n series) devices
-  "B43_PHY_LP" = yes; # Support for LP-PHY (low-power 802.11g) devices
-  "B43_PHY_HT" = yes; # Support for HT-PHY (high throughput 802.11n) devices
-  "B43_DEBUG" = no; # Broadcom 43xx debugging
-  "B43LEGACY" = module; # Broadcom 43xx-legacy wireless support (mac80211 stack)
-  "B43LEGACY_DEBUG" = yes; # Broadcom 43xx-legacy debugging
-  "B43LEGACY_DMA_AND_PIO_MODE" = yes; # DMA + PIO
-  "B43LEGACY_DMA_MODE" = no; # DMA (Direct Memory Access) only
-  "B43LEGACY_PIO_MODE" = no; # PIO (Programmed I/O) only
-  "BRCMSMAC" = module; # Broadcom IEEE802.11n PCIe SoftMAC WLAN driver
+  "B43" = no; # Broadcom 43xx wireless support (mac80211 stack)
+  "B43LEGACY" = no; # Broadcom 43xx-legacy wireless support (mac80211 stack)
+  "BRCMSMAC" = no; # Broadcom IEEE802.11n PCIe SoftMAC WLAN driver
   "BRCMFMAC" = module; # Broadcom FullMAC WLAN driver
   "BRCMFMAC_SDIO" = yes; # SDIO bus interface support for FullMAC driver
-  "BRCMFMAC_USB" = yes; # USB bus interface support for FullMAC driver
-  "BRCMFMAC_PCIE" = yes; # PCIE bus interface support for FullMAC driver
+  "BRCMFMAC_USB" = no; # USB bus interface support for FullMAC driver
+  "BRCMFMAC_PCIE" = no; # PCIE bus interface support for FullMAC driver
+  "BRCM_TRACING" = no; # Broadcom device tracing
   "BRCMDBG" = no; # Broadcom driver debug functions
   "WLAN_VENDOR_INTEL" = yes; # Intel devices
-  "IPW2100" = module; # Intel PRO/Wireless 2100 Network Connection
-  "IPW2100_MONITOR" = yes; # Enable promiscuous mode
-  "IPW2100_DEBUG" = no; # Enable full debugging output in IPW2100 module.
-  "IPW2200" = module; # Intel PRO/Wireless 2200BG and 2915ABG Network Connection
-  "IPW2200_MONITOR" = yes; # Enable promiscuous mode
-  "IPW2200_RADIOTAP" = no; # Enable radiotap format 802.11 raw packet support
-  "IPW2200_PROMISCUOUS" = no; # Enable creation of a RF radiotap promiscuous interface
-  "IPW2200_QOS" = no; # Enable QoS support
-  "IPW2200_DEBUG" = no; # Enable full debugging output in IPW2200 module.
-  "LIBIPW_DEBUG" = no; # Full debugging output for the LIBIPW component
-  "IWL4965" = module; # Intel Wireless WiFi 4965AGN (iwl4965)
-  "IWL3945" = module; # Intel PRO/Wireless 3945ABG/BG Network Connection (iwl3945)
-
-  ###### iwl3945 / iwl4965 Debugging Options
-  "IWLEGACY_DEBUG" = no; # Enable full debugging output in iwlegacy (iwl 3945/4965) drivers
-  ###### end of iwl3945 / iwl4965 Debugging Options
-
-  "IWLWIFI" = module; # Intel Wireless WiFi Next Gen AGN - Wireless-N/Advanced-N/Ultimate-N (iwlwifi)
-  "IWLDVM" = module; # Intel Wireless WiFi DVM Firmware support
-  "IWLMVM" = module; # Intel Wireless WiFi MVM Firmware support
-
-  ####### Debugging Options
-  "IWLWIFI_DEBUG" = no; # Enable full debugging output in the iwlwifi driver
-  ####### end of Debugging Options
-
+  "IPW2100" = no; # Intel PRO/Wireless 2100 Network Connection
+  "IPW2200" = no; # Intel PRO/Wireless 2200BG and 2915ABG Network Connection
+  "IWL4965" = no; # Intel Wireless WiFi 4965AGN (iwl4965)
+  "IWL3945" = no; # Intel PRO/Wireless 3945ABG/BG Network Connection (iwl3945)
+  "IWLWIFI" = no; # Intel Wireless WiFi Next Gen AGN - Wireless-N/Advanced-N/Ultimate-N (iwlwifi)
   "WLAN_VENDOR_INTERSIL" = yes; # Intersil devices
   "P54_COMMON" = no; # Softmac Prism54 support
   "WLAN_VENDOR_MARVELL" = yes; # Marvell devices
-  "LIBERTAS" = module; # Marvell 8xxx Libertas WLAN driver support
-  "LIBERTAS_USB" = module; # Marvell Libertas 8388 USB 802.11b/g cards
-  "LIBERTAS_SDIO" = module; # Marvell Libertas 8385/8686/8688 SDIO 802.11b/g cards
-  "LIBERTAS_SPI" = module; # Marvell Libertas 8686 SPI 802.11b/g cards
-  "LIBERTAS_DEBUG" = no; # Enable full debugging output in the Libertas module.
-  "LIBERTAS_MESH" = no; # Enable mesh support
-  "LIBERTAS_THINFIRM" = module; # Marvell 8xxx Libertas WLAN driver support with thin firmware
-  "LIBERTAS_THINFIRM_DEBUG" = no; # Enable full debugging output in the Libertas thin firmware module.
-  "LIBERTAS_THINFIRM_USB" = module; # Marvell Libertas 8388 USB 802.11b/g cards with thin firmware
+  "LIBERTAS" = no; # Marvell 8xxx Libertas WLAN driver support
+  "LIBERTAS_THINFIRM" = no; # Marvell 8xxx Libertas WLAN driver support with thin firmware
   "MWIFIEX" = module; # Marvell WiFi-Ex Driver
   "MWIFIEX_SDIO" = module; # Marvell WiFi-Ex Driver for SD8786/SD8787/SD8797/SD8887/SD8897/SD8977/SD8978/SD8987/SD8997
   "MWIFIEX_PCIE" = module; # Marvell WiFi-Ex Driver for PCIE 8766/8897/8997
-  "MWIFIEX_USB" = module; # Marvell WiFi-Ex Driver for USB8766/8797/8997
-  "MWL8K" = module; # Marvell 88W8xxx PCI/PCIe Wireless support
+  "MWIFIEX_USB" = no; # Marvell WiFi-Ex Driver for USB8766/8797/8997
+  "MWL8K" = no; # Marvell 88W8xxx PCI/PCIe Wireless support
   "WLAN_VENDOR_MEDIATEK" = yes; # MediaTek devices
   "MT7601U" = module; # MediaTek MT7601U (USB) support
   "MT76x0U" = module; # MediaTek MT76x0U (USB) support
-  "MT76x0E" = module; # MediaTek MT76x0E (PCIe) support
-  "MT76x2E" = module; # MediaTek MT76x2E (PCIe) support
+  "MT76x0E" = no; # MediaTek MT76x0E (PCIe) support
+  "MT76x2E" = no; # MediaTek MT76x2E (PCIe) support
   "MT76x2U" = module; # MediaTek MT76x2U (USB) support
-  "MT7603E" = module; # MediaTek MT7603E (PCIe) and MT76x8 WLAN support
-  "MT7615E" = module; # MediaTek MT7615E and MT7663E (PCIe) support
-  "MT7622_WMAC" = yes; # MT7622 (SoC) WMAC support
+  "MT7603E" = no; # MediaTek MT7603E (PCIe) and MT76x8 WLAN support
+  "MT7615E" = no; # MediaTek MT7615E and MT7663E (PCIe) support
   "MT7663U" = module; # MediaTek MT7663U (USB) support
-  "MT7663S" = module; # MediaTek MT7663S (SDIO) support
-  "MT7915E" = module; # MediaTek MT7915E (PCIe) support
-  "MT798X_WMAC" = yes; # MT798x (SoC) WMAC support
-  "MT7921E" = module; # MediaTek MT7921E (PCIe) support
-  "MT7921S" = module; # MediaTek MT7921S (SDIO) support
-  "MT7921U" = module; # MediaTek MT7921U (USB) support
-  "MT7996E" = module; # MediaTek MT7996 (PCIe) support
-  "MT7925E" = module; # MediaTek MT7925E (PCIe) support
-  "MT7925U" = module; # MediaTek MT7925U (USB) support
+  "MT7663S" = no; # MediaTek MT7663S (SDIO) support
+  "MT7915E" = no; # MediaTek MT7915E (PCIe) support
+  "MT7921E" = no; # MediaTek MT7921E (PCIe) support
+  "MT7921S" = no; # MediaTek MT7921S (SDIO) support
+  "MT7921U" = no; # MediaTek MT7921U (USB) support
+  "MT7996E" = no; # MediaTek MT7996 (PCIe) support
+  "MT7925E" = no; # MediaTek MT7925E (PCIe) support
+  "MT7925U" = no; # MediaTek MT7925U (USB) support
   "WLAN_VENDOR_MICROCHIP" = yes; # Microchip devices
-  "WILC1000_SDIO" = module; # Atmel WILC1000 SDIO (WiFi only)
+  "WILC1000_SDIO" = no; # Atmel WILC1000 SDIO (WiFi only)
   "WILC1000_SPI" = no; # Atmel WILC1000 SPI (WiFi only)
-  "WILC1000_HW_OOB_INTR" = no; # WILC1000 out of band interrupt
   "WLAN_VENDOR_PURELIFI" = yes; # pureLiFi devices
-  "PLFXLC" = module; # pureLiFi X, XL, XC device support
+  "PLFXLC" = no; # pureLiFi X, XL, XC device support
   "WLAN_VENDOR_RALINK" = yes; # Ralink devices
-  "RT2X00" = module; # Ralink driver support
-  "RT2400PCI" = module; # Ralink rt2400 (PCI/PCMCIA) support
-  "RT2500PCI" = module; # Ralink rt2500 (PCI/PCMCIA) support
-  "RT61PCI" = module; # Ralink rt2501/rt61 (PCI/PCMCIA) support
-  "RT2800PCI" = module; # Ralink rt27xx/rt28xx/rt30xx (PCI/PCIe/PCMCIA) support
-  "RT2800PCI_RT33XX" = yes; # rt2800pci - Include support for rt33xx devices
-  "RT2800PCI_RT35XX" = yes; # rt2800pci - Include support for rt35xx devices (EXPERIMENTAL)
-  "RT2800PCI_RT53XX" = yes; # rt2800pci - Include support for rt53xx devices (EXPERIMENTAL)
-  "RT2800PCI_RT3290" = yes; # rt2800pci - Include support for rt3290 devices (EXPERIMENTAL)
-  "RT2500USB" = module; # Ralink rt2500 (USB) support
-  "RT73USB" = module; # Ralink rt2501/rt73 (USB) support
-  "RT2800USB" = module; # Ralink rt27xx/rt28xx/rt30xx (USB) support
-  "RT2800USB_RT33XX" = yes; # rt2800usb - Include support for rt33xx devices
-  "RT2800USB_RT35XX" = yes; # rt2800usb - Include support for rt35xx devices (EXPERIMENTAL)
-  "RT2800USB_RT3573" = yes; # rt2800usb - Include support for rt3573 devices (EXPERIMENTAL)
-  "RT2800USB_RT53XX" = yes; # rt2800usb - Include support for rt53xx devices (EXPERIMENTAL)
-  "RT2800USB_RT55XX" = yes; # rt2800usb - Include support for rt55xx devices (EXPERIMENTAL)
-  "RT2800USB_UNKNOWN" = yes; # rt2800usb - Include support for unknown (USB) devices
-  "RT2X00_DEBUG" = no; # Ralink debug output
+  "RT2X00" = no; # Ralink driver support
   "WLAN_VENDOR_REALTEK" = yes; # Realtek devices
-  "RTL8180" = module; # Realtek 8180/8185/8187SE PCI support
+  "RTL8180" = no; # Realtek 8180/8185/8187SE PCI support
   "RTL8187" = module; # Realtek 8187 and 8187B USB support
   "RTL_CARDS" = module; # Realtek rtlwifi family of devices
-  "RTL8192CE" = module; # Realtek RTL8192CE/RTL8188CE Wireless Network Adapter
-  "RTL8192SE" = module; # Realtek RTL8192SE/RTL8191SE PCIe Wireless Network Adapter
-  "RTL8192DE" = module; # Realtek RTL8192DE/RTL8188DE PCIe Wireless Network Adapter
-  "RTL8723AE" = module; # Realtek RTL8723AE PCIe Wireless Network Adapter
-  "RTL8723BE" = module; # Realtek RTL8723BE PCIe Wireless Network Adapter
-  "RTL8188EE" = module; # Realtek RTL8188EE Wireless Network Adapter
-  "RTL8192EE" = module; # Realtek RTL8192EE Wireless Network Adapter
-  "RTL8821AE" = module; # Realtek RTL8821AE/RTL8812AE Wireless Network Adapter
-  "RTL8192CU" = module; # Realtek RTL8192CU/RTL8188CU USB Wireless Network Adapter
-  "RTL8192DU" = module; # Realtek RTL8192DU USB Wireless Network Adapter
-  "RTLWIFI_DEBUG" = yes; # Debugging output for rtlwifi driver family
-  "RTL8XXXU" = module; # Realtek 802.11n USB wireless chips support
-  "RTL8XXXU_UNTESTED" = yes; # Include support for untested Realtek 8xxx USB devices (EXPERIMENTAL)
-  "RTW88" = module; # Realtek 802.11ac wireless chips support
-  "RTW88_8822BE" = module; # Realtek 8822BE PCI wireless network adapter
-  "RTW88_8822BS" = module; # Realtek 8822BS SDIO wireless network adapter
-  "RTW88_8822BU" = module; # Realtek 8822BU USB wireless network adapter
-  "RTW88_8822CE" = module; # Realtek 8822CE PCI wireless network adapter
-  "RTW88_8822CS" = module; # Realtek 8822CS SDIO wireless network adapter
-  "RTW88_8822CU" = module; # Realtek 8822CU USB wireless network adapter
-  "RTW88_8723DE" = module; # Realtek 8723DE PCI wireless network adapter
-  "RTW88_8723DS" = no; # Realtek 8723DS SDIO wireless network adapter
-  "RTW88_8723CS" = no; # Realtek 8723CS SDIO wireless network adapter
-  "RTW88_8723DU" = module; # Realtek 8723DU USB wireless network adapter
-  "RTW88_8821CE" = module; # Realtek 8821CE PCI wireless network adapter
-  "RTW88_8821CS" = module; # Realtek 8821CS SDIO wireless network adapter
-  "RTW88_8821CU" = module; # Realtek 8821CU USB wireless network adapter
-  "RTW88_DEBUG" = yes; # Realtek rtw88 debug support
-  "RTW88_DEBUGFS" = yes; # Realtek rtw88 debugfs support
-  "RTW89" = module; # Realtek 802.11ax wireless chips support
-  "RTW89_8851BE" = no; # Realtek 8851BE PCI wireless network (Wi-Fi 6) adapter
-  "RTW89_8852AE" = module; # Realtek 8852AE PCI wireless network (Wi-Fi 6) adapter
-  "RTW89_8852BE" = module; # Realtek 8852BE PCI wireless network (Wi-Fi 6) adapter
-  "RTW89_8852BTE" = no; # Realtek 8852BE-VT PCI wireless network (Wi-Fi 6) adapter
-  "RTW89_8852CE" = module; # Realtek 8852CE PCI wireless network (Wi-Fi 6E) adapter
-  "RTW89_8922AE" = no; # Realtek 8922AE PCI wireless network (Wi-Fi 7) adapter
-  "RTW89_DEBUGMSG" = yes; # Realtek rtw89 debug message support
-  "RTW89_DEBUGFS" = yes; # Realtek rtw89 debugfs support
+  "RTL8192CE" = no; # Realtek RTL8192CE/RTL8188CE Wireless Network Adapter
+  "RTL8192SE" = no; # Realtek RTL8192SE/RTL8191SE PCIe Wireless Network Adapter
+  "RTL8192DE" = no; # Realtek RTL8192DE/RTL8188DE PCIe Wireless Network Adapter
+  "RTL8723AE" = no; # Realtek RTL8723AE PCIe Wireless Network Adapter
+  "RTL8723BE" = no; # Realtek RTL8723BE PCIe Wireless Network Adapter
+  "RTL8188EE" = no; # Realtek RTL8188EE Wireless Network Adapter
+  "RTL8192EE" = no; # Realtek RTL8192EE Wireless Network Adapter
+  "RTL8821AE" = no; # Realtek RTL8821AE/RTL8812AE Wireless Network Adapter
+  "RTL8192CU" = no; # Realtek RTL8192CU/RTL8188CU USB Wireless Network Adapter
+  "RTL8192DU" = no; # Realtek RTL8192DU USB Wireless Network Adapter
+  "RTL8XXXU" = no; # Realtek 802.11n USB wireless chips support
+  "RTW88" = no; # Realtek 802.11ac wireless chips support
+  "RTW89" = no; # Realtek 802.11ax wireless chips support
   "WLAN_VENDOR_RSI" = yes; # Redpine Signals Inc devices
-  "RSI_91X" = module; # Redpine Signals Inc 91x WLAN driver support
-  "RSI_DEBUGFS" = yes; # Redpine Signals Inc debug support
-  "RSI_SDIO" = module; # Redpine Signals SDIO bus support
-  "RSI_USB" = module; # Redpine Signals USB bus support
-  "RSI_COEX" = yes; # Redpine Signals WLAN BT Coexistence support
+  "RSI_91X" = no; # Redpine Signals Inc 91x WLAN driver support
   "WLAN_VENDOR_SILABS" = yes; # Silicon Laboratories devices
-  "WFX" = module; # Silicon Labs wireless chips WF200 and further
+  "WFX" = no; # Silicon Labs wireless chips WF200 and further
   "WLAN_VENDOR_ST" = yes; # STMicroelectronics devices
-  "CW1200" = module; # CW1200 WLAN support
-  "CW1200_WLAN_SDIO" = module; # Support SDIO platforms
-  "CW1200_WLAN_SPI" = no; # Support SPI platforms
+  "CW1200" = no; # CW1200 WLAN support
   "WLAN_VENDOR_TI" = yes; # Texas Instrument devices
-  "WL1251" = module; # TI wl1251 driver support
-  "WL1251_SPI" = no; # TI wl1251 SPI support
-  "WL1251_SDIO" = module; # TI wl1251 SDIO support
-  "WL12XX" = module; # TI wl12xx support
+  "WL1251" = no; # TI wl1251 driver support
+  "WL12XX" = no; # TI wl12xx support
   "WL18XX" = module; # TI wl18xx support
   "WLCORE" = module; # TI wlcore support
   "WLCORE_SPI" = no; # TI wlcore SPI support
@@ -2252,19 +2123,13 @@ in
   "WLAN_VENDOR_ZYDAS" = yes; # ZyDAS devices
   "ZD1211RW" = no; # ZyDAS ZD1211/ZD1211B USB-wireless support
   "WLAN_VENDOR_QUANTENNA" = yes; # Quantenna wireless cards support
-  "QTNFMAC_PCIE" = module; # Quantenna QSR1000/QSR2000/QSR10g PCIe support
+  "QTNFMAC_PCIE" = no; # Quantenna QSR1000/QSR2000/QSR10g PCIe support
   "MAC80211_HWSIM" = no; # Simulated radio testing tool for mac80211
   "VIRT_WIFI" = no; # Wifi wrapper for ethernet drivers
   "WAN" = no; # Wan interfaces support
 
   #### Wireless WAN
-  "WWAN" = module; # WWAN Driver Core
-  "WWAN_HWSIM" = no; # Simulated WWAN device
-  "MHI_WWAN_CTRL" = module; # MHI WWAN control driver for QCOM-based PCIe modems
-  "MHI_WWAN_MBIM" = module; # MHI WWAN MBIM network driver for QCOM-based PCIe modems
-  "RPMSG_WWAN_CTRL" = no; # RPMSG WWAN control driver
-  "IOSM" = no; # IOSM Driver for Intel M.2 WWAN Device
-  "MTK_T7XX" = no; # MediaTek PCIe 5G WWAN modem T7xx device
+  "WWAN" = no; # WWAN Driver Core
   #### end of Wireless WAN
 
   "XEN_NETDEV_FRONTEND" = yes; # Xen network device frontend driver
@@ -2280,10 +2145,7 @@ in
   "INPUT_FF_MEMLESS" = yes; # Support for memoryless force-feedback devices
   "INPUT_SPARSEKMAP" = no; # Sparse keymap support library
   "INPUT_MATRIXKMAP" = yes; # Matrix keymap support library
-  "INPUT_MOUSEDEV" = yes; # Mouse interface
-  "INPUT_MOUSEDEV_PSAUX" = no; # Provide legacy /dev/psaux device
-  "INPUT_MOUSEDEV_SCREEN_X" = freeform "1024"; # Horizontal screen resolution
-  "INPUT_MOUSEDEV_SCREEN_Y" = freeform "768"; # Vertical screen resolution
+  "INPUT_MOUSEDEV" = no; # Mouse interface
   "INPUT_JOYDEV" = no; # Joystick interface
   "INPUT_EVDEV" = yes; # Event interface
   "INPUT_EVBUG" = no; # Event debugging
@@ -2298,7 +2160,7 @@ in
   "KEYBOARD_DLINK_DIR685" = no; # D-Link DIR-685 touchkeys support
   "KEYBOARD_LKKBD" = no; # DECstation/VAXstation LK201/LK401 keyboard
   "KEYBOARD_GPIO" = yes; # GPIO Buttons
-  "KEYBOARD_GPIO_POLLED" = module; # Polled GPIO buttons
+  "KEYBOARD_GPIO_POLLED" = no; # Polled GPIO buttons
   "KEYBOARD_TCA6416" = no; # TCA6416/TCA6408A Keypad Support
   "KEYBOARD_TCA8418" = no; # TCA8418 Keypad Support
   "KEYBOARD_MATRIX" = no; # GPIO driven matrix keypad support
@@ -2319,7 +2181,7 @@ in
   "KEYBOARD_CAP11XX" = no; # Microchip CAP11XX based touch sensors
   "KEYBOARD_BCM" = no; # Broadcom keypad driver
   "KEYBOARD_MT6779" = no; # MediaTek Keypad Support
-  "KEYBOARD_MTK_PMIC" = module; # MediaTek PMIC keys support
+  "KEYBOARD_MTK_PMIC" = no; # MediaTek PMIC keys support
   "KEYBOARD_CYPRESS_SF" = no; # Cypress StreetFighter touchkey support
   "INPUT_MOUSE" = yes; # Mice
   "MOUSE_PS2" = yes; # PS/2 mouse
@@ -2337,7 +2199,38 @@ in
   "MOUSE_GPIO" = no; # GPIO mouse
   "MOUSE_SYNAPTICS_I2C" = no; # Synaptics I2C Touchpad support
   "MOUSE_SYNAPTICS_USB" = no; # Synaptics USB device support
-  "INPUT_JOYSTICK" = no; # Joysticks/Gamepads
+  "INPUT_JOYSTICK" = yes; # Joysticks/Gamepads
+  "JOYSTICK_ANALOG" = no; # Classic PC analog joysticks and gamepads
+  "JOYSTICK_A3D" = no; # Assassin 3D and MadCatz Panther devices
+  "JOYSTICK_ADC" = no; # Simple joystick connected over ADC
+  "JOYSTICK_ADI" = no; # Logitech ADI digital joysticks and gamepads
+  "JOYSTICK_COBRA" = no; # Creative Labs Blaster Cobra gamepad
+  "JOYSTICK_GF2K" = no; # Genius Flight2000 Digital joysticks and gamepads
+  "JOYSTICK_GRIP" = no; # Gravis GrIP joysticks and gamepads
+  "JOYSTICK_GRIP_MP" = no; # Gravis GrIP MultiPort
+  "JOYSTICK_GUILLEMOT" = no; # Guillemot joysticks and gamepads
+  "JOYSTICK_INTERACT" = no; # InterAct digital joysticks and gamepads
+  "JOYSTICK_SIDEWINDER" = no; # Microsoft SideWinder digital joysticks and gamepads
+  "JOYSTICK_TMDC" = no; # ThrustMaster DirectConnect joysticks and gamepads
+  "JOYSTICK_IFORCE" = no; # I-Force devices
+  "JOYSTICK_WARRIOR" = no; # Logitech WingMan Warrior joystick
+  "JOYSTICK_MAGELLAN" = no; # LogiCad3d Magellan/SpaceMouse 6dof controllers
+  "JOYSTICK_SPACEORB" = no; # SpaceTec SpaceOrb/Avenger 6dof controllers
+  "JOYSTICK_SPACEBALL" = no; # SpaceTec SpaceBall 6dof controllers
+  "JOYSTICK_STINGER" = no; # Gravis Stinger gamepad
+  "JOYSTICK_TWIDJOY" = no; # Twiddler as a joystick
+  "JOYSTICK_ZHENHUA" = no; # 5-byte Zhenhua RC transmitter
+  "JOYSTICK_AS5011" = no; # Austria Microsystem AS5011 joystick
+  "JOYSTICK_JOYDUMP" = no; # Gameport data dumper
+  "JOYSTICK_XPAD" = module; # Xbox gamepad support
+  "JOYSTICK_XPAD_FF" = yes; # Xbox gamepad rumble support
+  "JOYSTICK_XPAD_LEDS" = yes; # LED Support for the Xbox 360 controller Guide button
+  "JOYSTICK_PSXPAD_SPI" = no; # PlayStation 1/2 joypads via SPI interface
+  "JOYSTICK_PXRC" = no; # PhoenixRC Flight Controller Adapter
+  "JOYSTICK_QWIIC" = no; # SparkFun Qwiic Joystick
+  "JOYSTICK_FSIA6B" = no; # FlySky FS-iA6B RC Receiver
+  "JOYSTICK_SENSEHAT" = no; # Raspberry Pi Sense HAT joystick
+  "JOYSTICK_SEESAW" = no; # Adafruit Mini I2C Gamepad with Seesaw
   "INPUT_TABLET" = no; # Tablets
   "INPUT_TOUCHSCREEN" = yes; # Touchscreens
   "TOUCHSCREEN_ADS7846" = no; # ADS7846/TSC2046/AD7873 and AD(S)7843 based touchscreens
@@ -2364,7 +2257,7 @@ in
   "TOUCHSCREEN_FUJITSU" = no; # Fujitsu serial touchscreen
   "TOUCHSCREEN_GOODIX" = module; # Goodix I2C touchscreen
   "TOUCHSCREEN_GOODIX_BERLIN_I2C" = no; # Goodix Berlin I2C touchscreen
-  "TOUCHSCREEN_GOODIX_BERLIN_SPI" = module; # Goodix Berlin SPI touchscreen
+  "TOUCHSCREEN_GOODIX_BERLIN_SPI" = no; # Goodix Berlin SPI touchscreen
   "TOUCHSCREEN_HIDEEP" = no; # HiDeep Touch IC
   "TOUCHSCREEN_HYCON_HY46XX" = no; # Hycon hy46xx touchscreen support
   "TOUCHSCREEN_HYNITRON_CSTXXX" = no; # Hynitron touchscreen support
@@ -2431,16 +2324,13 @@ in
   "INPUT_YEALINK" = no; # Yealink usb-p1k voip phone
   "INPUT_CM109" = no; # C-Media CM109 USB I/O Controller
   "INPUT_REGULATOR_HAPTIC" = no; # Regulator haptics support
-  "INPUT_TPS65219_PWRBUTTON" = module; # TPS65219 Power button driver
   "INPUT_AXP20X_PEK" = no; # X-Powers AXP20X power button driver
   "INPUT_UINPUT" = module; # User level driver support
   "INPUT_PCF8574" = no; # PCF8574 Keypad input device
   "INPUT_PWM_BEEPER" = module; # PWM beeper support
   "INPUT_PWM_VIBRA" = module; # PWM vibrator support
-  "INPUT_RK805_PWRKEY" = module; # Rockchip RK805 PMIC power key support
   "INPUT_GPIO_ROTARY_ENCODER" = no; # Rotary encoders connected to GPIO pins
   "INPUT_DA7280_HAPTICS" = no; # Dialog Semiconductor DA7280 haptics support
-  "INPUT_DA9063_ONKEY" = module; # Dialog DA9063/62/61 OnKey
   "INPUT_ADXL34X" = no; # Analog Devices ADXL34x Three-Axis Digital Accelerometer
   "INPUT_IMS_PCU" = no; # IMS Passenger Control Unit driver
   "INPUT_IQS269A" = no; # Azoteq IQS269A capacitive touch controller
@@ -2451,17 +2341,18 @@ in
   "INPUT_DRV260X_HAPTICS" = no; # TI DRV260X haptics support
   "INPUT_DRV2665_HAPTICS" = no; # TI DRV2665 haptics support
   "INPUT_DRV2667_HAPTICS" = no; # TI DRV2667 haptics support
-  "RMI4_CORE" = yes; # Synaptics RMI4 bus support
-  "RMI4_I2C" = no; # RMI4 I2C Support
-  "RMI4_SPI" = no; # RMI4 SPI Support
-  "RMI4_SMB" = no; # RMI4 SMB Support
+  "RMI4_CORE" = module; # Synaptics RMI4 bus support
+  "RMI4_I2C" = module; # RMI4 I2C Support
+  "RMI4_SPI" = module; # RMI4 SPI Support
+  "RMI4_SMB" = module; # RMI4 SMB Support
   "RMI4_F03" = yes; # RMI4 Function 03 (PS2 Guest)
   "RMI4_F11" = yes; # RMI4 Function 11 (2D pointing)
   "RMI4_F12" = yes; # RMI4 Function 12 (2D pointing)
   "RMI4_F30" = yes; # RMI4 Function 30 (GPIO LED)
-  "RMI4_F34" = no; # RMI4 Function 34 (Device reflash)
-  "RMI4_F3A" = no; # RMI4 Function 3A (GPIO)
-  "RMI4_F55" = no; # RMI4 Function 55 (Sensor tuning)
+  "RMI4_F34" = yes; # RMI4 Function 34 (Device reflash)
+  "RMI4_F3A" = yes; # RMI4 Function 3A (GPIO)
+  "RMI4_F54" = no; # RMI4 Function 54 (Analog diagnostics)
+  "RMI4_F55" = yes; # RMI4 Function 55 (Sensor tuning)
 
   #### Device Drivers -> Input device support -> Hardware I/O ports
   "SERIO" = yes; # Serial I/O support
@@ -2497,7 +2388,7 @@ in
   "SERIAL_8250_CONSOLE" = yes; # Console on 8250/16550 and compatible serial port
   "SERIAL_8250_PCI" = yes; # 8250/16550 PCI device support
   "SERIAL_8250_EXAR" = yes; # 8250/16550 Exar/Commtech PCI/PCIe device support
-  "SERIAL_8250_NR_UARTS" = freeform "8"; # Maximum number of 8250/16550 serial ports
+  "SERIAL_8250_NR_UARTS" = freeform "4"; # Maximum number of 8250/16550 serial ports
   "SERIAL_8250_RUNTIME_UARTS" = freeform "4"; # Number of 8250/16550 serial ports to register at runtime
   "SERIAL_8250_EXTENDED" = yes; # Extended 8250/16550 serial driver options
   "SERIAL_8250_MANY_PORTS" = no; # Support more than 4 legacy serial ports
@@ -2539,7 +2430,7 @@ in
   "SERIAL_NONSTANDARD" = no; # Non-standard serial port support
   "N_GSM" = no; # GSM MUX line discipline support (EXPERIMENTAL)
   "NOZOMI" = no; # HSDPA Broadband Wireless Data Card - Globe Trotter
-  "NULL_TTY" = no; # NULL TTY driver
+  "NULL_TTY" = yes; # NULL TTY driver
   "HVC_XEN" = yes; # Xen Hypervisor Console support
   "HVC_XEN_FRONTEND" = yes; # Xen Hypervisor Multiple Consoles support
   "HVC_DCC" = no; # ARM JTAG DCC console
@@ -2557,24 +2448,24 @@ in
   "HW_RANDOM" = yes; # Hardware Random Number Generator Core support
   "HW_RANDOM_TIMERIOMEM" = no; # Timer IOMEM HW Random Number Generator support
   "HW_RANDOM_BA431" = no; # Silex Insight BA431 Random Number Generator support
-  "HW_RANDOM_VIRTIO" = yes; # VirtIO Random Number Generator support
-  "HW_RANDOM_MTK" = module; # Mediatek Random Number Generator support
+  "HW_RANDOM_VIRTIO" = no; # VirtIO Random Number Generator support
+  "HW_RANDOM_MTK" = yes; # Mediatek Random Number Generator support
   "HW_RANDOM_OPTEE" = yes; # OP-TEE based Random Number Generator support
   "HW_RANDOM_CCTRNG" = no; # Arm CryptoCell True Random Number Generator support
   "HW_RANDOM_XIPHERA" = no; # Xiphera FPGA based True Random Number Generator support
   "HW_RANDOM_ARM_SMCCC_TRNG" = yes; # Arm SMCCC TRNG firmware interface support
-  "HW_RANDOM_CN10K" = no; # Marvell CN10K Random Number Generator support
+  "HW_RANDOM_CN10K" = yes; # Marvell CN10K Random Number Generator support
   "APPLICOM" = no; # Applicom intelligent fieldbus card support
   "DEVMEM" = yes; # /dev/mem virtual device support
   "DEVPORT" = yes; # /dev/port character device
   "TCG_TPM" = yes; # TPM Hardware Support
   "TCG_TPM2_HMAC" = no; # Use HMAC and encrypted transactions on the TPM bus
   "HW_RANDOM_TPM" = yes; # TPM HW Random Number Generator support
-  "TCG_TIS" = module; # TPM Interface Specification 1.2 Interface / TPM 2.0 FIFO Interface
+  "TCG_TIS" = no; # TPM Interface Specification 1.2 Interface / TPM 2.0 FIFO Interface
   "TCG_TIS_SPI" = module; # TPM Interface Specification 1.3 Interface / TPM 2.0 FIFO Interface - (SPI)
   "TCG_TIS_SPI_CR50" = yes; # Cr50 SPI Interface
   "TCG_TIS_I2C" = no; # TPM Interface Specification 1.3 Interface / TPM 2.0 FIFO Interface - (I2C - generic)
-  "TCG_TIS_I2C_CR50" = module; # TPM Interface Specification 2.0 Interface (I2C - CR50)
+  "TCG_TIS_I2C_CR50" = yes; # TPM Interface Specification 2.0 Interface (I2C - CR50)
   "TCG_TIS_I2C_ATMEL" = no; # TPM Interface Specification 1.2 Interface (I2C - Atmel)
   "TCG_TIS_I2C_INFINEON" = yes; # TPM Interface Specification 1.2 Interface (I2C - Infineon)
   "TCG_TIS_I2C_NUVOTON" = no; # TPM Interface Specification 1.2 Interface (I2C - Nuvoton)
@@ -2624,7 +2515,7 @@ in
   "I2C_SIS96X" = no; # SiS 96x
   "I2C_VIA" = no; # VIA VT82C586B
   "I2C_VIAPRO" = no; # VIA VT82C596/82C686/82xx and CX700/VX8xx/VX900
-  "I2C_CADENCE" = module; # Cadence I2C Controller
+  "I2C_CADENCE" = no; # Cadence I2C Controller
   "I2C_CBUS_GPIO" = no; # CBUS I2C driver
   "I2C_DESIGNWARE_CORE" = yes; # Synopsys DesignWare I2C adapter
   "I2C_DESIGNWARE_SLAVE" = no; # Synopsys DesignWare Slave
@@ -2635,7 +2526,6 @@ in
   "I2C_GPIO_FAULT_INJECTOR" = no; # GPIO-based fault injector
   "I2C_HISI" = no; # HiSilicon I2C controller
   "I2C_MT65XX" = yes; # MediaTek I2C adapter
-  "I2C_MT7621" = no; # MT7621/MT7628 I2C Controller
   "I2C_NOMADIK" = no; # ST-Ericsson Nomadik/Ux500 I2C Controller
   "I2C_OCORES" = no; # OpenCores I2C Controller
   "I2C_PCA_PLATFORM" = no; # PCA9564/PCA9665 as platform device
@@ -2664,7 +2554,6 @@ in
   "SPI" = yes; # SPI support
   "SPI_DEBUG" = no; # Debug support for SPI drivers
   "SPI_MEM" = yes; # SPI memory extension
-  "SPI_AIROHA_SNFI" = no; # Airoha SPI NAND Flash Interface
   "SPI_ALTERA" = no; # Altera SPI Controller platform driver
   "SPI_AXI_SPI_ENGINE" = no; # Analog Devices AXI SPI Engine controller
   "SPI_BITBANG" = no; # Utilities for Bitbanging SPI host controllers
@@ -2701,7 +2590,7 @@ in
   "SPI_SLAVE" = no; # SPI slave protocol handlers
   "SPMI" = yes; # SPMI support
   "SPMI_HISI3670" = no; # Hisilicon 3670 SPMI Controller
-  "SPMI_MTK_PMIF" = module; # Mediatek SPMI Controller (PMIC Arbiter)
+  "SPMI_MTK_PMIF" = no; # Mediatek SPMI Controller (PMIC Arbiter)
   "HSI" = no; # HSI support
   "PPS" = yes; # PPS support
   "PPS_DEBUG" = no; # PPS debugging messages
@@ -2724,17 +2613,14 @@ in
   "PINCTRL_AXP209" = no; # X-Powers AXP209 PMIC pinctrl and GPIO Support
   "PINCTRL_AW9523" = no; # Awinic AW9523/AW9523B I2C GPIO expander pinctrl driver
   "PINCTRL_CY8C95X0" = no; # Cypress CY8C95X0 I2C pinctrl and GPIO driver
-  "PINCTRL_DA9062" = module; # Dialog Semiconductor DA9062 PMIC pinctrl and GPIO Support
   "PINCTRL_MAX77620" = yes; # MAX77620/MAX20024 Pincontrol support
   "PINCTRL_MCP23S08" = no; # Microchip MCP23xxx I/O expander
   "PINCTRL_MICROCHIP_SGPIO" = no; # Pinctrl driver for Microsemi/Microchip Serial GPIO
   "PINCTRL_OCELOT" = no; # Pinctrl driver for the Microsemi Ocelot and Jaguar2 SoCs
-  "PINCTRL_RK805" = module; # Pinctrl and GPIO driver for RK805 PMIC
   "PINCTRL_SCMI" = no; # Pinctrl driver using SCMI protocol interface
   "PINCTRL_SINGLE" = yes; # One-register-per-pin type device tree based pinctrl driver
   "PINCTRL_STMFX" = no; # STMicroelectronics STMFX GPIO expander pinctrl driver
   "PINCTRL_SX150X" = no; # Semtech SX150x I2C GPIO expander pinctrl driver
-  "PINCTRL_TPS6594" = module; # Pinctrl and GPIO driver for TI TPS6594 PMIC
   "PINCTRL_IMX_SCMI" = no; # i.MX95 pinctrl driver using SCMI protocol interface
 
   #### MediaTek pinctrl drivers
@@ -2753,7 +2639,7 @@ in
   "PINCTRL_MT8186" = yes; # MediaTek MT8186 pin control
   "PINCTRL_MT8188" = yes; # MediaTek MT8188 pin control
   "PINCTRL_MT8192" = yes; # MediaTek MT8192 pin control
-  "PINCTRL_MT8195" = yes; # MediaTek MT8195 pin control
+  "PINCTRL_MT8195" = no; # MediaTek MT8195 pin control
   "PINCTRL_MT8365" = yes; # MediaTek MT8365 pin control
   "PINCTRL_MT8516" = yes; # MediaTek MT8516 pin control
   "PINCTRL_MT6397" = yes; # MediaTek MT6397 pin control
@@ -2769,7 +2655,6 @@ in
   "GPIO_ALTERA" = module; # Altera GPIO
   "GPIO_CADENCE" = no; # Cadence GPIO support
   "GPIO_DWAPB" = yes; # Synopsys DesignWare APB GPIO driver
-  "GPIO_EN7523" = yes; # Airoha GPIO support
   "GPIO_EXAR" = no; # Support for GPIO pins on XR17V352/354/358
   "GPIO_FTGPIO010" = no; # Faraday FTGPIO010 GPIO
   "GPIO_GENERIC_PLATFORM" = no; # Generic memory-mapped GPIO controller support (MMIO platform device)
@@ -2780,7 +2665,7 @@ in
   "GPIO_MB86S7X" = yes; # GPIO support for Fujitsu MB86S7x Platforms
   "GPIO_PL061" = yes; # PrimeCell PL061 GPIO support
   "GPIO_SIFIVE" = no; # SiFive GPIO support
-  "GPIO_SYSCON" = yes; # GPIO based on SYSCON
+  "GPIO_SYSCON" = no; # GPIO based on SYSCON
   "GPIO_WCD934X" = module; # Qualcomm Technologies Inc WCD9340/WCD9341 GPIO controller driver
   "GPIO_XGENE" = yes; # APM X-Gene GPIO controller support
   "GPIO_XILINX" = no; # Xilinx GPIO support
@@ -2803,12 +2688,9 @@ in
   #### end of I2C GPIO expanders
 
   #### MFD GPIO expanders
-  "GPIO_ADP5585" = module; # GPIO Support for ADP5585
   "GPIO_BD9571MWV" = module; # ROHM BD9571 GPIO support
   "GPIO_CROS_EC" = no; # ChromeOS EC GPIO support
-  "GPIO_LP873X" = no; # TI LP873X GPO
   "GPIO_MAX77620" = yes; # GPIO support for PMIC MAX77620 and MAX20024
-  "GPIO_TPS65219" = yes; # TPS65219 GPIO
   #### end of MFD GPIO expanders
 
   #### PCI GPIO expanders
@@ -2828,7 +2710,7 @@ in
   #### end of SPI GPIO expanders
 
   #### Virtual GPIO drivers
-  "GPIO_AGGREGATOR" = module; # GPIO Aggregator
+  "GPIO_AGGREGATOR" = no; # GPIO Aggregator
   "GPIO_LATCH" = no; # GPIO latch driver
   "GPIO_MOCKUP" = no; # GPIO Testing Driver (DEPRECATED)
   "GPIO_VIRTIO" = no; # VirtIO GPIO support
@@ -2844,14 +2726,14 @@ in
   "POWER_RESET_GPIO" = no; # GPIO power-off driver
   "POWER_RESET_GPIO_RESTART" = no; # GPIO restart driver
   "POWER_RESET_LTC2952" = no; # LTC2952 PowerPath power-off driver
-  "POWER_RESET_MT6323" = no; # MediaTek MT6323 power-off driver
+  "POWER_RESET_MT6323" = yes; # MediaTek MT6323 power-off driver
   "POWER_RESET_REGULATOR" = no; # Regulator subsystem power-off driver
   "POWER_RESET_RESTART" = no; # Restart power-off driver
   "POWER_RESET_XGENE" = yes; # APM SoC X-Gene reset driver
   "POWER_RESET_SYSCON" = yes; # Generic SYSCON regmap reset driver
-  "POWER_RESET_SYSCON_POWEROFF" = yes; # Generic SYSCON regmap poweroff driver
+  "POWER_RESET_SYSCON_POWEROFF" = no; # Generic SYSCON regmap poweroff driver
   "SYSCON_REBOOT_MODE" = yes; # Generic SYSCON regmap reboot mode driver
-  "NVMEM_REBOOT_MODE" = module; # Generic NVMEM reboot mode driver
+  "NVMEM_REBOOT_MODE" = no; # Generic NVMEM reboot mode driver
   "POWER_SEQUENCING" = no; # Power Sequencing support
   "POWER_SUPPLY" = yes; # Power supply class support
   "POWER_SUPPLY_DEBUG" = no; # Power supply debug
@@ -2864,7 +2746,6 @@ in
   "BATTERY_DS2780" = no; # DS2780 battery driver
   "BATTERY_DS2781" = no; # DS2781 battery driver
   "BATTERY_DS2782" = no; # DS2782/DS2786 standalone gas-gauge
-  "BATTERY_QCOM_BATTMGR" = module; # Qualcomm PMIC GLINK battery manager support
   "BATTERY_SAMSUNG_SDI" = no; # Samsung SDI batteries
   "BATTERY_SBS" = module; # SBS Compliant gas gauge
   "CHARGER_SBS" = no; # SBS Compliant charger
@@ -2885,7 +2766,7 @@ in
   "CHARGER_LTC4162L" = no; # LTC4162-L charger
   "CHARGER_DETECTOR_MAX14656" = no; # Maxim MAX14656 USB charger detector
   "CHARGER_MAX77976" = no; # Maxim MAX77976 battery charger driver
-  "CHARGER_MT6360" = module; # Mediatek MT6360 Charger Driver
+  "CHARGER_MT6360" = no; # Mediatek MT6360 Charger Driver
   "CHARGER_BQ2415X" = no; # TI BQ2415x battery charger driver
   "CHARGER_BQ24190" = no; # TI BQ24190 battery charger driver
   "CHARGER_BQ24257" = no; # TI BQ24250/24251/24257 battery charger driver
@@ -2894,7 +2775,6 @@ in
   "CHARGER_BQ25890" = module; # TI BQ25890 battery charger driver
   "CHARGER_BQ25980" = module; # TI BQ25980 battery charger driver
   "CHARGER_BQ256XX" = no; # TI BQ256XX battery charger driver
-  "CHARGER_RK817" = module; # Rockchip RK817 PMIC Battery Charger
   "CHARGER_SMB347" = no; # Summit Microelectronics SMB3XX Battery Charger
   "BATTERY_GAUGE_LTC2941" = no; # LTC2941/LTC2943 Battery Gauge Driver
   "BATTERY_GOLDFISH" = no; # Goldfish battery driver
@@ -2951,7 +2831,7 @@ in
   "SENSORS_GL520SM" = no; # Genesys Logic GL520SM
   "SENSORS_G760A" = no; # GMT G760A
   "SENSORS_G762" = no; # GMT G762 and G763
-  "SENSORS_GPIO_FAN" = module; # GPIO fan
+  "SENSORS_GPIO_FAN" = no; # GPIO fan
   "SENSORS_HIH6130" = no; # Honeywell Humidicon HIH-6130 humidity/temperature sensor
   "SENSORS_HS3001" = no; # Renesas HS3001 humidity and temperature sensors
   "SENSORS_IBMAEM" = no; # IBM Active Energy Manager temperature/power sensors and control
@@ -3099,17 +2979,15 @@ in
   "THERMAL_GOV_POWER_ALLOCATOR" = yes; # Power allocator thermal governor
   "CPU_THERMAL" = yes; # Generic cpu cooling support
   "CPU_FREQ_THERMAL" = yes; # CPU frequency cooling device
-  "DEVFREQ_THERMAL" = yes; # Generic device cooling support
+  "DEVFREQ_THERMAL" = no; # Generic device cooling support
   "THERMAL_EMULATION" = yes; # Thermal emulation mode support
   "THERMAL_MMIO" = no; # Generic Thermal MMIO driver
   "MAX77620_THERMAL" = no; # Temperature sensor driver for Maxim MAX77620 PMIC
-  "DA9062_THERMAL" = no; # DA9062/DA9061 Dialog Semiconductor thermal driver
 
   #### Mediatek thermal drivers
   "MTK_THERMAL" = yes; # MediaTek thermal drivers
-  "MTK_SOC_THERMAL" = yes; # AUXADC temperature sensor driver for MediaTek SoCs
-  "MTK_LVTS_THERMAL" = yes; # LVTS Thermal Driver for MediaTek SoCs
-  "MTK_LVTS_THERMAL_DEBUGFS" = no; # LVTS thermal debugfs
+  "MTK_SOC_THERMAL" = no; # AUXADC temperature sensor driver for MediaTek SoCs
+  "MTK_LVTS_THERMAL" = no; # LVTS Thermal Driver for MediaTek SoCs
   #### end of Mediatek thermal drivers
 
   "GENERIC_ADC_THERMAL" = yes; # Generic ADC based thermal sensor
@@ -3123,7 +3001,6 @@ in
   "WATCHDOG_PRETIMEOUT_GOV" = no; # Enable watchdog pretimeout governors
   "SOFT_WATCHDOG" = no; # Software watchdog
   "CROS_EC_WATCHDOG" = no; # ChromeOS EC-based watchdog
-  "DA9062_WATCHDOG" = no; # Dialog DA9062/61 Watchdog
   "GPIO_WATCHDOG" = no; # Watchdog device controlled through GPIO-line
   "XILINX_WATCHDOG" = no; # Xilinx Watchdog timer
   "XILINX_WINDOW_WATCHDOG" = no; # Xilinx window watchdog timer
@@ -3134,7 +3011,7 @@ in
   "DW_WATCHDOG" = yes; # Synopsys DesignWare watchdog
   "MAX63XX_WATCHDOG" = no; # Max63xx watchdog
   "MAX77620_WATCHDOG" = no; # Maxim Max77620 Watchdog Timer
-  "MEDIATEK_WATCHDOG" = yes; # Mediatek SoCs watchdog support
+  "MEDIATEK_WATCHDOG" = module; # Mediatek SoCs watchdog support
   "ARM_SMC_WATCHDOG" = yes; # ARM Secure Monitor Call based watchdog support
   "ALIM7101_WDT" = no; # ALi M7101 PMU Computer Watchdog
   "I6300ESB_WDT" = no; # Intel 6300ESB Timer/Watchdog
@@ -3144,21 +3021,11 @@ in
   "PCIPCWATCHDOG" = no; # Berkshire Products PCI-PC Watchdog
   "WDTPCI" = no; # PCI-WDT500/501 Watchdog timer
   "USBPCWATCHDOG" = no; # Berkshire Products USB-PC Watchdog
-  "SSB" = module; # Sonics Silicon Backplane support
-  "SSB_PCIHOST" = yes; # Support for SSB on PCI-bus host
-  "SSB_SDIOHOST" = yes; # Support for SSB on SDIO-bus host
-  "SSB_DRIVER_PCICORE" = yes; # SSB PCI core driver
-  "SSB_DRIVER_GPIO" = no; # SSB GPIO driver
-  "BCMA" = module; # Broadcom specific AMBA
-  "BCMA_HOST_PCI" = yes; # Support for BCMA on PCI-host bus
-  "BCMA_HOST_SOC" = no; # Support for BCMA in a SoC
-  "BCMA_DRIVER_PCI" = yes; # BCMA Broadcom PCI core driver
-  "BCMA_DRIVER_GMAC_CMN" = no; # BCMA Broadcom GBIT MAC COMMON core driver
-  "BCMA_DRIVER_GPIO" = no; # BCMA GPIO driver
-  "BCMA_DEBUG" = no; # BCMA debugging
+  "SSB" = no; # Sonics Silicon Backplane support
+  "BCMA" = no; # Broadcom specific AMBA
 
   ### Device Drivers -> Multifunction device drivers
-  "MFD_ADP5585" = module; # Analog Devices ADP5585 keypad decoder and I/O expander driver
+  "MFD_ADP5585" = no; # Analog Devices ADP5585 keypad decoder and I/O expander driver
   "MFD_ACT8945A" = no; # Active-semi ACT8945A
   "MFD_AS3711" = no; # AMS AS3711
   "MFD_SMPRO" = no; # Ampere Computing SMpro core driver
@@ -3179,7 +3046,7 @@ in
   "MFD_DA9052_SPI" = no; # Dialog Semiconductor DA9052/53 PMIC variants with SPI
   "MFD_DA9052_I2C" = no; # Dialog Semiconductor DA9052/53 PMIC variants with I2C
   "MFD_DA9055" = no; # Dialog Semiconductor DA9055 PMIC Support
-  "MFD_DA9062" = module; # Dialog Semiconductor DA9062/61 PMIC Support
+  "MFD_DA9062" = no; # Dialog Semiconductor DA9062/61 PMIC Support
   "MFD_DA9063" = no; # Dialog Semiconductor DA9063 PMIC Support
   "MFD_DA9150" = no; # Dialog Semiconductor DA9150 Charger Fuel-Gauge chip
   "MFD_DLN2" = no; # Diolan DLN2 support
@@ -3210,7 +3077,7 @@ in
   "MFD_MAX8925" = no; # Maxim Semiconductor MAX8925 PMIC Support
   "MFD_MAX8997" = no; # Maxim Semiconductor MAX8997/8966 PMIC Support
   "MFD_MAX8998" = no; # Maxim Semiconductor MAX8998/National LP3974 PMIC Support
-  "MFD_MT6360" = yes; # Mediatek MT6360 SubPMIC
+  "MFD_MT6360" = module; # Mediatek MT6360 SubPMIC
   "MFD_MT6370" = no; # MediaTek MT6370 SubPMIC
   "MFD_MT6397" = yes; # MediaTek MT6397 PMIC Support
   "MFD_MENF21BMC" = no; # MEN 14F021P00 Board Management Controller Support
@@ -3227,8 +3094,8 @@ in
   "MFD_RT5033" = no; # Richtek RT5033 Power Management IC
   "MFD_RT5120" = no; # Richtek RT5120 Power Management IC
   "MFD_RC5T583" = no; # Ricoh RC5T583 Power Management system device
-  "MFD_RK8XX_I2C" = yes; # Rockchip RK805/RK808/RK809/RK816/RK817/RK818 Power Management Chip
-  "MFD_RK8XX_SPI" = yes; # Rockchip RK806 Power Management Chip
+  "MFD_RK8XX_I2C" = no; # Rockchip RK805/RK808/RK809/RK816/RK817/RK818 Power Management Chip
+  "MFD_RK8XX_SPI" = no; # Rockchip RK806 Power Management Chip
   "MFD_RN5T618" = no; # Ricoh RN5T567/618 PMIC
   "MFD_SEC_CORE" = yes; # Samsung Electronics PMIC Series Support
   "MFD_SI476X_CORE" = no; # Silicon Laboratories 4761/64/68 AM/FM radio.
@@ -3246,15 +3113,15 @@ in
   "MFD_TPS65086" = no; # TI TPS65086 Power Management Integrated Chips (PMICs)
   "MFD_TPS65090" = no; # TI TPS65090 Power Management chips
   "MFD_TPS65217" = no; # TI TPS65217 Power Management / White LED chips
-  "MFD_TI_LP873X" = module; # TI LP873X Power Management IC
+  "MFD_TI_LP873X" = no; # TI LP873X Power Management IC
   "MFD_TI_LP87565" = no; # TI LP87565 Power Management IC
   "MFD_TPS65218" = no; # TI TPS65218 Power Management chips
-  "MFD_TPS65219" = yes; # TI TPS65219 Power Management IC
+  "MFD_TPS65219" = no; # TI TPS65219 Power Management IC
   "MFD_TPS6586X" = no; # TI TPS6586x Power Management chips
   "MFD_TPS65910" = no; # TI TPS65910 Power Management chip
   "MFD_TPS65912_I2C" = no; # TI TPS65912 Power Management chip with I2C
   "MFD_TPS65912_SPI" = no; # TI TPS65912 Power Management chip with SPI
-  "MFD_TPS6594_I2C" = module; # TI TPS6594 Power Management chip with I2C
+  "MFD_TPS6594_I2C" = no; # TI TPS6594 Power Management chip with I2C
   "MFD_TPS6594_SPI" = no; # TI TPS6594 Power Management chip with SPI
   "TWL4030_CORE" = no; # TI TWL4030/TWL5030/TWL6030/TPS659x0 Support
   "TWL6040_CORE" = no; # TI TWL6040 audio codec
@@ -3302,8 +3169,7 @@ in
   "REGULATOR_AXP20X" = yes; # X-POWERS AXP20X PMIC Regulators
   "REGULATOR_BD718XX" = yes; # ROHM BD71837 Power Regulator
   "REGULATOR_BD9571MWV" = yes; # ROHM BD9571MWV Regulators
-  "REGULATOR_CROS_EC" = yes; # ChromeOS EC regulators
-  "REGULATOR_DA9062" = no; # Dialog Semiconductor DA9061/62 regulators
+  "REGULATOR_CROS_EC" = no; # ChromeOS EC regulators
   "REGULATOR_DA9121" = no; # Dialog Semiconductor DA9121/DA9122/DA9220/DA9217/DA9130/DA9131/DA9132 regulator
   "REGULATOR_DA9210" = no; # Dialog Semiconductor DA9210 regulator
   "REGULATOR_DA9211" = yes; # Dialog Semiconductor DA9211/DA9212/DA9213/DA9223/DA9214/DA9224/DA9215/DA9225 regulator
@@ -3317,7 +3183,6 @@ in
   "REGULATOR_LP3971" = no; # National Semiconductors LP3971 PMIC regulator driver
   "REGULATOR_LP3972" = no; # National Semiconductors LP3972 PMIC regulator driver
   "REGULATOR_LP872X" = no; # TI/National Semiconductor LP8720/LP8725 voltage regulators
-  "REGULATOR_LP873X" = module; # TI LP873X Power regulators
   "REGULATOR_LP8755" = no; # TI LP8755 High Performance PMU driver
   "REGULATOR_LTC3589" = no; # LTC3589 8-output voltage regulator
   "REGULATOR_LTC3676" = no; # LTC3676 8-output voltage regulator
@@ -3331,23 +3196,23 @@ in
   "REGULATOR_MAX8952" = no; # Maxim MAX8952 Power Management IC
   "REGULATOR_MAX8973" = yes; # Maxim MAX8973A voltage regulator
   "REGULATOR_MAX20086" = no; # Maxim MAX20086-MAX20089 Camera Power Protectors
-  "REGULATOR_MAX20411" = module; # Maxim MAX20411 High-Efficiency Single Step-Down Converter
+  "REGULATOR_MAX20411" = no; # Maxim MAX20411 High-Efficiency Single Step-Down Converter
   "REGULATOR_MAX77826" = no; # Maxim 77826 regulator
   "REGULATOR_MCP16502" = no; # Microchip MCP16502 PMIC
   "REGULATOR_MP5416" = no; # Monolithic MP5416 PMIC
   "REGULATOR_MP8859" = yes; # MPS MP8859 regulator driver
   "REGULATOR_MP886X" = no; # MPS MP8869 regulator driver
   "REGULATOR_MPQ7920" = no; # Monolithic MPQ7920 PMIC
-  "REGULATOR_MT6311" = no; # MediaTek MT6311 PMIC
-  "REGULATOR_MT6315" = module; # MediaTek MT6315 PMIC
-  "REGULATOR_MT6323" = no; # MediaTek MT6323 PMIC
+  "REGULATOR_MT6311" = yes; # MediaTek MT6311 PMIC
+  "REGULATOR_MT6315" = no; # MediaTek MT6315 PMIC
+  "REGULATOR_MT6323" = yes; # MediaTek MT6323 PMIC
   "REGULATOR_MT6331" = no; # MediaTek MT6331 PMIC
   "REGULATOR_MT6332" = no; # MediaTek MT6332 PMIC
-  "REGULATOR_MT6357" = yes; # MediaTek MT6357 PMIC
+  "REGULATOR_MT6357" = no; # MediaTek MT6357 PMIC
   "REGULATOR_MT6358" = yes; # MediaTek MT6358 PMIC
-  "REGULATOR_MT6359" = yes; # MediaTek MT6359 PMIC
-  "REGULATOR_MT6360" = yes; # MT6360 SubPMIC Regulator
-  "REGULATOR_MT6380" = no; # MediaTek MT6380 PMIC
+  "REGULATOR_MT6359" = no; # MediaTek MT6359 PMIC
+  "REGULATOR_MT6360" = module; # MT6360 SubPMIC Regulator
+  "REGULATOR_MT6380" = yes; # MediaTek MT6380 PMIC
   "REGULATOR_MT6397" = yes; # MediaTek MT6397 PMIC
   "REGULATOR_PCA9450" = yes; # NXP PCA9450A/PCA9450B/PCA9450C regulator driver
   "REGULATOR_PF8X00" = yes; # NXP PF8100/PF8121A/PF8200 regulator driver
@@ -3357,10 +3222,9 @@ in
   "REGULATOR_PV88090" = no; # Powerventure Semiconductor PV88090 regulator
   "REGULATOR_PWM" = yes; # PWM voltage regulator
   "REGULATOR_QCOM_SPMI" = yes; # Qualcomm SPMI regulator driver
-  "REGULATOR_QCOM_USB_VBUS" = module; # Qualcomm USB Vbus regulator driver
-  "REGULATOR_RAA215300" = yes; # Renesas RAA215300 driver
+  "REGULATOR_QCOM_USB_VBUS" = no; # Qualcomm USB Vbus regulator driver
+  "REGULATOR_RAA215300" = no; # Renesas RAA215300 driver
   "REGULATOR_RASPBERRYPI_TOUCHSCREEN_ATTINY" = no; # Raspberry Pi 7-inch touchscreen panel ATTINY regulator
-  "REGULATOR_RK808" = yes; # Rockchip RK805/RK808/RK809/RK817/RK818 Power regulators
   "REGULATOR_RT4801" = no; # Richtek RT4801 Regulators
   "REGULATOR_RT4803" = no; # Richtek RT4803 boost regualtor
   "REGULATOR_RT5190A" = no; # Richtek RT5190A PMIC
@@ -3387,8 +3251,6 @@ in
   "REGULATOR_TPS65023" = no; # TI TPS65023 Power regulators
   "REGULATOR_TPS6507X" = no; # TI TPS6507X Power regulators
   "REGULATOR_TPS65132" = module; # TI TPS65132 Dual Output Power regulators
-  "REGULATOR_TPS65219" = yes; # TI TPS65219 Power regulators
-  "REGULATOR_TPS6594" = module; # TI TPS6594 Power regulators
   "REGULATOR_TPS6524X" = no; # TI TPS6524X Power regulators
   "REGULATOR_VCTRL" = module; # Voltage controlled regulators
   "REGULATOR_QCOM_LABIBB" = no; # QCOM LAB/IBB regulator support
@@ -3408,7 +3270,7 @@ in
   "IR_SONY_DECODER" = no; # Enable IR raw decoder for the Sony protocol
   "IR_XMP_DECODER" = no; # Enable IR raw decoder for the XMP protocol
   "RC_DEVICES" = yes; # Remote Controller devices
-  "IR_GPIO_CIR" = module; # GPIO IR remote control
+  "IR_GPIO_CIR" = no; # GPIO IR remote control
   "IR_HIX5HD2" = no; # Hisilicon hix5hd2 IR remote control
   "IR_IGORPLUGUSB" = no; # IgorPlug-USB IR Receiver
   "IR_IGUANA" = no; # IguanaWorks USB IR Transceiver
@@ -3427,13 +3289,7 @@ in
 
   ### Device Drivers -> CEC support
   "MEDIA_CEC_RC" = no; # HDMI CEC RC integration
-  "MEDIA_CEC_SUPPORT" = yes; # HDMI CEC drivers
-  "CEC_CH7322" = no; # Chrontel CH7322 CEC controller
-  "CEC_CROS_EC" = no; # ChromeOS EC CEC driver
-  "CEC_GPIO" = no; # Generic GPIO-based CEC driver
-  "USB_EXTRON_DA_HD_4K_PLUS_CEC" = no; # Extron DA HD 4K Plus CEC driver
-  "USB_PULSE8_CEC" = no; # Pulse Eight HDMI CEC
-  "USB_RAINSHADOW_CEC" = no; # RainShadow Tech HDMI CEC
+  "MEDIA_CEC_SUPPORT" = no; # HDMI CEC drivers
   ### Device Drivers: end of CEC support
 
   "MEDIA_SUPPORT" = module; # Multimedia support
@@ -3501,7 +3357,7 @@ in
   "V4L_MEM2MEM_DRIVERS" = yes; # Memory-to-memory multimedia devices
   "VIDEO_MEM2MEM_DEINTERLACE" = no; # Deinterlace support
   "VIDEO_MUX" = no; # Video Multiplexer
-  "VIDEO_CADENCE_CSI2RX" = module; # Cadence MIPI-CSI2 RX Controller
+  "VIDEO_CADENCE_CSI2RX" = no; # Cadence MIPI-CSI2 RX Controller
   "VIDEO_CADENCE_CSI2TX" = no; # Cadence MIPI-CSI2 TX Controller
   "VIDEO_CAFE_CCIC" = no; # Marvell 88ALP01 (Cafe) CMOS Camera Controller support
   "VIDEO_MEDIATEK_JPEG" = module; # Mediatek JPEG Codec driver
@@ -3536,7 +3392,7 @@ in
   "VIDEO_IMX334" = no; # Sony IMX334 sensor support
   "VIDEO_IMX335" = no; # Sony IMX335 sensor support
   "VIDEO_IMX355" = no; # Sony IMX355 sensor support
-  "VIDEO_IMX412" = module; # Sony IMX412 sensor support
+  "VIDEO_IMX412" = no; # Sony IMX412 sensor support
   "VIDEO_IMX415" = no; # Sony IMX415 sensor support
   "VIDEO_MT9M001" = no; # mt9m001 support
   "VIDEO_MT9M111" = no; # mt9m111, mt9m112 and mt9m131 support
@@ -3634,17 +3490,16 @@ in
   "DRM_DISPLAY_DP_AUX_CHARDEV" = no; # DRM DP AUX Interface
 
   ##### I2C encoder or helper chips
-  "DRM_I2C_CH7006" = no; # Chrontel ch7006 TV encoder
-  "DRM_I2C_SIL164" = no; # Silicon Image sil164 TMDS transmitter
+  "DRM_I2C_CH7006" = yes; # Chrontel ch7006 TV encoder
+  "DRM_I2C_SIL164" = yes; # Silicon Image sil164 TMDS transmitter
   "DRM_I2C_NXP_TDA998X" = yes; # NXP Semiconductors TDA998X HDMI encoder
   "DRM_I2C_NXP_TDA9950" = no; # NXP Semiconductors TDA9950/TDA998X HDMI CEC
   ##### end of I2C encoder or helper chips
 
   ##### ARM devices
-  "DRM_HDLCD" = module; # ARM HDLCD
-  "DRM_HDLCD_SHOW_UNDERRUN" = no; # Show underrun conditions
-  "DRM_MALI_DISPLAY" = no; # ARM Mali Display Processor
-  "DRM_KOMEDA" = module; # ARM Komeda display driver
+  "DRM_HDLCD" = no; # ARM HDLCD
+  "DRM_MALI_DISPLAY" = module; # ARM Mali Display Processor
+  "DRM_KOMEDA" = no; # ARM Komeda display driver
   ##### end of ARM devices
 
   "DRM_RADEON" = no; # ATI Radeon
@@ -3685,15 +3540,15 @@ in
   "DRM_PANEL_ILITEK_ILI9805" = no; # Ilitek ILI9805-based panels
   "DRM_PANEL_ILITEK_ILI9806E" = no; # Ilitek ILI9806E-based panels
   "DRM_PANEL_ILITEK_ILI9881C" = no; # Ilitek ILI9881C-based panels
-  "DRM_PANEL_ILITEK_ILI9882T" = module; # Ilitek ILI9882t-based panels
+  "DRM_PANEL_ILITEK_ILI9882T" = no; # Ilitek ILI9882t-based panels
   "DRM_PANEL_INNOLUX_EJ030NA" = no; # Innolux EJ030NA 320x480 LCD panel
   "DRM_PANEL_INNOLUX_P079ZCA" = yes; # Innolux P079ZCA panel
   "DRM_PANEL_JADARD_JD9365DA_H3" = no; # Jadard JD9365DA-H3 WXGA DSI panel
   "DRM_PANEL_JDI_LPM102A188A" = no; # JDI LPM102A188A DSI panel
   "DRM_PANEL_JDI_LT070ME05000" = no; # JDI LT070ME05000 WUXGA DSI panel
   "DRM_PANEL_JDI_R63452" = no; # JDI R63452 Full HD DSI panel
-  "DRM_PANEL_KHADAS_TS050" = module; # Khadas TS050 panel
-  "DRM_PANEL_KINGDISPLAY_KD097D04" = module; # Kingdisplay kd097d04 panel
+  "DRM_PANEL_KHADAS_TS050" = no; # Khadas TS050 panel
+  "DRM_PANEL_KINGDISPLAY_KD097D04" = yes; # Kingdisplay kd097d04 panel
   "DRM_PANEL_LEADTEK_LTK050H3146W" = no; # Leadtek LTK050H3146W panel
   "DRM_PANEL_LEADTEK_LTK500HD1829" = no; # Leadtek LTK500HD1829 panel
   "DRM_PANEL_LINCOLNTECH_LCD197" = no; # Lincoln Technologies lcd197 panel
@@ -3710,7 +3565,7 @@ in
   "DRM_PANEL_NOVATEK_NT35950" = no; # Novatek NT35950 DSI panel
   "DRM_PANEL_NOVATEK_NT36523" = no; # Novatek NT36523 panel driver
   "DRM_PANEL_NOVATEK_NT36672A" = no; # Novatek NT36672A DSI panel
-  "DRM_PANEL_NOVATEK_NT36672E" = module; # Novatek NT36672E DSI panel
+  "DRM_PANEL_NOVATEK_NT36672E" = no; # Novatek NT36672E DSI panel
   "DRM_PANEL_NOVATEK_NT39016" = no; # Novatek NT39016 RGB/SPI panel
   "DRM_PANEL_OLIMEX_LCD_OLINUXINO" = no; # Olimex LCD-OLinuXino panel
   "DRM_PANEL_ORISETECH_OTA5601A" = no; # Orise Technology ota5601a RGB/SPI panel
@@ -3718,13 +3573,13 @@ in
   "DRM_PANEL_OSD_OSD101T2587_53TS" = no; # OSD OSD101T2587-53TS DSI 1920x1200 video mode panel
   "DRM_PANEL_PANASONIC_VVX10F034N00" = no; # Panasonic VVX10F034N00 1920x1200 video mode panel
   "DRM_PANEL_RASPBERRYPI_TOUCHSCREEN" = no; # Raspberry Pi 7-inch touchscreen panel
-  "DRM_PANEL_RAYDIUM_RM67191" = module; # Raydium RM67191 FHD 1080x1920 DSI video mode panel
+  "DRM_PANEL_RAYDIUM_RM67191" = yes; # Raydium RM67191 FHD 1080x1920 DSI video mode panel
   "DRM_PANEL_RAYDIUM_RM68200" = no; # Raydium RM68200 720x1280 DSI video mode panel
   "DRM_PANEL_RAYDIUM_RM692E5" = no; # Raydium RM692E5-based DSI panel
   "DRM_PANEL_RAYDIUM_RM69380" = no; # Raydium RM69380-based DSI panel
   "DRM_PANEL_RONBO_RB070D30" = no; # Ronbo Electronics RB070D30 panel
   "DRM_PANEL_SAMSUNG_S6E88A0_AMS452EF01" = no; # Samsung AMS452EF01 panel with S6E88A0 DSI video mode controller
-  "DRM_PANEL_SAMSUNG_ATNA33XC20" = module; # Samsung ATNA33XC20 eDP panel
+  "DRM_PANEL_SAMSUNG_ATNA33XC20" = no; # Samsung ATNA33XC20 eDP panel
   "DRM_PANEL_SAMSUNG_DB7430" = no; # Samsung DB7430-based DPI panels
   "DRM_PANEL_SAMSUNG_LD9040" = no; # Samsung LD9040 RGB/SPI panel
   "DRM_PANEL_SAMSUNG_S6E3FA7" = no; # Samsung S6E3FA7 panel driver
@@ -3742,7 +3597,7 @@ in
   "DRM_PANEL_SHARP_LS043T1LE01" = no; # Sharp LS043T1LE01 qHD video mode panel
   "DRM_PANEL_SHARP_LS060T1SX01" = no; # Sharp LS060T1SX01 FullHD video mode panel
   "DRM_PANEL_SITRONIX_ST7701" = no; # Sitronix ST7701 panel driver
-  "DRM_PANEL_SITRONIX_ST7703" = module; # Sitronix ST7703 based MIPI touchscreen panels
+  "DRM_PANEL_SITRONIX_ST7703" = yes; # Sitronix ST7703 based MIPI touchscreen panels
   "DRM_PANEL_SITRONIX_ST7789V" = no; # Sitronix ST7789V panel
   "DRM_PANEL_SONY_ACX565AKM" = no; # Sony ACX565AKM panel
   "DRM_PANEL_SONY_TD4353_JDI" = no; # Sony TD4353 JDI panel
@@ -3758,7 +3613,7 @@ in
   "DRM_PANEL_TRULY_NT35597_WQXGA" = module; # Truly WQXGA
   "DRM_PANEL_VISIONOX_R66451" = no; # Visionox R66451
   "DRM_PANEL_VISIONOX_RM69299" = no; # Visionox RM69299
-  "DRM_PANEL_VISIONOX_VTDR6130" = module; # Visionox VTDR6130
+  "DRM_PANEL_VISIONOX_VTDR6130" = no; # Visionox VTDR6130
   "DRM_PANEL_WIDECHIPS_WS2401" = no; # Widechips WS2401 DPI panel driver
   "DRM_PANEL_XINPENG_XPP055C272" = no; # Xinpeng XPP055C272 panel driver
   ##### end of Display Panels
@@ -3766,21 +3621,21 @@ in
   ##### Display Interface Bridges
   "DRM_CHIPONE_ICN6211" = no; # Chipone ICN6211 MIPI-DSI/RGB Converter bridge
   "DRM_CHRONTEL_CH7033" = no; # Chrontel CH7033 Video Encoder
-  "DRM_CROS_EC_ANX7688" = no; # ChromeOS EC ANX7688 bridge
-  "DRM_DISPLAY_CONNECTOR" = no; # Display connector support
+  "DRM_CROS_EC_ANX7688" = yes; # ChromeOS EC ANX7688 bridge
+  "DRM_DISPLAY_CONNECTOR" = yes; # Display connector support
   "DRM_ITE_IT6505" = yes; # ITE IT6505 DisplayPort bridge
   "DRM_LONTIUM_LT8912B" = module; # Lontium LT8912B DSI/HDMI bridge
   "DRM_LONTIUM_LT9211" = no; # Lontium LT9211 DSI/LVDS/DPI bridge
   "DRM_LONTIUM_LT9611" = module; # Lontium LT9611 DSI/HDMI bridge
   "DRM_LONTIUM_LT9611UXC" = module; # Lontium LT9611UXC DSI/HDMI bridge
-  "DRM_ITE_IT66121" = module; # ITE IT66121 HDMI bridge
+  "DRM_ITE_IT66121" = no; # ITE IT66121 HDMI bridge
   "DRM_LVDS_CODEC" = no; # Transparent LVDS encoders and decoders support
   "DRM_MEGACHIPS_STDPXXXX_GE_B850V3_FW" = no; # MegaChips stdp4028-ge-b850v3-fw and stdp2690-ge-b850v3-fw
   "DRM_NWL_MIPI_DSI" = module; # Northwest Logic MIPI DSI Host controller
   "DRM_NXP_PTN3460" = no; # NXP PTN3460 DP/LVDS bridge
   "DRM_PARADE_PS8622" = no; # Parade eDP/LVDS bridge
   "DRM_PARADE_PS8640" = yes; # Parade PS8640 MIPI DSI to eDP Converter
-  "DRM_SAMSUNG_DSIM" = module; # Samsung MIPI DSIM bridge driver
+  "DRM_SAMSUNG_DSIM" = no; # Samsung MIPI DSIM bridge driver
   "DRM_SIL_SII8620" = no; # Silicon Image SII8620 HDMI/MHL bridge
   "DRM_SII902X" = module; # Silicon Image sii902x RGB/HDMI bridge
   "DRM_SII9234" = no; # Silicon Image SII9234 HDMI/MHL bridge
@@ -3788,27 +3643,27 @@ in
   "DRM_THINE_THC63LVD1024" = module; # Thine THC63LVD1024 LVDS decoder bridge
   "DRM_TOSHIBA_TC358762" = no; # TC358762 DSI/DPI bridge
   "DRM_TOSHIBA_TC358764" = no; # TC358764 DSI/LVDS bridge
-  "DRM_TOSHIBA_TC358767" = module; # Toshiba TC358767 eDP bridge
-  "DRM_TOSHIBA_TC358768" = module; # Toshiba TC358768 MIPI DSI bridge
+  "DRM_TOSHIBA_TC358767" = no; # Toshiba TC358767 eDP bridge
+  "DRM_TOSHIBA_TC358768" = no; # Toshiba TC358768 MIPI DSI bridge
   "DRM_TOSHIBA_TC358775" = no; # Toshiba TC358775 DSI/LVDS bridge
   "DRM_TI_DLPC3433" = no; # TI DLPC3433 Display controller
-  "DRM_TI_TFP410" = module; # TI TFP410 DVI/HDMI bridge
-  "DRM_TI_SN65DSI83" = module; # TI SN65DSI83 and SN65DSI84 DSI to LVDS bridge
+  "DRM_TI_TFP410" = no; # TI TFP410 DVI/HDMI bridge
+  "DRM_TI_SN65DSI83" = no; # TI SN65DSI83 and SN65DSI84 DSI to LVDS bridge
   "DRM_TI_SN65DSI86" = module; # TI SN65DSI86 DSI to eDP bridge
   "DRM_TI_TPD12S015" = no; # TI TPD12S015 HDMI level shifter and ESD protection
   "DRM_ANALOGIX_ANX6345" = no; # Analogix ANX6345 bridge
-  "DRM_ANALOGIX_ANX78XX" = no; # Analogix ANX78XX bridge
+  "DRM_ANALOGIX_ANX78XX" = yes; # Analogix ANX78XX bridge
   "DRM_ANALOGIX_ANX7625" = yes; # Analogix Anx7625 MIPI to DP interface support
   "DRM_I2C_ADV7511" = module; # ADV7511 encoder
   "DRM_I2C_ADV7511_AUDIO" = yes; # ADV7511 HDMI Audio driver
   "DRM_I2C_ADV7511_CEC" = yes; # ADV7511/33/35 HDMI CEC driver
   "DRM_CDNS_DSI" = no; # Cadence DPI/DSI bridge
-  "DRM_CDNS_MHDP8546" = module; # Cadence DPI/DP bridge
+  "DRM_CDNS_MHDP8546" = no; # Cadence DPI/DP bridge
   ##### end of Display Interface Bridges
 
   "DRM_ETNAVIV" = no; # ETNAVIV (DRM support for Vivante GPU IP cores)
-  "DRM_HISI_HIBMC" = no; # DRM Support for Hisilicon Hibmc
-  "DRM_HISI_KIRIN" = no; # DRM Support for Hisilicon Kirin series SoCs Platform
+  "DRM_HISI_HIBMC" = module; # DRM Support for Hisilicon Hibmc
+  "DRM_HISI_KIRIN" = module; # DRM Support for Hisilicon Kirin series SoCs Platform
   "DRM_LOGICVC" = no; # LogiCVC DRM
   "DRM_MEDIATEK" = yes; # DRM Support for Mediatek SoCs
   "DRM_MEDIATEK_DP" = yes; # DRM DPTX Support for MediaTek SoCs
@@ -3828,7 +3683,7 @@ in
   "TINYDRM_REPAPER" = no; # DRM support for Pervasive Displays RePaper panels (V231)
   "TINYDRM_ST7586" = no; # DRM support for Sitronix ST7586 display panels
   "TINYDRM_ST7735R" = no; # DRM support for Sitronix ST7715R/ST7735R display panels
-  "DRM_PL111" = no; # DRM Support for PL111 CLCD Controller
+  "DRM_PL111" = module; # DRM Support for PL111 CLCD Controller
   "DRM_XEN_FRONTEND" = no; # Para-virtualized frontend driver for Xen guest OS
   "DRM_LIMA" = no; # LIMA (DRM support for ARM Mali 400/450 GPU)
   "DRM_PANFROST" = yes; # Panfrost (DRM support for ARM Mali Midgard/Bifrost GPUs)
@@ -3836,7 +3691,7 @@ in
   "DRM_TIDSS" = no; # DRM Support for TI Keystone
   "DRM_GUD" = no; # GUD USB Display
   "DRM_SSD130X" = no; # DRM support for Solomon SSD13xx OLED displays
-  "DRM_POWERVR" = module; # Imagination Technologies PowerVR (Series 6 and later) & IMG Graphics
+  "DRM_POWERVR" = no; # Imagination Technologies PowerVR (Series 6 and later) & IMG Graphics
 
   #### Device Drivers -> Graphics support -> Frame buffer Devices
   "FB" = yes; # Support for frame buffer device drivers
@@ -3845,6 +3700,7 @@ in
   "FB_CYBER2000" = no; # CyberPro 2000/2010/5000 support
   "FB_ASILIANT" = no; # Asiliant (Chips) 69000 display support
   "FB_IMSTT" = no; # IMS Twin Turbo display support
+  "FB_EFI" = yes; # EFI-based Framebuffer Support
   "FB_OPENCORES" = no; # OpenCores VGA/LCD core 2.0 framebuffer support
   "FB_S1D13XXX" = no; # Epson S1D13XXX framebuffer support
   "FB_NVIDIA" = no; # nVidia Framebuffer Support
@@ -3873,7 +3729,7 @@ in
   "XEN_FBDEV_FRONTEND" = yes; # Xen virtual frame buffer support
   "FB_METRONOME" = no; # E-Ink Metronome/8track controller support
   "FB_MB862XX" = no; # Fujitsu MB862xx GDC support
-  "FB_SIMPLE" = no; # Simple framebuffer support
+  "FB_SIMPLE" = yes; # Simple framebuffer support
   "FB_SSD1307" = no; # Solomon SSD1307 framebuffer support
   "FB_SM712" = no; # Silicon Motion SM712 framebuffer support
   "FIRMWARE_EDID" = no; # Enable firmware EDID
@@ -3884,7 +3740,19 @@ in
   #### Device Drivers -> Graphics support: end of Frame buffer Devices
 
   #### Device Drivers -> Graphics support -> Backlight & LCD device support
-  "LCD_CLASS_DEVICE" = no; # Lowlevel LCD controls
+  "LCD_CLASS_DEVICE" = module; # Lowlevel LCD controls
+  "LCD_L4F00242T03" = no; # Epson L4F00242T03 LCD
+  "LCD_LMS283GF05" = no; # Samsung LMS283GF05 LCD
+  "LCD_LTV350QV" = no; # Samsung LTV350QV LCD Panel
+  "LCD_ILI922X" = no; # ILI Technology ILI9221/ILI9222 support
+  "LCD_ILI9320" = no; # ILI Technology ILI9320 controller support
+  "LCD_TDO24M" = no; # Toppoly TDO24M  and TDO35S LCD Panels support
+  "LCD_VGG2432A4" = no; # VGG2432A4 LCM device support
+  "LCD_PLATFORM" = no; # Platform LCD controls
+  "LCD_AMS369FG06" = no; # AMS369FG06 AMOLED LCD Driver
+  "LCD_LMS501KF03" = no; # LMS501KF03 LCD Driver
+  "LCD_HX8357" = no; # Himax HX-8357 LCD Driver
+  "LCD_OTM3225A" = no; # ORISE Technology OTM3225A support
   "BACKLIGHT_CLASS_DEVICE" = yes; # Lowlevel Backlight controls
   "BACKLIGHT_KTD253" = no; # Backlight Driver for Kinetic KTD253
   "BACKLIGHT_KTD2801" = no; # Backlight Driver for Kinetic KTD2801
@@ -3896,7 +3764,7 @@ in
   "BACKLIGHT_LM3509" = no; # Backlight Driver for LM3509
   "BACKLIGHT_LM3630A" = no; # Backlight Driver for LM3630A
   "BACKLIGHT_LM3639" = no; # Backlight Driver for LM3639
-  "BACKLIGHT_LP855X" = module; # Backlight driver for TI LP855X
+  "BACKLIGHT_LP855X" = no; # Backlight driver for TI LP855X
   "BACKLIGHT_MP3309C" = no; # Backlight Driver for MPS MP3309C
   "BACKLIGHT_GPIO" = no; # Generic GPIO based Backlight Driver
   "BACKLIGHT_LV5207LP" = no; # Sanyo LV5207LP Backlight
@@ -3915,10 +3783,7 @@ in
   "FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER" = no; # Framebuffer Console Deferred Takeover
   #### Device Drivers -> Graphics support: end of Console display driver support
 
-  "LOGO" = yes; # Bootup logo
-  "LOGO_LINUX_MONO" = yes; # Standard black and white Linux logo
-  "LOGO_LINUX_VGA16" = yes; # Standard 16-color Linux logo
-  "LOGO_LINUX_CLUT224" = yes; # Standard 224-color Linux logo
+  "LOGO" = no; # Bootup logo
   ### Device Drivers: end of Graphics support
 
   "DRM_ACCEL" = no; # Compute Acceleration Framework
@@ -3926,8 +3791,7 @@ in
   "SND" = yes; # Advanced Linux Sound Architecture
   "SND_OSSEMUL" = no; # Enable OSS Emulation
   "SND_HRTIMER" = no; # HR-timer backend support
-  "SND_DYNAMIC_MINORS" = yes; # Dynamic device file minor numbers
-  "SND_MAX_CARDS" = freeform "32"; # Max number of sound cards
+  "SND_DYNAMIC_MINORS" = no; # Dynamic device file minor numbers
   "SND_SUPPORT_OLD_API" = yes; # Support old ALSA API
   "SND_PROC_FS" = yes; # Sound Proc FS Support
   "SND_VERBOSE_PROCFS" = yes; # Verbose procfs contents
@@ -3939,7 +3803,7 @@ in
   "SND_SEQ_UMP" = no; # Support for UMP events
   "SND_DRIVERS" = yes; # Generic sound devices
   "SND_DUMMY" = no; # Dummy (/dev/null) soundcard
-  "SND_ALOOP" = module; # Generic loopback driver (PCM)
+  "SND_ALOOP" = no; # Generic loopback driver (PCM)
   "SND_PCMTEST" = no; # Virtual PCM test driver
   "SND_VIRMIDI" = module; # Virtual MIDI soundcard
   "SND_MTPAV" = no; # MOTU MidiTimePiece AV multiport MIDI
@@ -4058,31 +3922,20 @@ in
   "SND_SOC_MT6797" = no; # ASoC support for Mediatek MT6797 chip
   "SND_SOC_MT7986" = no; # ASoC support for Mediatek MT7986 chip
   "SND_SOC_MT8173" = module; # ASoC support for Mediatek MT8173 chip
-  "SND_SOC_MT8173_MAX98090" = module; # ASoC Audio driver for MT8173 with MAX98090 codec
+  "SND_SOC_MT8173_MAX98090" = no; # ASoC Audio driver for MT8173 with MAX98090 codec
   "SND_SOC_MT8173_RT5650" = module; # ASoC Audio driver for MT8173 with RT5650 codec
   "SND_SOC_MT8173_RT5650_RT5514" = module; # ASoC Audio driver for MT8173 with RT5650 RT5514 codecs
   "SND_SOC_MT8173_RT5650_RT5676" = module; # ASoC Audio driver for MT8173 with RT5650 RT5676 codecs
   "SND_SOC_MT8183" = module; # ASoC support for Mediatek MT8183 chip
   "SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A" = module; # ASoC Audio driver for MT8183 with MT6358 TS3A227E MAX98357A RT1015 codec
   "SND_SOC_MT8183_DA7219_MAX98357A" = module; # ASoC Audio driver for MT8183 with DA7219 MAX98357A RT1015 codec
-  "SND_SOC_MT8186" = module; # ASoC support for Mediatek MT8186 chip
-  "SND_SOC_MT8186_MT6366" = module; # ASoC Audio driver for MT8186 with MT6366 and I2S codecs
-  "SND_SOC_MTK_BTCVSD" = module; # ALSA BT SCO CVSD/MSBC Driver
-  "SND_SOC_MT8188" = module; # ASoC support for MediaTek MT8188 chip
-  "SND_SOC_MT8188_MT6359" = module; # ASoC Audio driver for MT8188 with MT6359 and I2S codecs
-  "SND_SOC_MT8192" = module; # ASoC support for Mediatek MT8192 chip
-  "SND_SOC_MT8192_MT6359_RT1015_RT5682" = module; # ASoC Audio driver for MT8192 with MT6359 RT1015 RT5682 codec
-  "SND_SOC_MT8195" = module; # ASoC support for Mediatek MT8195 chip
-  "SND_SOC_MT8195_MT6359" = module; # ASoC Audio driver for MT8195 with MT6359 and I2S codecs
-  "SND_SOC_MT8365" = module; # ASoC support for MediaTek MT8365 chip
-  "SND_SOC_MT8365_MT6357" = module; # ASoC Audio driver for MT8365 with MT6357 codec
-  "SND_SOC_SOF_TOPLEVEL" = yes; # Sound Open Firmware Support
-  "SND_SOC_SOF_PCI" = module; # SOF PCI enumeration support
-  "SND_SOC_SOF_OF" = yes; # SOF OF enumeration support
-  "SND_SOC_SOF_IMX_TOPLEVEL" = no; # SOF support for NXP i.MX audio DSPs
-  "SND_SOC_SOF_MTK_TOPLEVEL" = yes; # SOF support for MTK audio DSPs
-  "SND_SOC_SOF_MT8186" = module; # SOF support for MT8186 audio DSP
-  "SND_SOC_SOF_MT8195" = module; # SOF support for MT8195 audio DSP
+  "SND_SOC_MT8186" = no; # ASoC support for Mediatek MT8186 chip
+  "SND_SOC_MTK_BTCVSD" = no; # ALSA BT SCO CVSD/MSBC Driver
+  "SND_SOC_MT8188" = no; # ASoC support for MediaTek MT8188 chip
+  "SND_SOC_MT8192" = no; # ASoC support for Mediatek MT8192 chip
+  "SND_SOC_MT8195" = no; # ASoC support for Mediatek MT8195 chip
+  "SND_SOC_MT8365" = no; # ASoC support for MediaTek MT8365 chip
+  "SND_SOC_SOF_TOPLEVEL" = no; # Sound Open Firmware Support
   "SND_SOC_XILINX_I2S" = no; # Audio support for the Xilinx I2S
   "SND_SOC_XILINX_AUDIO_FORMATTER" = no; # Audio support for the Xilinx audio formatter
   "SND_SOC_XILINX_SPDIF" = no; # Audio support for the Xilinx SPDIF
@@ -4104,7 +3957,7 @@ in
   "SND_SOC_AK4458" = no; # AKM AK4458 CODEC
   "SND_SOC_AK4554" = no; # AKM AK4554 CODEC
   "SND_SOC_AK4613" = module; # AKM AK4613 CODEC
-  "SND_SOC_AK4619" = module; # AKM AK4619 CODEC
+  "SND_SOC_AK4619" = no; # AKM AK4619 CODEC
   "SND_SOC_AK4642" = no; # AKM AK4642 CODEC
   "SND_SOC_AK5386" = no; # AKM AK5638 CODEC
   "SND_SOC_AK5558" = no; # AKM AK5558 CODEC
@@ -4150,13 +4003,13 @@ in
   "SND_SOC_CS53L30" = no; # Cirrus Logic CS53L30 CODEC
   "SND_SOC_CS530X_I2C" = no; # Cirrus Logic CS530x ADCs (I2C)
   "SND_SOC_CX2072X" = no; # Conexant CX2072X CODEC
-  "SND_SOC_DA7213" = module; # Dialog DA7213 CODEC
+  "SND_SOC_DA7213" = no; # Dialog DA7213 CODEC
   "SND_SOC_DMIC" = module; # Generic Digital Microphone CODEC
   "SND_SOC_ES7134" = module; # Everest Semi ES7134 CODEC
   "SND_SOC_ES7241" = module; # Everest Semi ES7241 CODEC
   "SND_SOC_ES8311" = no; # Everest Semi ES8311 CODEC
-  "SND_SOC_ES8316" = module; # Everest Semi ES8316 CODEC
-  "SND_SOC_ES8326" = module; # Everest Semi ES8326 CODEC
+  "SND_SOC_ES8316" = no; # Everest Semi ES8316 CODEC
+  "SND_SOC_ES8326" = no; # Everest Semi ES8326 CODEC
   "SND_SOC_ES8328_I2C" = no; # Everest Semi ES8328 CODEC (I2C)
   "SND_SOC_ES8328_SPI" = no; # Everest Semi ES8328 CODEC (SPI)
   "SND_SOC_GTM601" = module; # GTM601 UMTS modem audio codec
@@ -4164,7 +4017,7 @@ in
   "SND_SOC_ICS43432" = no; # ICS43423 and compatible i2s microphones
   "SND_SOC_IDT821034" = no; # Renesas IDT821034 quad PCM codec
   "SND_SOC_MAX98088" = no; # Maxim MAX98088/9 Low-Power, Stereo Audio Codec
-  "SND_SOC_MAX98090" = module; # Maxim MAX98090 CODEC
+  "SND_SOC_MAX98090" = no; # Maxim MAX98090 CODEC
   "SND_SOC_MAX98357A" = module; # Maxim MAX98357A CODEC
   "SND_SOC_MAX98504" = no; # Maxim MAX98504 speaker amplifier
   "SND_SOC_MAX9867" = no; # Maxim MAX9867 CODEC
@@ -4174,7 +4027,7 @@ in
   "SND_SOC_MAX98373_I2C" = no; # Maxim Integrated MAX98373 Speaker Amplifier
   "SND_SOC_MAX98373_SDW" = no; # Maxim Integrated MAX98373 Speaker Amplifier - SDW
   "SND_SOC_MAX98388" = no; # Analog Devices MAX98388 Speaker Amplifier
-  "SND_SOC_MAX98390" = module; # Maxim Integrated MAX98390 Speaker Amplifier
+  "SND_SOC_MAX98390" = no; # Maxim Integrated MAX98390 Speaker Amplifier
   "SND_SOC_MAX98396" = no; # Analog Devices MAX98396 Speaker Amplifier
   "SND_SOC_MAX9860" = no; # Maxim MAX9860 Mono Audio Voice Codec
   "SND_SOC_MSM8916_WCD_ANALOG" = module; # Qualcomm MSM8916 WCD Analog Codec
@@ -4194,7 +4047,6 @@ in
   "SND_SOC_PCM512x_SPI" = no; # Texas Instruments PCM512x CODECs - SPI
   "SND_SOC_PCM6240" = no; # Texas Instruments PCM6240 Family Audio chips based on I2C
   "SND_SOC_PEB2466" = no; # Infineon PEB2466 quad PCM codec
-  "SND_SOC_RK817" = module; # Rockchip RK817 audio CODEC
   "SND_SOC_RT1017_SDCA_SDW" = no; # Realtek RT1017 SDCA Codec - SDW
   "SND_SOC_RT1308_SDW" = no; # Realtek RT1308 Codec - SDW
   "SND_SOC_RT1316_SDW" = no; # Realtek RT1316 Codec - SDW
@@ -4202,7 +4054,7 @@ in
   "SND_SOC_RT1320_SDW" = no; # Realtek RT1320 Codec - SDW
   "SND_SOC_RT5616" = no; # Realtek RT5616 CODEC
   "SND_SOC_RT5631" = no; # Realtek ALC5631/RT5631 CODEC
-  "SND_SOC_RT5640" = module; # Realtek RT5640/RT5639 Codec
+  "SND_SOC_RT5640" = no; # Realtek RT5640/RT5639 Codec
   "SND_SOC_RT5659" = module; # Realtek RT5658/RT5659 Codec
   "SND_SOC_RT5682_SDW" = no; # Realtek RT5682 Codec - SDW
   "SND_SOC_RT700_SDW" = no; # Realtek RT700 Codec - SDW
@@ -4230,7 +4082,7 @@ in
   "SND_SOC_STA32X" = no; # STA326, STA328 and STA329 speaker amplifier
   "SND_SOC_STA350" = no; # STA350 speaker amplifier
   "SND_SOC_STI_SAS" = no; # codec Audio support for STI SAS codec
-  "SND_SOC_TAS2552" = module; # Texas Instruments TAS2552 Mono Audio amplifier
+  "SND_SOC_TAS2552" = no; # Texas Instruments TAS2552 Mono Audio amplifier
   "SND_SOC_TAS2562" = no; # Texas Instruments TAS2562 Mono Audio amplifier
   "SND_SOC_TAS2764" = no; # Texas Instruments TAS2764 Mono Audio amplifier
   "SND_SOC_TAS2770" = no; # Texas Instruments TAS2770 speaker amplifier
@@ -4250,21 +4102,21 @@ in
   "SND_SOC_TLV320AIC31XX" = no; # Texas Instruments TLV320AIC31xx CODECs
   "SND_SOC_TLV320AIC32X4_I2C" = module; # Texas Instruments TLV320AIC32x4 audio CODECs - I2C
   "SND_SOC_TLV320AIC32X4_SPI" = no; # Texas Instruments TLV320AIC32x4 audio CODECs - SPI
-  "SND_SOC_TLV320AIC3X_I2C" = module; # Texas Instruments TLV320AIC3x audio CODECs - I2C
+  "SND_SOC_TLV320AIC3X_I2C" = no; # Texas Instruments TLV320AIC3x audio CODECs - I2C
   "SND_SOC_TLV320AIC3X_SPI" = no; # Texas Instruments TLV320AIC3x audio CODECs - SPI
   "SND_SOC_TLV320ADCX140" = no; # Texas Instruments TLV320ADCX140 CODEC family
   "SND_SOC_TS3A227E" = module; # TI Headset/Mic detect and keypress chip
   "SND_SOC_TSCS42XX" = no; # Tempo Semiconductor TSCS42xx CODEC
   "SND_SOC_TSCS454" = no; # Tempo Semiconductor TSCS454 CODEC
   "SND_SOC_UDA1334" = no; # NXP UDA1334 DAC
-  "SND_SOC_WCD9335" = module; # WCD9335 Codec
+  "SND_SOC_WCD9335" = no; # WCD9335 Codec
   "SND_SOC_WCD934X" = module; # WCD9340/WCD9341 Codec
   "SND_SOC_WCD937X_SDW" = no; # WCD9370/WCD9375 Codec - SDW
   "SND_SOC_WCD938X_SDW" = no; # WCD9380/WCD9385 Codec - SDW
-  "SND_SOC_WCD939X_SDW" = module; # WCD9390/WCD9395 Codec - SDW
+  "SND_SOC_WCD939X_SDW" = no; # WCD9390/WCD9395 Codec - SDW
   "SND_SOC_WM8510" = no; # Wolfson Microelectronics WM8510 CODEC
   "SND_SOC_WM8523" = no; # Wolfson Microelectronics WM8523 DAC
-  "SND_SOC_WM8524" = module; # Wolfson Microelectronics WM8524 DAC
+  "SND_SOC_WM8524" = no; # Wolfson Microelectronics WM8524 DAC
   "SND_SOC_WM8580" = no; # Wolfson Microelectronics WM8580 and WM8581 CODECs
   "SND_SOC_WM8711" = no; # Wolfson Microelectronics WM8711 CODEC
   "SND_SOC_WM8728" = no; # Wolfson Microelectronics WM8728 DAC
@@ -4289,17 +4141,17 @@ in
   "SND_SOC_WM8978" = module; # Wolfson Microelectronics WM8978 codec
   "SND_SOC_WM8985" = no; # Wolfson Microelectronics WM8985 and WM8758 codec driver
   "SND_SOC_WSA881X" = module; # WSA881X Codec
-  "SND_SOC_WSA883X" = module; # WSA883X Codec
-  "SND_SOC_WSA884X" = module; # WSA884X Codec
+  "SND_SOC_WSA883X" = no; # WSA883X Codec
+  "SND_SOC_WSA884X" = no; # WSA884X Codec
   "SND_SOC_ZL38060" = no; # Microsemi ZL38060 Connected Home Audio Processor
   "SND_SOC_MAX9759" = no; # Maxim MAX9759 speaker Amplifier
-  "SND_SOC_MT6351" = no; # MediaTek MT6351 Codec
-  "SND_SOC_MT6357" = module; # MediaTek MT6357 Codec
+  "SND_SOC_MT6351" = module; # MediaTek MT6351 Codec
+  "SND_SOC_MT6357" = no; # MediaTek MT6357 Codec
   "SND_SOC_MT6358" = module; # MediaTek MT6358 Codec
-  "SND_SOC_MT6359" = module; # MediaTek MT6359 Codec
+  "SND_SOC_MT6359" = no; # MediaTek MT6359 Codec
   "SND_SOC_MT6359_ACCDET" = no; # MediaTek MT6359 ACCDET driver
-  "SND_SOC_MT6660" = no; # Mediatek MT6660 Speaker Amplifier
-  "SND_SOC_NAU8315" = module; # Nuvoton Technology Corporation NAU8315 CODEC
+  "SND_SOC_MT6660" = module; # Mediatek MT6660 Speaker Amplifier
+  "SND_SOC_NAU8315" = no; # Nuvoton Technology Corporation NAU8315 CODEC
   "SND_SOC_NAU8540" = no; # Nuvoton Technology Corporation NAU85L40 CODEC
   "SND_SOC_NAU8810" = no; # Nuvoton Technology Corporation NAU88C10 CODEC
   "SND_SOC_NAU8821" = no; # Nuvoton Technology Corporation NAU88L21 CODEC
@@ -4308,8 +4160,8 @@ in
   "SND_SOC_TPA6130A2" = no; # Texas Instruments TPA6130A2 headphone amplifier
   "SND_SOC_LPASS_WSA_MACRO" = module; # Qualcomm WSA Macro in LPASS(Low Power Audio SubSystem)
   "SND_SOC_LPASS_VA_MACRO" = module; # Qualcomm VA Macro in LPASS(Low Power Audio SubSystem)
-  "SND_SOC_LPASS_RX_MACRO" = module; # Qualcomm RX Macro in LPASS(Low Power Audio SubSystem)
-  "SND_SOC_LPASS_TX_MACRO" = module; # Qualcomm TX Macro in LPASS(Low Power Audio SubSystem)
+  "SND_SOC_LPASS_RX_MACRO" = no; # Qualcomm RX Macro in LPASS(Low Power Audio SubSystem)
+  "SND_SOC_LPASS_TX_MACRO" = no; # Qualcomm TX Macro in LPASS(Low Power Audio SubSystem)
   ###### end of CODEC drivers
 
   "SND_SIMPLE_CARD" = module; # ASoC Simple sound card support
@@ -4321,135 +4173,156 @@ in
   "SND_VIRTIO" = module; # Virtio sound driver
   "HID_SUPPORT" = yes; # HID bus support
   "HID" = yes; # HID bus core support
-  "HID_BATTERY_STRENGTH" = no; # Battery level reporting for HID devices
-  "HIDRAW" = no; # /dev/hidraw raw HID device support
+  "HID_BATTERY_STRENGTH" = yes; # Battery level reporting for HID devices
+  "HIDRAW" = yes; # /dev/hidraw raw HID device support
   "UHID" = module; # User-space I/O driver support for HID subsystem
   "HID_GENERIC" = yes; # Generic HID driver
 
   ##### Special HID drivers
-  "HID_A4TECH" = yes; # A4TECH mice
-  "HID_ACCUTOUCH" = no; # Accutouch touch device
-  "HID_ACRUX" = no; # ACRUX game controller support
-  "HID_APPLE" = yes; # Apple {i,Power,Mac}Books
-  "HID_APPLEIR" = no; # Apple infrared receiver
+  "HID_A4TECH" = module; # A4TECH mice
+  "HID_ACCUTOUCH" = module; # Accutouch touch device
+  "HID_ACRUX" = module; # ACRUX game controller support
+  "HID_ACRUX_FF" = yes; # ACRUX force feedback support
+  "HID_APPLE" = module; # Apple {i,Power,Mac}Books
+  "HID_APPLEIR" = module; # Apple infrared receiver
   "HID_ASUS" = no; # Asus
-  "HID_AUREAL" = no; # Aureal
-  "HID_BELKIN" = yes; # Belkin Flip KVM and Wireless keyboard
-  "HID_BETOP_FF" = no; # Betop Production Inc. force feedback support
-  "HID_BIGBEN_FF" = no; # BigBen Interactive Kids' gamepad support
-  "HID_CHERRY" = yes; # Cherry Cymotion keyboard
-  "HID_CHICONY" = yes; # Chicony devices
-  "HID_CORSAIR" = no; # Corsair devices
-  "HID_COUGAR" = no; # Cougar devices
-  "HID_MACALLY" = no; # Macally devices
-  "HID_PRODIKEYS" = no; # Prodikeys PC-MIDI Keyboard support
-  "HID_CMEDIA" = no; # CMedia audio chips
-  "HID_CREATIVE_SB0540" = no; # Creative SB0540 infrared receiver
-  "HID_CYPRESS" = yes; # Cypress mouse and barcode readers
-  "HID_DRAGONRISE" = no; # DragonRise Inc. game controller
-  "HID_EMS_FF" = no; # EMS Production Inc. force feedback support
-  "HID_ELAN" = no; # ELAN USB Touchpad Support
-  "HID_ELECOM" = no; # ELECOM HID devices
-  "HID_ELO" = no; # ELO USB 4000/4500 touchscreen
-  "HID_EVISION" = no; # EVision Keyboards Support
-  "HID_EZKEY" = yes; # Ezkey BTC 8193 keyboard
-  "HID_GEMBIRD" = no; # Gembird Joypad
-  "HID_GFRM" = no; # Google Fiber TV Box remote control support
-  "HID_GLORIOUS" = no; # Glorious PC Gaming Race mice
-  "HID_HOLTEK" = no; # Holtek HID devices
-  "HID_GOODIX_SPI" = no; # Goodix GT7986U SPI HID touchscreen
+  "HID_AUREAL" = module; # Aureal
+  "HID_BELKIN" = module; # Belkin Flip KVM and Wireless keyboard
+  "HID_BETOP_FF" = module; # Betop Production Inc. force feedback support
+  "HID_BIGBEN_FF" = module; # BigBen Interactive Kids' gamepad support
+  "HID_CHERRY" = module; # Cherry Cymotion keyboard
+  "HID_CHICONY" = module; # Chicony devices
+  "HID_CORSAIR" = module; # Corsair devices
+  "HID_COUGAR" = module; # Cougar devices
+  "HID_MACALLY" = module; # Macally devices
+  "HID_PRODIKEYS" = module; # Prodikeys PC-MIDI Keyboard support
+  "HID_CMEDIA" = module; # CMedia audio chips
+  "HID_CP2112" = module; # Silicon Labs CP2112 HID USB-to-SMBus Bridge support
+  "HID_CREATIVE_SB0540" = module; # Creative SB0540 infrared receiver
+  "HID_CYPRESS" = module; # Cypress mouse and barcode readers
+  "HID_DRAGONRISE" = module; # DragonRise Inc. game controller
+  "DRAGONRISE_FF" = yes; # DragonRise Inc. force feedback
+  "HID_EMS_FF" = module; # EMS Production Inc. force feedback support
+  "HID_ELAN" = module; # ELAN USB Touchpad Support
+  "HID_ELECOM" = module; # ELECOM HID devices
+  "HID_ELO" = module; # ELO USB 4000/4500 touchscreen
+  "HID_EVISION" = module; # EVision Keyboards Support
+  "HID_EZKEY" = module; # Ezkey BTC 8193 keyboard
+  "HID_FT260" = module; # FTDI FT260 USB HID to I2C host support
+  "HID_GEMBIRD" = module; # Gembird Joypad
+  "HID_GFRM" = module; # Google Fiber TV Box remote control support
+  "HID_GLORIOUS" = module; # Glorious PC Gaming Race mice
+  "HID_HOLTEK" = module; # Holtek HID devices
+  "HOLTEK_FF" = yes; # Holtek On Line Grip force feedback support
+  "HID_GOODIX_SPI" = module; # Goodix GT7986U SPI HID touchscreen
   "HID_GOOGLE_HAMMER" = yes; # Google Hammer Keyboard
-  "HID_GOOGLE_STADIA_FF" = no; # Google Stadia force feedback
-  "HID_VIVALDI" = no; # Vivaldi Keyboard
-  "HID_GT683R" = no; # MSI GT68xR LED support
-  "HID_KEYTOUCH" = no; # Keytouch HID devices
-  "HID_KYE" = no; # KYE/Genius devices
-  "HID_UCLOGIC" = no; # UC-Logic
-  "HID_WALTOP" = no; # Waltop
-  "HID_VIEWSONIC" = no; # ViewSonic/Signotec
+  "HID_GOOGLE_STADIA_FF" = module; # Google Stadia force feedback
+  "HID_VIVALDI" = module; # Vivaldi Keyboard
+  "HID_GT683R" = module; # MSI GT68xR LED support
+  "HID_KEYTOUCH" = module; # Keytouch HID devices
+  "HID_KYE" = module; # KYE/Genius devices
+  "HID_UCLOGIC" = module; # UC-Logic
+  "HID_WALTOP" = module; # Waltop
+  "HID_VIEWSONIC" = module; # ViewSonic/Signotec
   "HID_VRC2" = no; # VRC-2 Car Controller
-  "HID_XIAOMI" = no; # Xiaomi
-  "HID_GYRATION" = no; # Gyration remote control
-  "HID_ICADE" = no; # ION iCade arcade controller
-  "HID_ITE" = yes; # ITE devices
-  "HID_JABRA" = no; # Jabra USB HID Driver
-  "HID_TWINHAN" = no; # Twinhan IR remote control
-  "HID_KENSINGTON" = yes; # Kensington Slimblade Trackball
-  "HID_LCPOWER" = no; # LC-Power
-  "HID_LED" = no; # Simple RGB LED support
-  "HID_LENOVO" = no; # Lenovo / Thinkpad devices
-  "HID_LETSKETCH" = no; # Letsketch WP9620N tablets
-  "HID_LOGITECH" = yes; # Logitech devices
-  "HID_LOGITECH_HIDPP" = no; # Logitech HID++ devices support
+  "HID_XIAOMI" = module; # Xiaomi
+  "HID_GYRATION" = module; # Gyration remote control
+  "HID_ICADE" = module; # ION iCade arcade controller
+  "HID_ITE" = module; # ITE devices
+  "HID_JABRA" = module; # Jabra USB HID Driver
+  "HID_TWINHAN" = module; # Twinhan IR remote control
+  "HID_KENSINGTON" = module; # Kensington Slimblade Trackball
+  "HID_LCPOWER" = module; # LC-Power
+  "HID_LED" = module; # Simple RGB LED support
+  "HID_LENOVO" = module; # Lenovo / Thinkpad devices
+  "HID_LETSKETCH" = module; # Letsketch WP9620N tablets
+  "HID_LOGITECH" = module; # Logitech devices
+  "HID_LOGITECH_DJ" = module; # Logitech receivers full support
+  "HID_LOGITECH_HIDPP" = module; # Logitech HID++ devices support
   "LOGITECH_FF" = no; # Logitech force feedback support
   "LOGIRUMBLEPAD2_FF" = no; # Logitech force feedback support (variant 2)
   "LOGIG940_FF" = no; # Logitech Flight System G940 force feedback support
   "LOGIWHEELS_FF" = no; # Logitech wheels configuration and force feedback support
-  "HID_MAGICMOUSE" = no; # Apple Magic Mouse/Trackpad multi-touch support
-  "HID_MALTRON" = no; # Maltron L90 keyboard
-  "HID_MAYFLASH" = no; # Mayflash game controller adapter force feedback
-  "HID_MEGAWORLD_FF" = no; # Mega World based game controller force feedback support
+  "HID_MAGICMOUSE" = module; # Apple Magic Mouse/Trackpad multi-touch support
+  "HID_MALTRON" = module; # Maltron L90 keyboard
+  "HID_MAYFLASH" = module; # Mayflash game controller adapter force feedback
+  "HID_MEGAWORLD_FF" = module; # Mega World based game controller force feedback support
   "HID_REDRAGON" = yes; # Redragon keyboards
-  "HID_MICROSOFT" = yes; # Microsoft non-fully HID-compliant devices
-  "HID_MONTEREY" = yes; # Monterey Genius KB29E keyboard
+  "HID_MICROSOFT" = module; # Microsoft non-fully HID-compliant devices
+  "HID_MONTEREY" = module; # Monterey Genius KB29E keyboard
   "HID_MULTITOUCH" = module; # HID Multitouch panels
-  "HID_NINTENDO" = no; # Nintendo Joy-Con, NSO, and Pro Controller support
-  "HID_NTI" = no; # NTI keyboard adapters
-  "HID_NTRIG" = no; # N-Trig touch screen
-  "HID_NVIDIA_SHIELD" = no; # NVIDIA SHIELD devices
-  "HID_ORTEK" = no; # Ortek PKB-1700/WKB-2000/Skycable wireless keyboard and mouse trackpad
-  "HID_PANTHERLORD" = no; # Pantherlord/GreenAsia game controller
-  "HID_PENMOUNT" = no; # Penmount touch device
-  "HID_PETALYNX" = no; # Petalynx Maxter remote control
-  "HID_PICOLCD" = no; # PicoLCD (graphic version)
-  "HID_PLANTRONICS" = no; # Plantronics USB HID Driver
-  "HID_PLAYSTATION" = no; # PlayStation HID Driver
-  "HID_PXRC" = no; # PhoenixRC HID Flight Controller
-  "HID_RAZER" = no; # Razer non-fully HID-compliant devices
-  "HID_PRIMAX" = no; # Primax non-fully HID-compliant devices
-  "HID_RETRODE" = no; # Retrode 2 USB adapter for vintage video games
-  "HID_ROCCAT" = no; # Roccat device support
-  "HID_SAITEK" = no; # Saitek (Mad Catz) non-fully HID-compliant devices
-  "HID_SAMSUNG" = no; # Samsung InfraRed remote control or keyboards
-  "HID_SEMITEK" = no; # Semitek USB keyboards
-  "HID_SIGMAMICRO" = no; # SiGma Micro-based keyboards
-  "HID_SONY" = yes; # Sony PS2/3/4 accessories
+  "HID_NINTENDO" = module; # Nintendo Joy-Con, NSO, and Pro Controller support
+  "NINTENDO_FF" = yes; # Nintendo Switch controller force feedback support
+  "HID_NTI" = module; # NTI keyboard adapters
+  "HID_NTRIG" = module; # N-Trig touch screen
+  "HID_NVIDIA_SHIELD" = module; # NVIDIA SHIELD devices
+  "NVIDIA_SHIELD_FF" = yes; # NVIDIA SHIELD force feedback support
+  "HID_ORTEK" = module; # Ortek PKB-1700/WKB-2000/Skycable wireless keyboard and mouse trackpad
+  "HID_PANTHERLORD" = module; # Pantherlord/GreenAsia game controller
+  "PANTHERLORD_FF" = yes; # Pantherlord force feedback support
+  "HID_PENMOUNT" = module; # Penmount touch device
+  "HID_PETALYNX" = module; # Petalynx Maxter remote control
+  "HID_PICOLCD" = module; # PicoLCD (graphic version)
+  "HID_PLANTRONICS" = module; # Plantronics USB HID Driver
+  "HID_PLAYSTATION" = module; # PlayStation HID Driver
+  "PLAYSTATION_FF" = no; # PlayStation force feedback support
+  "HID_PXRC" = module; # PhoenixRC HID Flight Controller
+  "HID_RAZER" = module; # Razer non-fully HID-compliant devices
+  "HID_PRIMAX" = module; # Primax non-fully HID-compliant devices
+  "HID_RETRODE" = module; # Retrode 2 USB adapter for vintage video games
+  "HID_ROCCAT" = module; # Roccat device support
+  "HID_SAITEK" = module; # Saitek (Mad Catz) non-fully HID-compliant devices
+  "HID_SAMSUNG" = module; # Samsung InfraRed remote control or keyboards
+  "HID_SEMITEK" = module; # Semitek USB keyboards
+  "HID_SIGMAMICRO" = module; # SiGma Micro-based keyboards
+  "HID_SONY" = module; # Sony PS2/3/4 accessories
   "SONY_FF" = yes; # Sony PS2/3/4 accessories force feedback support
-  "HID_SPEEDLINK" = no; # Speedlink VAD Cezanne mouse support
-  "HID_STEAM" = no; # Steam Controller/Deck support
-  "HID_STEELSERIES" = no; # Steelseries devices support
-  "HID_SUNPLUS" = no; # Sunplus wireless desktop
-  "HID_RMI" = yes; # Synaptics RMI4 device support
-  "HID_GREENASIA" = no; # GreenAsia (Product ID 0x12) game controller support
-  "HID_SMARTJOYPLUS" = no; # SmartJoy PLUS PS2/USB adapter support
-  "HID_TIVO" = no; # TiVo Slide Bluetooth remote control support
-  "HID_TOPSEED" = no; # TopSeed Cyberlink, BTC Emprex, Conceptronic remote control support
-  "HID_TOPRE" = no; # Topre REALFORCE keyboards
-  "HID_THINGM" = no; # ThingM blink(1) USB RGB LED
-  "HID_THRUSTMASTER" = no; # ThrustMaster devices support
-  "HID_UDRAW_PS3" = no; # THQ PS3 uDraw tablet
-  "HID_U2FZERO" = no; # U2F Zero LED and RNG support
-  "HID_WACOM" = no; # Wacom Intuos/Graphire tablet support (USB)
-  "HID_WIIMOTE" = no; # Nintendo Wii / Wii U peripherals
-  "HID_WINWING" = no; # WinWing Orion2 throttle support
-  "HID_XINMO" = no; # Xin-Mo non-fully compliant devices
-  "HID_ZEROPLUS" = no; # Zeroplus based game controller support
-  "HID_ZYDACRON" = no; # Zydacron remote control support
-  "HID_SENSOR_HUB" = no; # HID Sensors framework support
-  "HID_ALPS" = no; # Alps HID device support
+  "HID_SPEEDLINK" = module; # Speedlink VAD Cezanne mouse support
+  "HID_STEAM" = module; # Steam Controller/Deck support
+  "STEAM_FF" = yes; # Steam Deck force feedback support
+  "HID_STEELSERIES" = module; # Steelseries devices support
+  "HID_SUNPLUS" = module; # Sunplus wireless desktop
+  "HID_RMI" = module; # Synaptics RMI4 device support
+  "HID_GREENASIA" = module; # GreenAsia (Product ID 0x12) game controller support
+  "GREENASIA_FF" = yes; # GreenAsia (Product ID 0x12) force feedback support
+  "HID_SMARTJOYPLUS" = module; # SmartJoy PLUS PS2/USB adapter support
+  "SMARTJOYPLUS_FF" = yes; # SmartJoy PLUS PS2/USB adapter force feedback support
+  "HID_TIVO" = module; # TiVo Slide Bluetooth remote control support
+  "HID_TOPSEED" = module; # TopSeed Cyberlink, BTC Emprex, Conceptronic remote control support
+  "HID_TOPRE" = module; # Topre REALFORCE keyboards
+  "HID_THINGM" = module; # ThingM blink(1) USB RGB LED
+  "HID_THRUSTMASTER" = module; # ThrustMaster devices support
+  "THRUSTMASTER_FF" = yes; # ThrustMaster devices force feedback support
+  "HID_UDRAW_PS3" = module; # THQ PS3 uDraw tablet
+  "HID_U2FZERO" = module; # U2F Zero LED and RNG support
+  "HID_UNIVERSAL_PIDFF" = no; # universal-pidff: extended USB PID driver compatibility and usage
+  "HID_WACOM" = module; # Wacom Intuos/Graphire tablet support (USB)
+  "HID_WIIMOTE" = module; # Nintendo Wii / Wii U peripherals
+  "HID_WINWING" = module; # WinWing Orion2 throttle support
+  "HID_XINMO" = module; # Xin-Mo non-fully compliant devices
+  "HID_ZEROPLUS" = module; # Zeroplus based game controller support
+  "ZEROPLUS_FF" = yes; # Zeroplus based game controller force feedback support
+  "HID_ZYDACRON" = module; # Zydacron remote control support
+  "HID_SENSOR_HUB" = module; # HID Sensors framework support
+  "HID_SENSOR_CUSTOM_SENSOR" = module; # HID Sensors hub custom sensor support
+  "HID_ALPS" = module; # Alps HID device support
   "HID_MCP2200" = no; # Microchip MCP2200 HID USB-to-GPIO bridge
-  "HID_MCP2221" = no; # Microchip MCP2221 HID USB-to-I2C/SMbus host support
+  "HID_MCP2221" = module; # Microchip MCP2221 HID USB-to-I2C/SMbus host support
   ##### end of Special HID drivers
+
+  ##### HID-BPF support
+  "HID_BPF" = yes; # HID-BPF support
+  ##### end of HID-BPF support
 
   #### USB HID support
   "USB_HID" = yes; # USB HID transport layer
-  "HID_PID" = no; # PID device support
-  "USB_HIDDEV" = no; # /dev/hiddev raw HID device support
+  "HID_PID" = yes; # PID device support
+  "USB_HIDDEV" = yes; # /dev/hiddev raw HID device support
   #### end of USB HID support
 
   "I2C_HID" = yes; # I2C HID support
   "I2C_HID_OF" = module; # HID over I2C transport layer Open Firmware driver
-  "I2C_HID_OF_ELAN" = module; # Driver for Elan hid-i2c based devices on OF systems
+  "I2C_HID_OF_ELAN" = no; # Driver for Elan hid-i2c based devices on OF systems
   "I2C_HID_OF_GOODIX" = module; # Driver for Goodix hid-i2c based devices on OF systems
   "USB_SUPPORT" = yes; # USB support
   "USB_LED_TRIG" = no; # USB LED Triggers
@@ -4458,7 +4331,7 @@ in
   "USB" = yes; # Support for Host-side USB
   "USB_PCI" = yes; # PCI based USB host interface
   "USB_PCI_AMD" = no; # AMD PCI USB host support
-  "USB_ANNOUNCE_NEW_DEVICES" = no; # USB announce new devices
+  "USB_ANNOUNCE_NEW_DEVICES" = yes; # USB announce new devices
   "USB_DEFAULT_PERSIST" = yes; # Enable USB persist by default
   "USB_FEW_INIT_RETRIES" = no; # Limit USB device initialization to only a few retries
   "USB_DYNAMIC_MINORS" = no; # Dynamic USB minor allocation
@@ -4490,12 +4363,10 @@ in
   "USB_UHCI_HCD" = no; # UHCI HCD (most Intel and VIA) support
   "USB_SL811_HCD" = no; # SL811HS HCD support
   "USB_R8A66597_HCD" = no; # R8A66597 HCD support
-  "USB_HCD_BCMA" = no; # BCMA usb host driver
-  "USB_HCD_SSB" = no; # SSB usb host driver
   "USB_HCD_TEST_MODE" = no; # HCD test mode support
   "USB_XEN_HCD" = no; # Xen usb virtual host driver
   "USB_ACM" = module; # USB Modem (CDC ACM) support
-  "USB_PRINTER" = no; # USB Printer support
+  "USB_PRINTER" = module; # USB Printer support
   "USB_WDM" = no; # USB Wireless Device Management support
   "USB_TMC" = no; # USB Test and Measurement Class support
   "USB_STORAGE" = yes; # USB Mass Storage support
@@ -4569,8 +4440,8 @@ in
   "USB_SERIAL_VISOR" = no; # USB Handspring Visor / Palm m50x / Sony Clie Driver
   "USB_SERIAL_IPAQ" = no; # USB PocketPC PDA Driver
   "USB_SERIAL_IR" = no; # USB IR Dongle Serial Driver
-  "USB_SERIAL_EDGEPORT" = no; # USB Inside Out Edgeport Serial Driver
-  "USB_SERIAL_EDGEPORT_TI" = no; # USB Inside Out Edgeport Serial Driver (TI devices)
+  "USB_SERIAL_EDGEPORT" = module; # USB Inside Out Edgeport Serial Driver
+  "USB_SERIAL_EDGEPORT_TI" = module; # USB Inside Out Edgeport Serial Driver (TI devices)
   "USB_SERIAL_F81232" = no; # USB Fintek F81232 Single Port Serial Driver
   "USB_SERIAL_F8153X" = no; # USB Fintek F81532/534 Multi-Ports Serial Driver
   "USB_SERIAL_GARMIN" = no; # USB Garmin GPS driver
@@ -4631,8 +4502,7 @@ in
   "USB_HSIC_USB4604" = no; # USB4604 HSIC to USB20 Driver
   "USB_LINK_LAYER_TEST" = no; # USB Link Layer Test driver
   "USB_CHAOSKEY" = no; # ChaosKey random number generator driver support
-  "USB_ONBOARD_DEV" = module; # Onboard USB device support
-  "USB_ONBOARD_DEV_USB5744" = no; # Onboard USB Microchip usb5744 hub with SMBus support
+  "USB_ONBOARD_DEV" = no; # Onboard USB device support
 
   #### USB Physical Layer drivers
   "NOP_USB_XCEIV" = yes; # NOP USB Transceiver Driver
@@ -4692,13 +4562,11 @@ in
   ##### USB Gadget precomposed configurations
   "USB_ZERO" = no; # Gadget Zero (DEVELOPMENT)
   "USB_AUDIO" = no; # Audio Gadget
-  "USB_ETH" = module; # Ethernet Gadget (with CDC Ethernet support)
-  "USB_ETH_RNDIS" = yes; # RNDIS support
-  "USB_ETH_EEM" = no; # Ethernet Emulation Model (EEM) support
+  "USB_ETH" = no; # Ethernet Gadget (with CDC Ethernet support)
   "USB_G_NCM" = no; # Network Control Model (NCM) support
   "USB_GADGETFS" = no; # Gadget Filesystem
   "USB_FUNCTIONFS" = no; # Function Filesystem
-  "USB_MASS_STORAGE" = module; # Mass Storage Gadget
+  "USB_MASS_STORAGE" = no; # Mass Storage Gadget
   "USB_G_SERIAL" = no; # Serial Gadget (with CDC ACM and CDC OBEX support)
   "USB_MIDI_GADGET" = no; # MIDI Gadget
   "USB_G_PRINTER" = no; # Printer Gadget
@@ -4715,13 +4583,10 @@ in
   "TYPEC_TCPM" = module; # USB Type-C Port Controller Manager
   "TYPEC_TCPCI" = module; # Type-C Port Controller Interface driver
   "TYPEC_RT1711H" = no; # Richtek RT1711H Type-C chip driver
-  "TYPEC_MT6360" = no; # Mediatek MT6360 Type-C driver
+  "TYPEC_MT6360" = module; # Mediatek MT6360 Type-C driver
   "TYPEC_TCPCI_MAXIM" = no; # Maxim TCPCI based Type-C chip driver
   "TYPEC_FUSB302" = module; # Fairchild FUSB302 Type-C chip driver
-  "TYPEC_UCSI" = module; # USB Type-C Connector System Software Interface driver
-  "UCSI_CCG" = module; # UCSI Interface Driver for Cypress CCGx
-  "UCSI_STM32G0" = no; # UCSI Interface Driver for STM32G0
-  "UCSI_PMIC_GLINK" = module; # UCSI Qualcomm PMIC GLINK Interface Driver
+  "TYPEC_UCSI" = no; # USB Type-C Connector System Software Interface driver
   "TYPEC_TPS6598X" = module; # TI TPS6598x USB Power Delivery controller driver
   "TYPEC_ANX7411" = no; # Analogix ANX7411 Type-C DRP Port controller driver
   "TYPEC_RT1719" = no; # Richtek RT1719 Sink Only Type-C controller driver
@@ -4730,13 +4595,13 @@ in
   "TYPEC_WUSB3801" = no; # Willsemi WUSB3801 Type-C port controller driver
 
   ##### USB Type-C Multiplexer/DeMultiplexer Switch support
-  "TYPEC_MUX_FSA4480" = module; # ON Semi FSA4480 Analog Audio Switch driver
-  "TYPEC_MUX_GPIO_SBU" = module; # Generic GPIO based SBU mux for USB Type-C applications
+  "TYPEC_MUX_FSA4480" = no; # ON Semi FSA4480 Analog Audio Switch driver
+  "TYPEC_MUX_GPIO_SBU" = no; # Generic GPIO based SBU mux for USB Type-C applications
   "TYPEC_MUX_PI3USB30532" = no; # Pericom PI3USB30532 Type-C cross switch driver
   "TYPEC_MUX_IT5205" = no; # ITE IT5205 Type-C USB Alt Mode Passive MUX driver
-  "TYPEC_MUX_NB7VPQ904M" = module; # On Semiconductor NB7VPQ904M Type-C redriver driver
+  "TYPEC_MUX_NB7VPQ904M" = no; # On Semiconductor NB7VPQ904M Type-C redriver driver
   "TYPEC_MUX_PTN36502" = no; # NXP PTN36502 Type-C redriver driver
-  "TYPEC_MUX_WCD939X_USBSS" = module; # Qualcomm WCD939x USBSS Analog Audio Switch driver
+  "TYPEC_MUX_WCD939X_USBSS" = no; # Qualcomm WCD939x USBSS Analog Audio Switch driver
   ##### end of USB Type-C Multiplexer/DeMultiplexer Switch support
 
   ##### USB Type-C Alternate Mode drivers
@@ -4761,7 +4626,7 @@ in
   "MMC_SDHCI_PLTFM" = yes; # SDHCI platform and OF driver helper
   "MMC_SDHCI_OF_ARASAN" = yes; # SDHCI OF support for the Arasan SDHCI controllers
   "MMC_SDHCI_OF_AT91" = no; # SDHCI OF support for the Atmel SDMMC controller
-  "MMC_SDHCI_OF_DWCMSHC" = yes; # SDHCI OF support for the Synopsys DWC MSHC
+  "MMC_SDHCI_OF_DWCMSHC" = no; # SDHCI OF support for the Synopsys DWC MSHC
   "MMC_SDHCI_CADENCE" = yes; # SDHCI support for the Cadence SD/SDIO/eMMC controller
   "MMC_SDHCI_F_SDH30" = yes; # SDHCI support for Fujitsu Semiconductor F_SDH30
   "MMC_SDHCI_MILBEAUT" = no; # SDHCI support for Socionext Milbeaut Serieas using F_SDH30
@@ -4786,18 +4651,18 @@ in
   "MMC_MTK" = yes; # MediaTek SD/MMC Card Interface support
   "MMC_SDHCI_XENON" = yes; # Marvell Xenon eMMC/SD/SDIO SDHCI driver
   "SCSI_UFSHCD" = yes; # Universal Flash Storage Controller
-  "SCSI_UFS_BSG" = yes; # Universal Flash Storage BSG device node
+  "SCSI_UFS_BSG" = no; # Universal Flash Storage BSG device node
   "SCSI_UFS_HWMON" = no; # UFS Temperature Notification
   "SCSI_UFSHCD_PCI" = no; # PCI bus based UFS Controller support
   "SCSI_UFSHCD_PLATFORM" = yes; # Platform bus based UFS Controller support
-  "SCSI_UFS_CDNS_PLATFORM" = module; # Cadence UFS Controller platform driver
+  "SCSI_UFS_CDNS_PLATFORM" = no; # Cadence UFS Controller platform driver
   "SCSI_UFS_DWC_TC_PLATFORM" = no; # DesignWare platform support using a G210 Test Chip
   "SCSI_UFS_MEDIATEK" = no; # Mediatek specific hooks to UFS controller platform driver
   "MEMSTICK" = no; # Sony MemoryStick card support
   "NEW_LEDS" = yes; # LED Support
   "LEDS_CLASS" = yes; # LED Class Support
   "LEDS_CLASS_FLASH" = no; # LED Flash Class Support
-  "LEDS_CLASS_MULTICOLOR" = module; # LED Multicolor Class Support
+  "LEDS_CLASS_MULTICOLOR" = yes; # LED Multicolor Class Support
   "LEDS_BRIGHTNESS_HW_CHANGED" = no; # LED Class brightness_hw_changed attribute support
   "LEDS_AN30259A" = no; # LED support for Panasonic AN30259A
   "LEDS_AW200XX" = no; # LED support for Awinic AW20036/AW20054/AW20072/AW20108
@@ -4805,13 +4670,13 @@ in
   "LEDS_BCM6328" = no; # LED Support for Broadcom BCM6328
   "LEDS_BCM6358" = no; # LED Support for Broadcom BCM6358
   "LEDS_CR0014114" = no; # LED Support for Crane CR0014114
-  "LEDS_CROS_EC" = module; # LED Support for ChromeOS EC
+  "LEDS_CROS_EC" = yes; # LED Support for ChromeOS EC
   "LEDS_EL15203000" = no; # LED Support for Crane EL15203000
   "LEDS_LM3530" = no; # LCD Backlight driver for LM3530
   "LEDS_LM3532" = no; # LCD Backlight driver for LM3532
   "LEDS_LM3642" = no; # LED support for LM3642 Chip
   "LEDS_LM3692X" = module; # LED support for LM3692x Chips
-  "LEDS_MT6323" = no; # LED Support for Mediatek MT6323 PMIC
+  "LEDS_MT6323" = module; # LED Support for Mediatek MT6323 PMIC
   "LEDS_PCA9532" = module; # LED driver for PCA9532 dimmer
   "LEDS_PCA9532_GPIO" = no; # Enable GPIO support for PCA9532
   "LEDS_GPIO" = yes; # LED Support for GPIO connected LEDs
@@ -4844,7 +4709,7 @@ in
   "LEDS_KTD202X" = no; # LED support for KTD202x Chips
   "LEDS_NCP5623" = no; # LED support for NCP5623
   "LEDS_PWM_MULTICOLOR" = no; # PWM driven multi-color LED Support
-  "LEDS_QCOM_LPG" = module; # LED support for Qualcomm LPG
+  "LEDS_QCOM_LPG" = no; # LED support for Qualcomm LPG
   "LEDS_TRIGGERS" = yes; # LED Trigger support
   "LEDS_TRIGGER_TIMER" = yes; # LED Timer Trigger
   "LEDS_TRIGGER_ONESHOT" = no; # LED One-shot Trigger
@@ -4860,7 +4725,7 @@ in
   "LEDS_TRIGGER_CAMERA" = no; # LED Camera Flash/Torch Trigger
   "LEDS_TRIGGER_PANIC" = yes; # LED Panic Trigger
   "LEDS_TRIGGER_NETDEV" = no; # LED Netdev Trigger
-  "LEDS_TRIGGER_PATTERN" = no; # LED Pattern Trigger
+  "LEDS_TRIGGER_PATTERN" = module; # LED Pattern Trigger
   "LEDS_TRIGGER_TTY" = no; # LED Trigger for TTY devices
   "LEDS_TRIGGER_INPUT_EVENTS" = no; # LED Input events trigger
   "ACCESSIBILITY" = no; # Accessibility support
@@ -4895,21 +4760,19 @@ in
   "RTC_DRV_MAX31335" = no; # Analog Devices MAX31335
   "RTC_DRV_MAX77686" = yes; # Maxim MAX77686
   "RTC_DRV_NCT3018Y" = no; # Nuvoton NCT3018Y
-  "RTC_DRV_RK808" = module; # Rockchip RK805/RK808/RK809/RK817/RK818 RTC
   "RTC_DRV_RS5C372" = no; # Ricoh R2025S/D, RS5C372A/B, RV5C386, RV5C387A
-  "RTC_DRV_ISL1208" = module; # Intersil ISL1208
+  "RTC_DRV_ISL1208" = no; # Intersil ISL1208
   "RTC_DRV_ISL12022" = no; # Intersil ISL12022
   "RTC_DRV_ISL12026" = no; # Intersil ISL12026
   "RTC_DRV_X1205" = no; # Xicor/Intersil X1205
   "RTC_DRV_PCF8523" = no; # NXP PCF8523
   "RTC_DRV_PCF85063" = module; # NXP PCF85063
   "RTC_DRV_PCF85363" = module; # NXP PCF85363
-  "RTC_DRV_PCF8563" = module; # Philips PCF8563/Epson RTC8564
+  "RTC_DRV_PCF8563" = no; # Philips PCF8563/Epson RTC8564
   "RTC_DRV_PCF8583" = no; # Philips PCF8583
   "RTC_DRV_M41T80" = module; # ST M41T62/65/M41T80/81/82/83/84/85/87 and compatible
   "RTC_DRV_M41T80_WDT" = no; # ST M41T65/M41T80 series RTC watchdog timer
-  "RTC_DRV_BQ32K" = module; # TI BQ32000
-  "RTC_DRV_TPS6594" = module; # TI TPS6594 RTC driver
+  "RTC_DRV_BQ32K" = no; # TI BQ32000
   "RTC_DRV_S35390A" = no; # Seiko Instruments S-35390A
   "RTC_DRV_FM3130" = no; # Ramtron FM3130
   "RTC_DRV_RX8010" = no; # Epson RX8010SJ
@@ -4948,7 +4811,7 @@ in
   "RTC_DRV_DS1685_FAMILY" = no; # Dallas/Maxim DS1685 Family
   "RTC_DRV_DS1742" = no; # Maxim/Dallas DS1742/1743
   "RTC_DRV_DS2404" = no; # Maxim/Dallas DS2404
-  "RTC_DRV_DA9063" = module; # Dialog Semiconductor DA9063/DA9062 RTC
+  "RTC_DRV_EFI" = yes; # EFI RTC
   "RTC_DRV_STK17TA8" = no; # Simtek STK17TA8
   "RTC_DRV_M48T86" = no; # ST M48T86/Dallas DS12887
   "RTC_DRV_M48T35" = no; # ST M48T35
@@ -4966,6 +4829,7 @@ in
   "RTC_DRV_MT6397" = module; # MediaTek PMIC based RTC
   "RTC_DRV_MT7622" = no; # MediaTek SoC based RTC
   "RTC_DRV_R7301" = no; # EPSON TOYOCOM RTC-7301SF/DG
+  "RTC_DRV_HID_SENSOR_TIME" = module; # HID Sensor Time
   "RTC_DRV_GOLDFISH" = no; # Goldfish Real Time Clock
   "DMADEVICES" = yes; # DMA Engine support
   "DMADEVICES_DEBUG" = no; # DMA Engine debugging
@@ -4986,13 +4850,12 @@ in
   "AMD_QDMA" = no; # AMD Queue-based DMA
   "MTK_HSDMA" = yes; # MediaTek High-Speed DMA controller support
   "MTK_CQDMA" = yes; # MediaTek Command-Queue DMA controller support
-  "MTK_UART_APDMA" = yes; # MediaTek SoCs APDMA support for UART
+  "MTK_UART_APDMA" = no; # MediaTek SoCs APDMA support for UART
   "QCOM_HIDMA_MGMT" = yes; # Qualcomm Technologies HIDMA Management support
   "QCOM_HIDMA" = yes; # Qualcomm Technologies HIDMA Channel support
   "DW_DMAC" = no; # Synopsys DesignWare AHB DMA platform driver
   "DW_DMAC_PCI" = no; # Synopsys DesignWare AHB DMA PCI driver
-  "DW_EDMA" = module; # Synopsys DesignWare eDMA controller driver
-  "DW_EDMA_PCIE" = no; # Synopsys DesignWare eDMA PCIe driver
+  "DW_EDMA" = no; # Synopsys DesignWare eDMA controller driver
   "SF_PDMA" = no; # Sifive PDMA controller driver
   "ASYNC_TX_DMA" = no; # Async_tx: Offload support for the async_tx api
   "DMATEST" = no; # DMA Test client
@@ -5000,12 +4863,14 @@ in
   ### Device Drivers -> DMABUF options
   "SYNC_FILE" = yes; # Explicit Synchronization Framework
   "SW_SYNC" = no; # Sync File Validation Framework
-  "UDMABUF" = no; # userspace dmabuf misc driver
+  "UDMABUF" = yes; # userspace dmabuf misc driver
   "DMABUF_MOVE_NOTIFY" = no; # Move notify between drivers (EXPERIMENTAL)
   "DMABUF_DEBUG" = no; # DMA-BUF debug checks
   "DMABUF_SELFTESTS" = no; # Selftests for the dma-buf interfaces
-  "DMABUF_HEAPS" = no; # DMA-BUF Userland Memory Heaps
+  "DMABUF_HEAPS" = yes; # DMA-BUF Userland Memory Heaps
   "DMABUF_SYSFS_STATS" = no; # DMA-BUF sysfs statistics (DEPRECATED)
+  "DMABUF_HEAPS_SYSTEM" = no; # DMA-BUF System Heap
+  "DMABUF_HEAPS_CMA" = yes; # DMA-BUF CMA Heap
   ### Device Drivers: end of DMABUF options
 
   "UIO" = no; # Userspace I/O drivers
@@ -5030,7 +4895,6 @@ in
   "VIRTIO_PCI" = yes; # PCI driver for virtio devices
   "VIRTIO_PCI_LEGACY" = yes; # Support for legacy virtio draft 0.9.X and older devices
   "VIRTIO_BALLOON" = yes; # Virtio balloon driver
-  "VIRTIO_MEM" = no; # Virtio mem driver
   "VIRTIO_INPUT" = module; # Virtio input driver
   "VIRTIO_MMIO" = yes; # Platform bus driver for memory mapped virtio devices
   "VIRTIO_MMIO_CMDLINE_DEVICES" = yes; # Memory mapped virtio devices parameter parsing
@@ -5042,7 +4906,6 @@ in
 
   ### Device Drivers -> Xen driver support
   "XEN_BALLOON" = yes; # Xen memory balloon driver
-  "XEN_BALLOON_MEMORY_HOTPLUG" = yes; # Memory hotplug support for Xen balloon driver
   "XEN_SCRUB_PAGES_DEFAULT" = yes; # Scrub pages before returning them to system by default
   "XEN_DEV_EVTCHN" = yes; # Xen /dev/xen/evtchn device
   "XEN_BACKEND" = yes; # Backend driver support
@@ -5062,11 +4925,7 @@ in
   "GREYBUS" = no; # Greybus support
   "COMEDI" = no; # Data acquisition support (comedi)
   "STAGING" = yes; # Staging drivers
-  "RTLLIB" = module; # Support for rtllib wireless devices
-  "RTLLIB_CRYPTO_CCMP" = module; # Support for rtllib CCMP crypto
-  "RTLLIB_CRYPTO_TKIP" = module; # Support for rtllib TKIP crypto
-  "RTLLIB_CRYPTO_WEP" = module; # Support for rtllib WEP crypto
-  "RTL8192E" = module; # RealTek RTL8192E Wireless LAN NIC driver
+  "RTLLIB" = no; # Support for rtllib wireless devices
   "RTL8723BS" = module; # Realtek RTL8723BS SDIO Wireless LAN NIC driver
   "R8712U" = module; # RealTek RTL8712U (RTL8192SU) Wireless LAN NIC driver
   "RTS5208" = no; # Realtek PCI-E Card Reader RTS5208/5288 support
@@ -5101,7 +4960,7 @@ in
   "FB_SM750" = no; # Silicon Motion SM750 framebuffer support
   "STAGING_MEDIA" = yes; # Media staging drivers
   "DVB_AV7110" = no; # AV7110 cards
-  "VIDEO_MAX96712" = module; # Maxim MAX96712 Quad GMSL2 Deserializer support
+  "VIDEO_MAX96712" = no; # Maxim MAX96712 Quad GMSL2 Deserializer support
   "STAGING_MEDIA_DEPRECATED" = no; # Media staging drivers (DEPRECATED)
   "LTE_GDM724X" = no; # GCT GDM724x LTE support
   "FB_TFT" = no; # Support for small TFT LCD display modules
@@ -5114,7 +4973,7 @@ in
   "CROS_EC_I2C" = yes; # ChromeOS Embedded Controller (I2C)
   "CROS_EC_RPMSG" = yes; # ChromeOS Embedded Controller (rpmsg)
   "CROS_EC_SPI" = yes; # ChromeOS Embedded Controller (SPI)
-  "CROS_KBD_LED_BACKLIGHT" = module; # Backlight LED support for Chrome OS keyboards
+  "CROS_KBD_LED_BACKLIGHT" = no; # Backlight LED support for Chrome OS keyboards
   "CROS_EC_CHARDEV" = module; # ChromeOS EC miscdevice
   "CROS_EC_LIGHTBAR" = yes; # Chromebook Pixel's lightbar support
   "CROS_EC_VBC" = yes; # ChromeOS EC vboot context support
@@ -5138,7 +4997,6 @@ in
   "LMK04832" = no; # Ti LMK04832 JESD204B Compliant Clock Jitter Cleaner
   "COMMON_CLK_MAX77686" = no; # Clock driver for Maxim 77620/77686/77802 MFD
   "COMMON_CLK_MAX9485" = no; # Maxim 9485 Programmable Clock Generator
-  "COMMON_CLK_RK808" = yes; # Clock driver for RK805/RK808/RK809/RK817/RK818
   "COMMON_CLK_SCMI" = yes; # Clock driver controlled via SCMI interface
   "COMMON_CLK_SCPI" = yes; # Clock driver controlled via SCPI interface
   "COMMON_CLK_SI5341" = no; # Clock driver for SiLabs 5341 and 5340 A/B/C/D devices
@@ -5149,14 +5007,13 @@ in
   "COMMON_CLK_CDCE706" = no; # Clock driver for TI CDCE706 clock synthesizer
   "COMMON_CLK_CDCE925" = no; # Clock driver for TI CDCE913/925/937/949 devices
   "COMMON_CLK_CS2000_CP" = yes; # Clock driver for CS2000 Fractional-N Clock Synthesizer & Clock Multiplier
-  "COMMON_CLK_EN7523" = yes; # Clock driver for Airoha EN7523 SoC system clocks
   "COMMON_CLK_S2MPS11" = yes; # Clock driver for S2MPS1X/S5M8767 MFD
   "COMMON_CLK_AXI_CLKGEN" = no; # AXI clkgen driver
   "COMMON_CLK_XGENE" = no; # Clock driver for APM XGene SoC
   "COMMON_CLK_PWM" = yes; # Clock driver for PWMs used as clock outputs
-  "COMMON_CLK_RS9_PCIE" = yes; # Clock driver for Renesas 9-series PCIe clock generators
+  "COMMON_CLK_RS9_PCIE" = no; # Clock driver for Renesas 9-series PCIe clock generators
   "COMMON_CLK_SI521XX" = no; # Clock driver for SkyWorks Si521xx PCIe clock generators
-  "COMMON_CLK_VC3" = yes; # Clock driver for Renesas VersaClock 3 devices
+  "COMMON_CLK_VC3" = no; # Clock driver for Renesas VersaClock 3 devices
   "COMMON_CLK_VC5" = yes; # Clock driver for IDT VersaClock 5,6 devices
   "COMMON_CLK_VC7" = no; # Clock driver for Renesas Versaclock 7 devices
   "COMMON_CLK_BD718XX" = module; # Clock driver for 32K clk gates on ROHM PMICs
@@ -5173,7 +5030,7 @@ in
   "COMMON_CLK_MT2712_VDECSYS" = no; # Clock driver for MediaTek MT2712 vdecsys
   "COMMON_CLK_MT2712_VENCSYS" = no; # Clock driver for MediaTek MT2712 vencsys
   "COMMON_CLK_MT6765" = yes; # Clock driver for MediaTek MT6765
-  "COMMON_CLK_MT6765_AUDIOSYS" = no; # Clock driver for MediaTek MT6765 audiosys
+  "COMMON_CLK_MT6765_AUDIOSYS" = yes; # Clock driver for MediaTek MT6765 audiosys
   "COMMON_CLK_MT6765_CAMSYS" = no; # Clock driver for MediaTek MT6765 camsys
   "COMMON_CLK_MT6765_GCESYS" = no; # Clock driver for MediaTek MT6765 gcesys
   "COMMON_CLK_MT6765_MMSYS" = no; # Clock driver for MediaTek MT6765 mmsys
@@ -5242,30 +5099,30 @@ in
   "COMMON_CLK_MT8186_VDECSYS" = yes; # Clock driver for MediaTek MT8186 vdecsys
   "COMMON_CLK_MT8186_VENCSYS" = yes; # Clock driver for MediaTek MT8186 vencsys
   "COMMON_CLK_MT8188" = yes; # Clock driver for MediaTek MT8188
-  "COMMON_CLK_MT8188_ADSP_AUDIO26M" = module; # Clock driver for MediaTek MT8188 adsp audio26m
-  "COMMON_CLK_MT8188_CAMSYS" = module; # Clock driver for MediaTek MT8188 camsys
-  "COMMON_CLK_MT8188_IMGSYS" = module; # Clock driver for MediaTek MT8188 imgsys
+  "COMMON_CLK_MT8188_ADSP_AUDIO26M" = yes; # Clock driver for MediaTek MT8188 adsp audio26m
+  "COMMON_CLK_MT8188_CAMSYS" = yes; # Clock driver for MediaTek MT8188 camsys
+  "COMMON_CLK_MT8188_IMGSYS" = yes; # Clock driver for MediaTek MT8188 imgsys
   "COMMON_CLK_MT8188_IMP_IIC_WRAP" = yes; # Clock driver for MediaTek MT8188 imp_iic_wrap
-  "COMMON_CLK_MT8188_IPESYS" = module; # Clock driver for MediaTek MT8188 ipesys
-  "COMMON_CLK_MT8188_MFGCFG" = module; # Clock driver for MediaTek MT8188 mfgcfg
-  "COMMON_CLK_MT8188_VDECSYS" = module; # Clock driver for MediaTek MT8188 vdecsys
-  "COMMON_CLK_MT8188_VDOSYS" = module; # Clock driver for MediaTek MT8188 vdosys
-  "COMMON_CLK_MT8188_VENCSYS" = module; # Clock driver for MediaTek MT8188 vencsys
-  "COMMON_CLK_MT8188_VPPSYS" = module; # Clock driver for MediaTek MT8188 vppsys
-  "COMMON_CLK_MT8188_WPESYS" = module; # Clock driver for MediaTek MT8188 wpesys
+  "COMMON_CLK_MT8188_IPESYS" = yes; # Clock driver for MediaTek MT8188 ipesys
+  "COMMON_CLK_MT8188_MFGCFG" = yes; # Clock driver for MediaTek MT8188 mfgcfg
+  "COMMON_CLK_MT8188_VDECSYS" = yes; # Clock driver for MediaTek MT8188 vdecsys
+  "COMMON_CLK_MT8188_VDOSYS" = yes; # Clock driver for MediaTek MT8188 vdosys
+  "COMMON_CLK_MT8188_VENCSYS" = yes; # Clock driver for MediaTek MT8188 vencsys
+  "COMMON_CLK_MT8188_VPPSYS" = yes; # Clock driver for MediaTek MT8188 vppsys
+  "COMMON_CLK_MT8188_WPESYS" = yes; # Clock driver for MediaTek MT8188 wpesys
   "COMMON_CLK_MT8192" = yes; # Clock driver for MediaTek MT8192
-  "COMMON_CLK_MT8192_AUDSYS" = yes; # Clock driver for MediaTek MT8192 audsys
-  "COMMON_CLK_MT8192_CAMSYS" = yes; # Clock driver for MediaTek MT8192 camsys
-  "COMMON_CLK_MT8192_IMGSYS" = yes; # Clock driver for MediaTek MT8192 imgsys
-  "COMMON_CLK_MT8192_IMP_IIC_WRAP" = yes; # Clock driver for MediaTek MT8192 imp_iic_wrap
-  "COMMON_CLK_MT8192_IPESYS" = yes; # Clock driver for MediaTek MT8192 ipesys
-  "COMMON_CLK_MT8192_MDPSYS" = yes; # Clock driver for MediaTek MT8192 mdpsys
-  "COMMON_CLK_MT8192_MFGCFG" = yes; # Clock driver for MediaTek MT8192 mfgcfg
-  "COMMON_CLK_MT8192_MMSYS" = yes; # Clock driver for MediaTek MT8192 mmsys
-  "COMMON_CLK_MT8192_MSDC" = yes; # Clock driver for MediaTek MT8192 msdc
-  "COMMON_CLK_MT8192_SCP_ADSP" = yes; # Clock driver for MediaTek MT8192 scp_adsp
-  "COMMON_CLK_MT8192_VDECSYS" = yes; # Clock driver for MediaTek MT8192 vdecsys
-  "COMMON_CLK_MT8192_VENCSYS" = yes; # Clock driver for MediaTek MT8192 vencsys
+  "COMMON_CLK_MT8192_AUDSYS" = no; # Clock driver for MediaTek MT8192 audsys
+  "COMMON_CLK_MT8192_CAMSYS" = no; # Clock driver for MediaTek MT8192 camsys
+  "COMMON_CLK_MT8192_IMGSYS" = no; # Clock driver for MediaTek MT8192 imgsys
+  "COMMON_CLK_MT8192_IMP_IIC_WRAP" = no; # Clock driver for MediaTek MT8192 imp_iic_wrap
+  "COMMON_CLK_MT8192_IPESYS" = no; # Clock driver for MediaTek MT8192 ipesys
+  "COMMON_CLK_MT8192_MDPSYS" = no; # Clock driver for MediaTek MT8192 mdpsys
+  "COMMON_CLK_MT8192_MFGCFG" = no; # Clock driver for MediaTek MT8192 mfgcfg
+  "COMMON_CLK_MT8192_MMSYS" = no; # Clock driver for MediaTek MT8192 mmsys
+  "COMMON_CLK_MT8192_MSDC" = no; # Clock driver for MediaTek MT8192 msdc
+  "COMMON_CLK_MT8192_SCP_ADSP" = no; # Clock driver for MediaTek MT8192 scp_adsp
+  "COMMON_CLK_MT8192_VDECSYS" = no; # Clock driver for MediaTek MT8192 vdecsys
+  "COMMON_CLK_MT8192_VENCSYS" = no; # Clock driver for MediaTek MT8192 vencsys
   "COMMON_CLK_MT8195" = yes; # Clock driver for MediaTek MT8195
   "COMMON_CLK_MT8195_APUSYS" = yes; # Clock driver for MediaTek MT8195 apusys
   "COMMON_CLK_MT8195_IMP_IIC_WRAP" = yes; # Clock driver for MediaTek MT8195 imp_iic_wrap
@@ -5310,7 +5167,7 @@ in
   "PL320_MBOX" = no; # ARM PL320 Mailbox
   "ALTERA_MBOX" = no; # Altera Mailbox
   "MAILBOX_TEST" = no; # Mailbox Test Client
-  "MTK_ADSP_MBOX" = module; # MediaTek ADSP Mailbox Controller
+  "MTK_ADSP_MBOX" = no; # MediaTek ADSP Mailbox Controller
   "MTK_CMDQ_MBOX" = yes; # MediaTek CMDQ Mailbox Support
   "IOMMU_SUPPORT" = yes; # IOMMU Hardware Support
 
@@ -5343,11 +5200,11 @@ in
 
   ### Device Drivers -> Rpmsg drivers
   "RPMSG_CHAR" = module; # RPMSG device interface
-  "RPMSG_CTRL" = module; # RPMSG control interface
-  "RPMSG_NS" = yes; # RPMSG name service announcement
+  "RPMSG_CTRL" = no; # RPMSG control interface
+  "RPMSG_NS" = no; # RPMSG name service announcement
   "RPMSG_MTK_SCP" = module; # MediaTek SCP
   "RPMSG_QCOM_GLINK_RPM" = yes; # Qualcomm RPM Glink driver
-  "RPMSG_VIRTIO" = yes; # Virtio RPMSG bus driver
+  "RPMSG_VIRTIO" = no; # Virtio RPMSG bus driver
   ### Device Drivers: end of Rpmsg drivers
 
   "SOUNDWIRE" = module; # SoundWire support
@@ -5370,15 +5227,16 @@ in
   "MTK_INFRACFG" = yes; # MediaTek INFRACFG Support
   "MTK_PMIC_WRAP" = yes; # MediaTek PMIC Wrapper Support
   "MTK_MMSYS" = yes; # MediaTek MMSYS Support
-  "MTK_SVS" = module; # MediaTek Smart Voltage Scaling(SVS)
+  "MTK_SVS" = yes; # MediaTek Smart Voltage Scaling(SVS)
   "MTK_SOCINFO" = yes; # MediaTek SoC Information
   #### Device Drivers -> SOC (System On Chip) specific Drivers: end of MediaTek SoC drivers
 
   "WPCM450_SOC" = no; # Nuvoton WPCM450 SoC driver
 
   #### Device Drivers -> SOC (System On Chip) specific Drivers -> Qualcomm SoC drivers
-  "QCOM_PMIC_GLINK" = module; # Qualcomm PMIC GLINK driver
-  "QCOM_PBS" = module; # PBS trigger support for Qualcomm Technologies, Inc. PMICS
+  "QCOM_PMIC_PDCHARGER_ULOG" = no; # Qualcomm PMIC PDCharger ULOG driver
+  "QCOM_PMIC_GLINK" = no; # Qualcomm PMIC GLINK driver
+  "QCOM_PBS" = no; # PBS trigger support for Qualcomm Technologies, Inc. PMICS
   #### Device Drivers -> SOC (System On Chip) specific Drivers: end of Qualcomm SoC drivers
 
   "SOC_TI" = no; # TI SOC drivers support
@@ -5400,8 +5258,8 @@ in
   "DEVFREQ_GOV_PERFORMANCE" = module; # Performance
   "DEVFREQ_GOV_POWERSAVE" = no; # Powersave
   "DEVFREQ_GOV_USERSPACE" = module; # Userspace
-  "DEVFREQ_GOV_PASSIVE" = module; # Passive
-  "ARM_MEDIATEK_CCI_DEVFREQ" = module; # MEDIATEK CCI DEVFREQ Driver
+  "DEVFREQ_GOV_PASSIVE" = yes; # Passive
+  "ARM_MEDIATEK_CCI_DEVFREQ" = no; # MEDIATEK CCI DEVFREQ Driver
   "PM_DEVFREQ_EVENT" = yes; # DEVFREQ-Event device Support
   "EXTCON" = yes; # External Connector Class (extcon) support
   "EXTCON_ADC_JACK" = no; # ADC Jack extcon support
@@ -5419,10 +5277,10 @@ in
   "ARM_PL172_MPMC" = no; # ARM PL172 MPMC driver
   "IIO" = yes; # Industrial I/O support
   "IIO_BUFFER" = yes; # Enable buffer support within IIO
-  "IIO_BUFFER_CB" = no; # IIO callback buffer used for push in-kernel interfaces
-  "IIO_BUFFER_DMA" = no; # Industrial I/O DMA buffer infrastructure
-  "IIO_BUFFER_DMAENGINE" = no; # Industrial I/O DMA buffer integration with DMAEngine
-  "IIO_BUFFER_HW_CONSUMER" = no; # Industrial I/O HW buffering
+  "IIO_BUFFER_CB" = module; # IIO callback buffer used for push in-kernel interfaces
+  "IIO_BUFFER_DMA" = module; # Industrial I/O DMA buffer infrastructure
+  "IIO_BUFFER_DMAENGINE" = module; # Industrial I/O DMA buffer integration with DMAEngine
+  "IIO_BUFFER_HW_CONSUMER" = module; # Industrial I/O HW buffering
   "IIO_KFIFO_BUF" = module; # Industrial I/O buffering based on kfifo
   "IIO_TRIGGERED_BUFFER" = module; # Industrial I/O triggered buffer support
   "IIO_CONFIGFS" = no; # Enable IIO configuration via configfs
@@ -5459,6 +5317,7 @@ in
   "DMARD10" = no; # Domintech DMARD10 3-axis Accelerometer Driver
   "FXLS8962AF_I2C" = no; # NXP FXLS8962AF/FXLS8964AF Accelerometer I2C Driver
   "FXLS8962AF_SPI" = no; # NXP FXLS8962AF/FXLS8964AF Accelerometer SPI Driver
+  "HID_SENSOR_ACCEL_3D" = module; # HID Accelerometers 3D
   "IIO_CROS_EC_ACCEL_LEGACY" = no; # ChromeOS EC Legacy Accelerometer Sensor
   "IIO_ST_ACCEL_3AXIS" = no; # STMicroelectronics accelerometers 3-Axis Driver
   "IIO_KX022A_SPI" = no; # Kionix KX022A tri-axis digital accelerometer SPI interface
@@ -5613,6 +5472,11 @@ in
   "IIO_CROS_EC_SENSORS" = module; # ChromeOS EC Contiguous Sensors
   "IIO_CROS_EC_SENSORS_LID_ANGLE" = no; # ChromeOS EC Sensor for lid angle
 
+  #### Hid Sensor IIO Common
+  "HID_SENSOR_IIO_COMMON" = module; # Common modules for all HID Sensor IIO drivers
+  "HID_SENSOR_IIO_TRIGGER" = module; # Common module (trigger) for all HID Sensor IIO drivers
+  #### end of Hid Sensor IIO Common
+
   #### IIO SCMI Sensors
   "IIO_SCMI" = no; # IIO SCMI
   #### end of IIO SCMI Sensors
@@ -5698,6 +5562,7 @@ in
   "ADXRS450" = no; # Analog Devices ADXRS450/3 Digital Output Gyroscope SPI driver
   "BMG160" = no; # BOSCH BMG160 Gyro Sensor
   "FXAS21002C" = no; # NXP FXAS21002C Gyro Sensor
+  "HID_SENSOR_GYRO_3D" = module; # HID Gyroscope 3D
   "MPU3050_I2C" = no; # Invensense MPU3050 devices on I2C
   "IIO_ST_GYRO_3AXIS" = no; # STMicroelectronics gyroscopes 3-Axis Driver
   "ITG3200" = no; # InvenSense ITG3200 Digital 3-Axis Gyroscope I2C driver
@@ -5720,6 +5585,7 @@ in
   "HDC100X" = no; # TI HDC100x relative humidity and temperature sensor
   "HDC2010" = no; # TI HDC2010 relative humidity and temperature sensor
   "HDC3020" = no; # TI HDC3020 relative humidity and temperature sensor
+  "HID_SENSOR_HUMIDITY" = module; # HID Environmental humidity sensor
   "HTS221" = no; # STMicroelectronics HTS221 sensor Driver
   "HTU21" = no; # Measurement Specialties HTU21 humidity & temperature sensor
   "SI7005" = no; # SI7005 relative humidity and temperature sensor
@@ -5772,6 +5638,8 @@ in
   "SENSORS_ISL29028" = no; # Intersil ISL29028 Concurrent Light and Proximity Sensor
   "ISL29125" = no; # Intersil ISL29125 digital color light sensor
   "ISL76682" = no; # Intersil ISL76682 Light Sensor
+  "HID_SENSOR_ALS" = module; # HID ALS
+  "HID_SENSOR_PROX" = module; # HID PROX
   "JSA1212" = no; # JSA1212 ALS and proximity sensor driver
   "ROHM_BU27008" = no; # ROHM BU27008 color (RGB+C/IR) sensor
   "ROHM_BU27034" = no; # ROHM BU27034 ambient light sensor
@@ -5816,6 +5684,7 @@ in
   "BMC150_MAGN_I2C" = no; # Bosch BMC150 I2C Magnetometer Driver
   "BMC150_MAGN_SPI" = no; # Bosch BMC150 SPI Magnetometer Driver
   "MAG3110" = no; # Freescale MAG3110 3-Axis Magnetometer
+  "HID_SENSOR_MAGNETOMETER_3D" = module; # HID Magenetometer 3D
   "MMC35240" = no; # MEMSIC MMC35240 3-axis magnetic sensor
   "IIO_ST_MAGN_3AXIS" = module; # STMicroelectronics magnetometers 3-Axis Driver
   "IIO_ST_MAGN_I2C_3AXIS" = module; # STMicroelectronics magnetometers 3-Axis I2C Interface
@@ -5832,10 +5701,19 @@ in
   "IIO_MUX" = no; # IIO multiplexer driver
   #### end of Multiplexers
 
+  #### Inclinometer sensors
+  "HID_SENSOR_INCLINOMETER_3D" = module; # HID Inclinometer 3D
+  "HID_SENSOR_DEVICE_ROTATION" = module; # HID Device Rotation
+  #### end of Inclinometer sensors
+
   #### Triggers - standalone
-  "IIO_INTERRUPT_TRIGGER" = no; # Generic interrupt trigger
-  "IIO_SYSFS_TRIGGER" = no; # SYSFS trigger
+  "IIO_INTERRUPT_TRIGGER" = module; # Generic interrupt trigger
+  "IIO_SYSFS_TRIGGER" = module; # SYSFS trigger
   #### end of Triggers - standalone
+
+  #### Linear and angular position sensors
+  "HID_SENSOR_CUSTOM_INTEL_HINGE" = module; # HID Hinge
+  #### end of Linear and angular position sensors
 
   #### Digital potentiometers
   "AD5110" = no; # Analog Devices AD5110 and similar Digital Potentiometer driver
@@ -5863,6 +5741,7 @@ in
   "IIO_CROS_EC_BARO" = module; # ChromeOS EC Barometer Sensor
   "DLHL60D" = no; # All Sensors DLHL60D and DLHL60G low voltage digital pressure sensors
   "DPS310" = no; # Infineon DPS310 pressure and temperature sensor
+  "HID_SENSOR_PRESS" = module; # HID PRESS
   "HP03" = no; # Hope RF HP03 temperature and pressure sensor driver
   "HSC030PA" = no; # Honeywell HSC/SSC TruStability pressure sensor series
   "ICP10100" = no; # InvenSense ICP-101xx pressure and temperature sensor
@@ -5912,6 +5791,7 @@ in
   #### Temperature sensors
   "LTC2983" = no; # Analog Devices Multi-Sensor Digital Temperature Measurement System
   "MAXIM_THERMOCOUPLE" = no; # Maxim thermocouple sensors
+  "HID_SENSOR_TEMP" = module; # HID Environmental temperature sensor
   "MLX90614" = no; # MLX90614 contact-less infrared sensor
   "MLX90632" = no; # MLX90632 contact-less infrared sensor with medical accuracy
   "MLX90635" = no; # MLX90635 contact-less infrared sensor with medical accuracy
@@ -5929,7 +5809,6 @@ in
   "NTB" = no; # Non-Transparent Bridge support
   "PWM" = yes; # Pulse-Width Modulation (PWM) Support
   "PWM_DEBUG" = no; # PWM lowlevel drivers additional checks and debug messages
-  "PWM_ADP5585" = module; # ADP5585 PWM support
   "PWM_ATMEL_TCB" = no; # Atmel TC Block PWM support
   "PWM_CLK" = no; # Clock based PWM support
   "PWM_CROS_EC" = yes; # ChromeOS EC PWM driver
@@ -5949,29 +5828,28 @@ in
 
   "IPACK_BUS" = no; # IndustryPack bus support
   "RESET_CONTROLLER" = yes; # Reset Controller Support
-  "RESET_GPIO" = module; # GPIO reset controller
+  "RESET_GPIO" = no; # GPIO reset controller
   "RESET_SCMI" = yes; # Reset driver controlled via ARM SCMI interface
   "RESET_TI_SYSCON" = no; # TI SYSCON Reset Driver
   "RESET_TI_TPS380X" = no; # TI TPS380x Reset Driver
 
   ### Device Drivers -> PHY Subsystem
   "GENERIC_PHY" = yes; # PHY Core
-  "PHY_CAN_TRANSCEIVER" = module; # CAN transceiver PHY
-  "PHY_AIROHA_PCIE" = no; # Airoha PCIe-PHY Driver
+  "PHY_CAN_TRANSCEIVER" = no; # CAN transceiver PHY
 
   #### Device Drivers -> PHY Subsystem -> PHY drivers for Broadcom platforms
   "BCM_KONA_USB2_PHY" = no; # Broadcom Kona USB2 PHY Driver
   #### Device Drivers -> PHY Subsystem: end of PHY drivers for Broadcom platforms
 
-  "PHY_CADENCE_TORRENT" = module; # Cadence Torrent PHY driver
+  "PHY_CADENCE_TORRENT" = no; # Cadence Torrent PHY driver
   "PHY_CADENCE_DPHY" = no; # Cadence D-PHY Support
-  "PHY_CADENCE_DPHY_RX" = module; # Cadence D-PHY Rx Support
+  "PHY_CADENCE_DPHY_RX" = no; # Cadence D-PHY Rx Support
   "PHY_CADENCE_SIERRA" = module; # Cadence Sierra PHY Driver
-  "PHY_CADENCE_SALVO" = module; # Cadence Salvo PHY Driver
+  "PHY_CADENCE_SALVO" = no; # Cadence Salvo PHY Driver
   "PHY_PXA_28NM_HSIC" = no; # Marvell USB HSIC 28nm PHY Driver
   "PHY_PXA_28NM_USB2" = no; # Marvell USB 2.0 28nm PHY Driver
-  "PHY_MTK_PCIE" = yes; # MediaTek PCIe-PHY Driver
-  "PHY_MTK_XFI_TPHY" = yes; # MediaTek 10GE SerDes XFI T-PHY driver
+  "PHY_MTK_PCIE" = no; # MediaTek PCIe-PHY Driver
+  "PHY_MTK_XFI_TPHY" = no; # MediaTek 10GE SerDes XFI T-PHY driver
   "PHY_MTK_TPHY" = yes; # MediaTek T-PHY Driver
   "PHY_MTK_UFS" = no; # MediaTek UFS M-PHY driver
   "PHY_MTK_XSPHY" = no; # MediaTek XS-PHY Driver
@@ -5983,7 +5861,7 @@ in
   "PHY_CPCAP_USB" = no; # CPCAP PMIC USB PHY driver
   "PHY_MAPPHONE_MDM6600" = no; # Motorola Mapphone MDM6600 modem USB PHY driver
   "PHY_OCELOT_SERDES" = no; # SerDes PHY driver for Microsemi Ocelot
-  "PHY_QCOM_USB_HS" = module; # Qualcomm USB HS PHY module
+  "PHY_QCOM_USB_HS" = yes; # Qualcomm USB HS PHY module
   "PHY_QCOM_USB_HSIC" = no; # Qualcomm USB HSIC ULPI PHY module
   "PHY_SAMSUNG_USB2" = no; # S5P/Exynos SoC series USB 2.0 PHY driver
   "PHY_TUSB1210" = no; # TI TUSB1210 ULPI PHY module
@@ -5993,22 +5871,18 @@ in
   "MCB" = no; # MCB support
 
   ### Device Drivers -> Performance monitor support
-  "ARM_CCI_PMU" = module; # ARM CCI PMU driver
-  "ARM_CCI400_PMU" = yes; # support CCI-400
-  "ARM_CCI5xx_PMU" = yes; # support CCI-500/CCI-550
-  "ARM_CCN" = module; # ARM CCN driver support
-  "ARM_CMN" = module; # Arm CMN-600 PMU support
+  "ARM_CCI_PMU" = no; # ARM CCI PMU driver
+  "ARM_CCN" = no; # ARM CCN driver support
+  "ARM_CMN" = no; # Arm CMN-600 PMU support
   "ARM_NI" = no; # Arm NI-700 PMU support
   "ARM_PMU" = yes; # ARM PMU framework
-  "ARM_SMMU_V3_PMU" = module; # ARM SMMUv3 Performance Monitors Extension
-  "ARM_DSU_PMU" = module; # ARM DynamIQ Shared Unit (DSU) PMU
-  "ARM_SPE_PMU" = module; # Enable support for the ARMv8.2 Statistical Profiling Extension
+  "ARM_SMMU_V3_PMU" = no; # ARM SMMUv3 Performance Monitors Extension
+  "ARM_DSU_PMU" = no; # ARM DynamIQ Shared Unit (DSU) PMU
+  "ARM_SPE_PMU" = no; # Enable support for the ARMv8.2 Statistical Profiling Extension
   "HISI_PCIE_PMU" = no; # HiSilicon PCIE PERF PMU
   "HNS3_PMU" = no; # HNS3 PERF PMU
   "DWC_PCIE_PMU" = no; # Synopsys DesignWare PCIe PMU
-  "ARM_CORESIGHT_PMU_ARCH_SYSTEM_PMU" = module; # ARM Coresight Architecture PMU
-  "NVIDIA_CORESIGHT_PMU_ARCH_SYSTEM_PMU" = module; # NVIDIA Coresight Architecture PMU
-  "AMPERE_CORESIGHT_PMU_ARCH_SYSTEM_PMU" = no; # Ampere Coresight Architecture PMU
+  "ARM_CORESIGHT_PMU_ARCH_SYSTEM_PMU" = no; # ARM Coresight Architecture PMU
   ### Device Drivers: end of Performance monitor support
 
   "RAS" = yes; # Reliability, Availability and Serviceability (RAS) features
@@ -6016,7 +5890,7 @@ in
 
   ### Device Drivers -> Android
   "ANDROID_BINDER_IPC" = yes; # Android Binder IPC Driver
-  "ANDROID_BINDERFS" = yes; # Android Binderfs filesystem
+  "ANDROID_BINDERFS" = no; # Android Binderfs filesystem
   "ANDROID_BINDER_DEVICES" = freeform "binder,hwbinder,vndbinder"; # Android Binder devices
   "ANDROID_BINDER_IPC_SELFTEST" = no; # Android Binder IPC Driver Selftest
   ### Device Drivers: end of Android
@@ -6028,28 +5902,38 @@ in
   "NVMEM_SYSFS" = yes; # /sys/bus/nvmem/devices/*/nvmem (sysfs interface)
 
   #### Layout Types
-  "NVMEM_LAYOUT_SL28_VPD" = module; # Kontron sl28 VPD layout support
+  "NVMEM_LAYOUT_SL28_VPD" = no; # Kontron sl28 VPD layout support
   "NVMEM_LAYOUT_ONIE_TLV" = no; # ONIE tlv support
   "NVMEM_LAYOUT_U_BOOT_ENV" = no; # U-Boot environment variables layout
   #### end of Layout Types
 
   "NVMEM_MTK_EFUSE" = yes; # Mediatek SoCs EFUSE support
   "NVMEM_RMEM" = module; # Reserved Memory Based Driver Support
-  "NVMEM_SPMI_SDAM" = module; # SPMI SDAM Support
+  "NVMEM_SPMI_SDAM" = no; # SPMI SDAM Support
   "NVMEM_U_BOOT_ENV" = no; # U-Boot environment variables support
 
   ### Device Drivers -> HW tracing support
-  "STM" = module; # System Trace Module devices
-  "STM_PROTO_BASIC" = no; # Basic STM framing protocol driver
-  "STM_PROTO_SYS_T" = no; # MIPI SyS-T STM framing protocol driver
-  "STM_DUMMY" = no; # Dummy STM driver
-  "STM_SOURCE_CONSOLE" = no; # Kernel console over STM devices
-  "STM_SOURCE_HEARTBEAT" = no; # Heartbeat over STM devices
+  "STM" = no; # System Trace Module devices
   "INTEL_TH" = no; # Intel(R) Trace Hub controller
   "HISI_PTT" = no; # HiSilicon PCIe Tune and Trace Device
   ### Device Drivers: end of HW tracing support
 
-  "FPGA" = no; # FPGA Configuration Framework
+  "FPGA" = yes; # FPGA Configuration Framework
+  "ALTERA_PR_IP_CORE" = no; # Altera Partial Reconfiguration IP Core
+  "FPGA_MGR_ALTERA_PS_SPI" = no; # Altera FPGA Passive Serial over SPI
+  "FPGA_MGR_ALTERA_CVP" = module; # Altera CvP FPGA Manager
+  "FPGA_MGR_XILINX_SELECTMAP" = no; # Xilinx Configuration over SelectMAP
+  "FPGA_MGR_XILINX_SPI" = no; # Xilinx Configuration over Slave Serial (SPI)
+  "FPGA_MGR_ICE40_SPI" = no; # Lattice iCE40 SPI
+  "FPGA_MGR_MACHXO2_SPI" = no; # Lattice MachXO2 SPI
+  "FPGA_BRIDGE" = module; # FPGA Bridge Framework
+  "ALTERA_FREEZE_BRIDGE" = module; # Altera FPGA Freeze Bridge
+  "XILINX_PR_DECOUPLER" = no; # Xilinx LogiCORE PR Decoupler
+  "FPGA_REGION" = module; # FPGA Region
+  "OF_FPGA_REGION" = module; # FPGA Region Device Tree Overlay Support
+  "FPGA_DFL" = no; # FPGA Device Feature List (DFL) support
+  "FPGA_MGR_MICROCHIP_SPI" = no; # Microchip Polarfire SPI FPGA manager
+  "FPGA_MGR_LATTICE_SYSCONFIG_SPI" = no; # Lattice sysCONFIG SPI FPGA manager
   "FSI" = no; # FSI support
   "TEE" = yes; # Trusted Execution Environment support
   "OPTEE" = yes; # OP-TEE
@@ -6058,7 +5942,7 @@ in
   ### Device Drivers -> Multiplexer drivers
   "MUX_ADG792A" = no; # Analog Devices ADG792A/ADG792G Multiplexers
   "MUX_ADGS1408" = no; # Analog Devices ADGS1408/ADGS1409 Multiplexers
-  "MUX_GPIO" = module; # GPIO-controlled Multiplexer
+  "MUX_GPIO" = no; # GPIO-controlled Multiplexer
   "MUX_MMIO" = module; # MMIO/Regmap register bitfield-controlled Multiplexer
   ### Device Drivers: end of Multiplexer drivers
 
@@ -6066,19 +5950,20 @@ in
   "SLIMBUS" = module; # SLIMbus support
   "SLIM_QCOM_CTRL" = module; # Qualcomm SLIMbus Manager Component
   "INTERCONNECT" = yes; # On-Chip Interconnect management support
-  "INTERCONNECT_MTK" = yes; # MediaTek interconnect drivers
-  "COUNTER" = module; # Counter support
-  "INTERRUPT_CNT" = no; # Interrupt counter driver
+  "INTERCONNECT_MTK" = no; # MediaTek interconnect drivers
+  "COUNTER" = no; # Counter support
   "MOST" = no; # MOST (Media Oriented Systems Transport) support
   "PECI" = no; # PECI support
-  "HTE" = yes; # Hardware Timestamping Engine (HTE) Support
+  "HTE" = no; # Hardware Timestamping Engine (HTE) Support
   "CDX_BUS" = no; # CDX Bus driver
   ## end of Device Drivers
 
   ## File systems
   "VALIDATE_FS_PARSER" = no; # Validate filesystem parameter description
   "EXT2_FS" = no; # Second extended fs support (DEPRECATED)
-  "EXT3_FS" = no; # The Extended 3 (ext3) filesystem
+  "EXT3_FS" = yes; # The Extended 3 (ext3) filesystem
+  "EXT3_FS_POSIX_ACL" = no; # Ext3 POSIX Access Control Lists
+  "EXT3_FS_SECURITY" = no; # Ext3 Security Labels
   "EXT4_FS" = yes; # The Extended 4 (ext4) filesystem
   "EXT4_USE_FOR_EXT2" = yes; # Use ext4 for ext2 file systems
   "EXT4_FS_POSIX_ACL" = yes; # Ext4 POSIX Access Control Lists
@@ -6087,7 +5972,15 @@ in
   "JBD2_DEBUG" = no; # JBD2 (ext4) debugging support
   "REISERFS_FS" = no; # Reiserfs support (deprecated)
   "JFS_FS" = no; # JFS filesystem support
-  "XFS_FS" = no; # XFS filesystem support
+  "XFS_FS" = module; # XFS filesystem support
+  "XFS_SUPPORT_V4" = yes; # Support deprecated V4 (crc=0) format
+  "XFS_SUPPORT_ASCII_CI" = yes; # Support deprecated case-insensitive ascii (ascii-ci=1) format
+  "XFS_QUOTA" = no; # XFS Quota support
+  "XFS_POSIX_ACL" = no; # XFS POSIX ACL support
+  "XFS_RT" = no; # XFS Realtime subvolume support
+  "XFS_ONLINE_SCRUB" = no; # XFS online metadata check support
+  "XFS_WARN" = no; # XFS Verbose Warnings
+  "XFS_DEBUG" = no; # XFS Debugging support
   "GFS2_FS" = no; # GFS2 file system support
   "OCFS2_FS" = no; # OCFS2 file system support
   "BTRFS_FS" = yes; # Btrfs filesystem support
@@ -6097,19 +5990,14 @@ in
   "BTRFS_ASSERT" = no; # Btrfs assert support
   "BTRFS_FS_REF_VERIFY" = no; # Btrfs with the ref verify tool compiled in
   "NILFS2_FS" = no; # NILFS2 file system support
-  "F2FS_FS" = module; # F2FS filesystem support
+  "F2FS_FS" = yes; # F2FS filesystem support
   "F2FS_STAT_FS" = yes; # F2FS Status Information
   "F2FS_FS_XATTR" = yes; # F2FS extended attributes
   "F2FS_FS_POSIX_ACL" = yes; # F2FS Access Control Lists
   "F2FS_FS_SECURITY" = no; # F2FS Security Labels
   "F2FS_CHECK_FS" = no; # F2FS consistency checking feature
   "F2FS_FAULT_INJECTION" = no; # F2FS fault injection facility
-  "F2FS_FS_COMPRESSION" = yes; # F2FS compression feature
-  "F2FS_FS_LZO" = yes; # LZO compression support
-  "F2FS_FS_LZORLE" = yes; # LZO-RLE compression support
-  "F2FS_FS_LZ4" = yes; # LZ4 compression support
-  "F2FS_FS_LZ4HC" = yes; # LZ4HC compression support
-  "F2FS_FS_ZSTD" = yes; # ZSTD compression support
+  "F2FS_FS_COMPRESSION" = no; # F2FS compression feature
   "F2FS_IOSTAT" = yes; # F2FS IO statistics information
   "F2FS_UNFAIR_RWSEM" = no; # F2FS unfair rw_semaphore
   "BCACHEFS_FS" = no; # bcachefs filesystem support (EXPERIMENTAL)
@@ -6161,7 +6049,7 @@ in
   "EXFAT_DEFAULT_IOCHARSET" = freeform "utf8"; # Default iocharset for exFAT
   "NTFS3_FS" = module; # NTFS Read-Write file system support
   "NTFS3_64BIT_CLUSTER" = no; # 64 bits per NTFS clusters
-  "NTFS3_LZX_XPRESS" = yes; # activate support of external compressions lzx/xpress
+  "NTFS3_LZX_XPRESS" = no; # activate support of external compressions lzx/xpress
   "NTFS3_FS_POSIX_ACL" = no; # NTFS POSIX Access Control Lists
   "NTFS_FS" = module; # NTFS file system support
   ### File systems: end of DOS/FAT/EXFAT/NT Filesystems
@@ -6179,6 +6067,7 @@ in
   "TMPFS_QUOTA" = no; # Tmpfs quota support
   "HUGETLBFS" = yes; # HugeTLB file system support
   "CONFIGFS_FS" = yes; # Userspace-driven configuration filesystem
+  "EFIVAR_FS" = yes; # EFI Variable filesystem
   ### File systems: end of Pseudo filesystems
 
   "MISC_FILESYSTEMS" = yes; # Miscellaneous filesystems
@@ -6192,12 +6081,6 @@ in
   "BFS_FS" = no; # BFS file system support
   "EFS_FS" = no; # EFS file system support (read only)
   "JFFS2_FS" = no; # Journalling Flash File System v2 (JFFS2) support
-  "UBIFS_FS" = module; # UBIFS file system support
-  "UBIFS_FS_ADVANCED_COMPR" = no; # Advanced compression options
-  "UBIFS_ATIME_SUPPORT" = no; # Access time support
-  "UBIFS_FS_XATTR" = yes; # UBIFS XATTR support
-  "UBIFS_FS_SECURITY" = yes; # UBIFS Security Labels
-  "UBIFS_FS_AUTHENTICATION" = no; # UBIFS authentication support
   "CRAMFS" = no; # Compressed ROM file system support (cramfs)
   "SQUASHFS" = yes; # SquashFS 4.0 - Squashed file system support
   "SQUASHFS_FILE_CACHE" = yes; # Decompress file data into an intermediate buffer
@@ -6209,12 +6092,11 @@ in
   "SQUASHFS_XATTR" = yes; # Squashfs XATTR support
   "SQUASHFS_ZLIB" = yes; # Include support for ZLIB compressed file systems
   "SQUASHFS_LZ4" = yes; # Include support for LZ4 compressed file systems
-  "SQUASHFS_LZO" = yes; # Include support for LZO compressed file systems
+  "SQUASHFS_LZO" = no; # Include support for LZO compressed file systems
   "SQUASHFS_XZ" = yes; # Include support for XZ compressed file systems
-  "SQUASHFS_ZSTD" = yes; # Include support for ZSTD compressed file systems
-  "SQUASHFS_4K_DEVBLK_SIZE" = yes; # Use 4K device block size?
-  "SQUASHFS_EMBEDDED" = yes; # Additional option for memory-constrained systems
-  "SQUASHFS_FRAGMENT_CACHE_SIZE" = freeform "3"; # Number of fragments cached
+  "SQUASHFS_ZSTD" = no; # Include support for ZSTD compressed file systems
+  "SQUASHFS_4K_DEVBLK_SIZE" = no; # Use 4K device block size?
+  "SQUASHFS_EMBEDDED" = no; # Additional option for memory-constrained systems
   "VXFS_FS" = no; # FreeVxFS file system support (VERITAS VxFS(TM) compatible)
   "MINIX_FS" = no; # Minix file system support
   "OMFS_FS" = no; # SonicBlue Optimized MPEG File System support
@@ -6228,7 +6110,7 @@ in
   "EROFS_FS" = no; # EROFS filesystem support
   "NETWORK_FILESYSTEMS" = yes; # Network File Systems
   "NFS_FS" = yes; # NFS client support
-  "NFS_V2" = no; # NFS client support for NFS version 2
+  "NFS_V2" = yes; # NFS client support for NFS version 2
   "NFS_V3" = yes; # NFS client support for NFS version 3
   "NFS_V3_ACL" = no; # NFS client support for the NFSv3 ACL protocol extension
   "NFS_V4" = yes; # NFS client support for NFS version 4
@@ -6241,7 +6123,7 @@ in
   "NFS_FSCACHE" = no; # Provide NFS client caching support
   "NFS_USE_LEGACY_DNS" = no; # Use the legacy NFS DNS resolver
   "NFS_DISABLE_UDP_SUPPORT" = yes; # NFS: Disable NFS UDP protocol support
-  "NFS_V4_2_READ_PLUS" = yes; # NFS: Enable support for the NFSv4.2 READ_PLUS operation
+  "NFS_V4_2_READ_PLUS" = no; # NFS: Enable support for the NFSv4.2 READ_PLUS operation
   "NFSD" = no; # NFS server support
   "RPCSEC_GSS_KRB5" = yes; # Secure RPC: Kerberos V mechanism
   "SUNRPC_DEBUG" = no; # RPC: Enable dprintk debugging
@@ -6260,6 +6142,7 @@ in
   "SMB_SERVER" = no; # SMB3 server support
   "CODA_FS" = no; # Coda file system support (advanced network fs)
   "AFS_FS" = no; # Andrew File System support (AFS)
+  "9P_FS" = no; # Plan 9 Resource Sharing Support (9P2000)
   "NLS" = yes; # Native language support
   "NLS_DEFAULT" = freeform "iso8859-1"; # Default NLS Option
   "NLS_CODEPAGE_437" = yes; # Codepage 437 (United States, Canada)
@@ -6321,29 +6204,21 @@ in
   "PERSISTENT_KEYRINGS" = no; # Enable register of persistent per-UID keyrings
   "TRUSTED_KEYS" = no; # TRUSTED KEYS
   "ENCRYPTED_KEYS" = no; # ENCRYPTED KEYS
-  "KEY_DH_OPERATIONS" = no; # Diffie-Hellman operations on retained keys
+  "KEY_DH_OPERATIONS" = yes; # Diffie-Hellman operations on retained keys
   "SECURITY_DMESG_RESTRICT" = no; # Restrict unprivileged access to the kernel syslog
   "PROC_MEM_ALWAYS_FORCE" = yes; # Traditional /proc/pid/mem behavior
   "PROC_MEM_FORCE_PTRACE" = no; # Require active ptrace() use for access override
   "PROC_MEM_NO_FORCE" = no; # Never
   "SECURITY" = yes; # Enable different security models
   "SECURITYFS" = yes; # Enable the securityfs filesystem
-  "SECURITY_NETWORK" = yes; # Socket and Networking Security Hooks
-  "SECURITY_NETWORK_XFRM" = no; # XFRM (IPSec) Networking Security Hooks
-  "SECURITY_PATH" = yes; # Security hooks for pathname based access control
+  "SECURITY_NETWORK" = no; # Socket and Networking Security Hooks
+  "SECURITY_PATH" = no; # Security hooks for pathname based access control
   "HARDENED_USERCOPY" = no; # Harden memory copies between kernel and userspace
   "FORTIFY_SOURCE" = no; # Harden common str/mem functions against buffer overflows
   "STATIC_USERMODEHELPER" = no; # Force all usermode helper calls through a single binary
-  "SECURITY_SELINUX" = no; # SELinux Support
   "SECURITY_SMACK" = no; # Simplified Mandatory Access Control Kernel Support
   "SECURITY_TOMOYO" = no; # TOMOYO Linux Support
-  "SECURITY_APPARMOR" = yes; # AppArmor support
-  "SECURITY_APPARMOR_DEBUG" = no; # Build AppArmor with debug code
-  "SECURITY_APPARMOR_INTROSPECT_POLICY" = yes; # Allow loaded policy to be introspected
-  "SECURITY_APPARMOR_HASH" = yes; # Enable introspection of sha256 hashes for loaded profiles
-  "SECURITY_APPARMOR_HASH_DEFAULT" = yes; # Enable policy hash introspection by default
-  "SECURITY_APPARMOR_EXPORT_BINARY" = yes; # Allow exporting the raw binary policy
-  "SECURITY_APPARMOR_PARANOID_LOAD" = yes; # Perform full verification of loaded policy
+  "SECURITY_APPARMOR" = no; # AppArmor support
   "SECURITY_LOADPIN" = no; # Pin load of kernel files (modules, fw, etc) to one filesystem
   "SECURITY_YAMA" = no; # Yama support
   "SECURITY_SAFESETID" = no; # Gate setid transitions to limit CAP_SET{U/G}ID capabilities
@@ -6355,16 +6230,15 @@ in
   "INTEGRITY_AUDIT" = yes; # Enables integrity auditing support
   "IMA" = no; # Integrity Measurement Architecture(IMA)
   "EVM" = no; # EVM support
-  "DEFAULT_SECURITY_APPARMOR" = yes; # AppArmor
-  "DEFAULT_SECURITY_DAC" = no; # Unix Discretionary Access Controls
-  "LSM" = freeform "landlock,lockdown,yama,loadpin,safesetid,apparmor,selinux,smack,tomoyo,ipe,bpf"; # Ordered list of enabled LSMs
+  "DEFAULT_SECURITY_DAC" = yes; # Unix Discretionary Access Controls
+  "LSM" = freeform "landlock,lockdown,yama,loadpin,safesetid,integrity,bpf"; # Ordered list of enabled LSMs
 
   ### Security options -> Kernel hardening options
 
   #### Security options -> Kernel hardening options -> Memory initialization
-  "INIT_STACK_NONE" = no; # no automatic stack variable initialization (weakest)
+  "INIT_STACK_NONE" = yes; # no automatic stack variable initialization (weakest)
   "INIT_STACK_ALL_PATTERN" = no; # pattern-init everything (strongest)
-  "INIT_STACK_ALL_ZERO" = yes; # zero-init everything (strongest and safest)
+  "INIT_STACK_ALL_ZERO" = no; # zero-init everything (strongest and safest)
   "GCC_PLUGIN_STACKLEAK" = no; # Poison kernel stack before returning from syscalls
   "INIT_ON_ALLOC_DEFAULT_ON" = no; # Enable heap memory zeroing on allocation by default
   "INIT_ON_FREE_DEFAULT_ON" = no; # Enable heap memory zeroing on free by default
@@ -6386,18 +6260,19 @@ in
 
   ### Crypto core or helper
   "CRYPTO_MANAGER" = yes; # Cryptographic algorithm manager
-  "CRYPTO_USER" = yes; # Userspace cryptographic algorithm configuration
+  "CRYPTO_USER" = no; # Userspace cryptographic algorithm configuration
   "CRYPTO_MANAGER_DISABLE_TESTS" = yes; # Disable run-time self tests
   "CRYPTO_NULL" = yes; # Null algorithms
   "CRYPTO_PCRYPT" = no; # Parallel crypto engine
   "CRYPTO_CRYPTD" = no; # Software async crypto daemon
   "CRYPTO_AUTHENC" = yes; # Authenc support
-  "CRYPTO_TEST" = module; # Testing module
+  "CRYPTO_TEST" = no; # Testing module
   ### end of Crypto core or helper
 
   ### Public-key cryptography
   "CRYPTO_RSA" = yes; # RSA (Rivest-Shamir-Adleman)
-  "CRYPTO_DH" = no; # DH (Diffie-Hellman)
+  "CRYPTO_DH" = yes; # DH (Diffie-Hellman)
+  "CRYPTO_DH_RFC7919_GROUPS" = no; # RFC 7919 FFDHE groups
   "CRYPTO_ECDH" = module; # ECDH (Elliptic Curve Diffie-Hellman)
   "CRYPTO_ECDSA" = no; # ECDSA (Elliptic Curve Digital Signature Algorithm)
   "CRYPTO_ECRDSA" = no; # EC-RDSA (Elliptic Curve Russian Digital Signature Algorithm)
@@ -6413,7 +6288,7 @@ in
   "CRYPTO_CAMELLIA" = no; # Camellia
   "CRYPTO_CAST5" = no; # CAST5 (CAST-128)
   "CRYPTO_CAST6" = no; # CAST6 (CAST-256)
-  "CRYPTO_DES" = no; # DES and Triple DES EDE
+  "CRYPTO_DES" = module; # DES and Triple DES EDE
   "CRYPTO_FCRYPT" = no; # FCrypt
   "CRYPTO_KHAZAD" = no; # Khazad
   "CRYPTO_SEED" = no; # SEED
@@ -6453,9 +6328,9 @@ in
   "CRYPTO_CMAC" = module; # CMAC (Cipher-based MAC)
   "CRYPTO_GHASH" = module; # GHASH
   "CRYPTO_HMAC" = yes; # HMAC (Keyed-Hash MAC)
-  "CRYPTO_MD4" = no; # MD4
+  "CRYPTO_MD4" = module; # MD4
   "CRYPTO_MD5" = yes; # MD5
-  "CRYPTO_MICHAEL_MIC" = module; # Michael MIC
+  "CRYPTO_MICHAEL_MIC" = no; # Michael MIC
   "CRYPTO_POLY1305" = yes; # Poly1305
   "CRYPTO_RMD160" = no; # RIPEMD-160
   "CRYPTO_SHA1" = yes; # SHA-1
@@ -6472,13 +6347,13 @@ in
 
   ### CRCs (cyclic redundancy checks)
   "CRYPTO_CRC32C" = yes; # CRC32c
-  "CRYPTO_CRC32" = module; # CRC32
+  "CRYPTO_CRC32" = yes; # CRC32
   "CRYPTO_CRCT10DIF" = yes; # CRCT10DIF
   "CRYPTO_CRC64_ROCKSOFT" = yes; # CRC64 based on Rocksoft Model algorithm
   ### end of CRCs (cyclic redundancy checks)
 
   ### Compression
-  "CRYPTO_DEFLATE" = module; # Deflate
+  "CRYPTO_DEFLATE" = no; # Deflate
   "CRYPTO_LZO" = yes; # LZO
   "CRYPTO_842" = yes; # 842
   "CRYPTO_LZ4" = yes; # LZ4
@@ -6567,9 +6442,10 @@ in
   ## Library routines
   "RAID6_PQ_BENCHMARK" = yes; # Automatically choose fastest RAID6 PQ functions
   "PACKING" = no; # Generic bitfield packing and unpacking
-  "CORDIC" = module; # CORDIC algorithm
+  "CORDIC" = no; # CORDIC algorithm
   "PRIME_NUMBERS" = no; # Simple prime number generator for testing
   "INDIRECT_PIO" = no; # Access I/O in non-MMIO mode
+  "TRACE_MMIO_ACCESS" = no; # Register read/write tracing
 
   ### Library routines -> Crypto library routines
   "CRYPTO_LIB_CHACHA" = module; # ChaCha library interface
@@ -6578,7 +6454,7 @@ in
   "CRYPTO_LIB_CHACHA20POLY1305" = module; # ChaCha20-Poly1305 AEAD support (8-byte nonce library version)
   ### Library routines: end of Crypto library routines
 
-  "CRC_CCITT" = yes; # CRC-CCITT functions
+  "CRC_CCITT" = no; # CRC-CCITT functions
   "CRC16" = yes; # CRC16 functions
   "CRC_T10DIF" = yes; # CRC calculation for the T10 Data Integrity Field
   "CRC64_ROCKSOFT" = yes; # CRC calculation for the Rocksoft model CRC64
@@ -6593,13 +6469,21 @@ in
   "CRC4" = no; # CRC4 functions
   "CRC7" = yes; # CRC7 functions
   "LIBCRC32C" = yes; # CRC32c (Castagnoli, et al) Cyclic Redundancy-Check
-  "CRC8" = yes; # CRC8 function
+  "CRC8" = module; # CRC8 function
   "RANDOM32_SELFTEST" = no; # PRNG perform self test on init
   "XZ_DEC" = yes; # XZ decompression support
   "XZ_DEC_MICROLZMA" = no; # MicroLZMA decoder
   "XZ_DEC_TEST" = no; # XZ decompressor tester
   "SWIOTLB_DYNAMIC" = no; # Dynamic allocation of DMA bounce buffers
-  "DMA_RESTRICTED_POOL" = yes; # DMA Restricted Pool
+  "DMA_RESTRICTED_POOL" = no; # DMA Restricted Pool
+  "DMA_CMA" = yes; # DMA Contiguous Memory Allocator
+  "DMA_NUMA_CMA" = no; # Enable separate DMA Contiguous Memory Area for NUMA Node
+  "CMA_SIZE_MBYTES" = freeform "16"; # Size in Mega Bytes
+  "CMA_SIZE_SEL_MBYTES" = yes; # Use mega bytes value only
+  "CMA_SIZE_SEL_PERCENTAGE" = no; # Use percentage value only
+  "CMA_SIZE_SEL_MIN" = no; # Use lower value (minimum)
+  "CMA_SIZE_SEL_MAX" = no; # Use higher value (maximum)
+  "CMA_ALIGNMENT" = freeform "8"; # Maximum PAGE_SIZE order of alignment for contiguous buffers
   "DMA_API_DEBUG" = no; # Enable debugging of DMA-API usage
   "DMA_MAP_BENCHMARK" = no; # Enable benchmarking of streaming DMA mapping
   "GLOB_SELFTEST" = no; # glob self-test on init
@@ -6619,8 +6503,8 @@ in
   "CONSOLE_LOGLEVEL_QUIET" = freeform "4"; # quiet console loglevel (1-15)
   "MESSAGE_LOGLEVEL_DEFAULT" = freeform "4"; # Default message log level (1-7)
   "BOOT_PRINTK_DELAY" = no; # Delay each boot printk message by N milliseconds
-  "DYNAMIC_DEBUG" = no; # Enable dynamic printk() support
-  "DYNAMIC_DEBUG_CORE" = no; # Enable core function of dynamic debug support
+  "DYNAMIC_DEBUG" = yes; # Enable dynamic printk() support
+  "DYNAMIC_DEBUG_CORE" = yes; # Enable core function of dynamic debug support
   "SYMBOLIC_ERRNAME" = yes; # Support symbolic error names in printf
   ### Kernel hacking: end of printk and dmesg options
 
@@ -6668,6 +6552,7 @@ in
   "PAGE_OWNER" = no; # Track page owner
   "PAGE_TABLE_CHECK" = no; # Check for invalid mappings in user page tables
   "PAGE_POISONING" = no; # Poison pages after freeing
+  "DEBUG_PAGE_REF" = no; # Enable tracepoint to track down page reference manipulation
   "DEBUG_RODATA_TEST" = no; # Testcase for the marking rodata read-only
   "DEBUG_WX" = no; # Warn on W+X mappings at boot
   "PTDUMP_DEBUGFS" = no; # Export kernel pagetable layout to userspace via debugfs
@@ -6750,7 +6635,41 @@ in
   "DEBUG_WQ_FORCE_RR_CPU" = no; # Force round-robin CPU selection for unbound work items
   "CPU_HOTPLUG_STATE_CONTROL" = no; # Enable CPU hotplug state control
   "LATENCYTOP" = no; # Latency measuring infrastructure
-  "FTRACE" = no; # Tracers
+  "FTRACE" = yes; # Tracers
+  "BOOTTIME_TRACING" = no; # Boot-time Tracing support
+  "FUNCTION_TRACER" = yes; # Kernel Function Tracer
+  "FUNCTION_GRAPH_TRACER" = yes; # Kernel Function Graph Tracer
+  "FUNCTION_GRAPH_RETVAL" = no; # Kernel Function Graph Return Value
+  "DYNAMIC_FTRACE" = yes; # enable/disable function tracing dynamically
+  "FUNCTION_PROFILER" = no; # Kernel function profiler
+  "STACK_TRACER" = no; # Trace max stack
+  "IRQSOFF_TRACER" = no; # Interrupts-off Latency Tracer
+  "PREEMPT_TRACER" = no; # Preemption-off Latency Tracer
+  "SCHED_TRACER" = no; # Scheduling Latency Tracer
+  "HWLAT_TRACER" = no; # Tracer to detect hardware latencies (like SMIs)
+  "OSNOISE_TRACER" = no; # OS Noise tracer
+  "TIMERLAT_TRACER" = no; # Timerlat tracer
+  "FTRACE_SYSCALLS" = no; # Trace syscalls
+  "TRACER_SNAPSHOT" = no; # Create a snapshot trace buffer
+  "BRANCH_PROFILE_NONE" = yes; # No branch profiling
+  "PROFILE_ANNOTATED_BRANCHES" = no; # Trace likely/unlikely profiler
+  "PROFILE_ALL_BRANCHES" = no; # Profile all if conditionals
+  "BLK_DEV_IO_TRACE" = no; # Support for tracing block IO actions
+  "UPROBE_EVENTS" = yes; # Enable uprobes-based dynamic events
+  "SYNTH_EVENTS" = no; # Synthetic trace events
+  "USER_EVENTS" = no; # User trace events
+  "HIST_TRIGGERS" = no; # Histogram triggers
+  "TRACE_EVENT_INJECT" = no; # Trace event injection
+  "TRACEPOINT_BENCHMARK" = no; # Add tracepoint that benchmarks tracepoints
+  "RING_BUFFER_BENCHMARK" = no; # Ring buffer benchmark stress tester
+  "TRACE_EVAL_MAP_FILE" = no; # Show eval mappings for trace events
+  "FTRACE_RECORD_RECURSION" = no; # Record functions that recurse in function tracing
+  "FTRACE_VALIDATE_RCU_IS_WATCHING" = no; # Validate RCU is on during ftrace execution
+  "FTRACE_STARTUP_TEST" = no; # Perform a startup test on ftrace
+  "RING_BUFFER_STARTUP_TEST" = no; # Ring buffer startup self test
+  "RING_BUFFER_VALIDATE_TIME_DELTAS" = no; # Verify ring buffer time stamp deltas
+  "PREEMPTIRQ_DELAY_TEST" = no; # Test module to create a preempt / IRQ disable delay thread to test latency tracers
+  "RV" = no; # Runtime Verification
   "SAMPLES" = no; # Sample kernel code
   "STRICT_DEVMEM" = yes; # Filter access to /dev/mem
   "IO_STRICT_DEVMEM" = no; # Filter I/O access to /dev/mem
@@ -6758,21 +6677,7 @@ in
   ### Kernel hacking -> arm64 Debugging
   "PID_IN_CONTEXTIDR" = no; # Write the current PID to the CONTEXTIDR register
   "ARM64_RELOC_TEST" = no; # Relocation testing module
-  "CORESIGHT" = module; # CoreSight Tracing Support
-  "CORESIGHT_LINKS_AND_SINKS" = module; # CoreSight Link and Sink drivers
-  "CORESIGHT_LINK_AND_SINK_TMC" = module; # Coresight generic TMC driver
-  "CORESIGHT_CATU" = module; # Coresight Address Translation Unit (CATU) driver
-  "CORESIGHT_SINK_TPIU" = module; # Coresight generic TPIU driver
-  "CORESIGHT_SINK_ETBV10" = module; # Coresight ETBv1.0 driver
-  "CORESIGHT_SOURCE_ETM4X" = no; # CoreSight ETMv4.x / ETE driver
-  "CORESIGHT_STM" = module; # CoreSight System Trace Macrocell driver
-  "CORESIGHT_CPU_DEBUG" = module; # CoreSight CPU Debug driver
-  "CORESIGHT_CPU_DEBUG_DEFAULT_ON" = no; # Enable CoreSight CPU Debug by default
-  "CORESIGHT_CTI" = module; # CoreSight Cross Trigger Interface (CTI) driver
-  "CORESIGHT_CTI_INTEGRATION_REGS" = no; # Access CTI CoreSight Integration Registers
-  "CORESIGHT_TPDM" = no; # CoreSight Trace, Profiling & Diagnostics Monitor driver
-  "CORESIGHT_TPDA" = no; # CoreSight Trace, Profiling & Diagnostics Aggregator driver
-  "CORESIGHT_DUMMY" = no; # Dummy driver support
+  "CORESIGHT" = no; # CoreSight Tracing Support
   ### Kernel hacking: end of arm64 Debugging
 
   ### Kernel hacking -> Kernel Testing and Coverage
