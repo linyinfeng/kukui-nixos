@@ -9,6 +9,8 @@
     };
     conf2nix = {
       url = "github:linyinfeng/conf2nix";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
       inputs.crane.follows = "crane";
       inputs.flake-compat.follows = "flake-compat";
