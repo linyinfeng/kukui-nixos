@@ -24,25 +24,10 @@ lib.makeScope newScope (
       conf2nixLib = inputs.conf2nix.lib;
       fullConfigFile = pkgs.runCommand "patched-full-config" { } ''
         touch "$out"
-        cp "${inputs.mt81xx-kernel}/config.cbm" "$out"
+        cp "${inputs.pmaports}/device/community/linux-postmarketos-mediatek-mt8183/config-postmarketos-mediatek-mt8183.aarch64" "$out"
         echo >>"$out"
-        echo "CONFIG_RUST=y" >>"$out"
+        # echo "CONFIG_RUST=y" >>"$out"
       '';
-
-      # nconf2nix
-      inherit (inputs'.conf2nix.packages) nconf2nix;
-      nconf2nixPathPatterns = [
-        {
-          directory = "${inputs.kernel-config-options}";
-          pattern = ".*\.cfg";
-          targetDirectory = "kernel-config-options";
-        }
-        {
-          directory = "${inputs.mt81xx-kernel}";
-          pattern = ".*\.cfg";
-          targetDirectory = "mt81xx-kernel";
-        }
-      ];
     };
     make-kpart = callPackage ./make-kpart.nix { };
   }
