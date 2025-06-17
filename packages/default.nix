@@ -30,5 +30,6 @@ lib.makeScope newScope (
       '';
     };
     make-kpart = callPackage ./make-kpart.nix { };
+    alsa-ucm-conf-cros = callPackage ./alsa-ucm-conf-cros.nix { source = inputs.alsa-ucm-conf-cros; };
   }
 )

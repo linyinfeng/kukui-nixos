@@ -32,6 +32,10 @@
       url = "gitlab:postmarketOS/pmaports?host=gitlab.postmarketos.org";
       flake = false;
     };
+    alsa-ucm-conf-cros = {
+      url = "github:WeirdTreeThing/alsa-ucm-conf-cros";
+      flake = false;
+    };
   };
 
   outputs =
