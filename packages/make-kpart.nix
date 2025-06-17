@@ -1,5 +1,6 @@
 {
   writeShellApplication,
+  coreutils,
   jq,
   lz4,
   vboot_reference,
@@ -12,6 +13,7 @@
 writeShellApplication {
   name = "make-kpart";
   runtimeInputs = [
+    coreutils
     jq
     lz4
     vboot_reference

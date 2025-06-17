@@ -14,6 +14,7 @@ let
     name = "kpart-install";
     runtimeInputs = [
       makeKpart
+      pkgs.coreutils
     ];
     text = ''
       ${lib.optionalString cfg.verbose ''
