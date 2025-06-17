@@ -32,10 +32,8 @@
       url = "gitlab:postmarketOS/pmaports?host=gitlab.postmarketos.org";
       flake = false;
     };
-    alsa-ucm-conf-cros = {
-      url = "github:WeirdTreeThing/alsa-ucm-conf-cros";
-      flake = false;
-    };
+    # TODO wait for https://nixpkgs-tracker.ocfox.me/?pr=414818
+    nixpkgs-alsa-ucm-conf.url = "github:nixos/nixpkgs/pull/414818/head";
   };
 
   outputs =

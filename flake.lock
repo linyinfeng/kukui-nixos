@@ -1,21 +1,5 @@
 {
   "nodes": {
-    "alsa-ucm-conf-cros": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1747506801,
-        "narHash": "sha256-Nrmh3zoY5gnAkALaM0S0AQv/qZwqY6xQ5w1vt1AIGTI=",
-        "owner": "WeirdTreeThing",
-        "repo": "alsa-ucm-conf-cros",
-        "rev": "8eb9716a8a4d9cfcb1360a1325c7fe00f90fac6e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "WeirdTreeThing",
-        "repo": "alsa-ucm-conf-cros",
-        "type": "github"
-      }
-    },
     "conf2nix": {
       "inputs": {
         "crane": [
@@ -135,6 +119,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-alsa-ucm-conf": {
+      "locked": {
+        "lastModified": 1749323015,
+        "narHash": "sha256-MpuMl8wNyFgKV+CuQINuQeZFJdTSVMPZeKA98qjeyTQ=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "eb11defad7ffc4724a3ac4308cc2c970aaa9a397",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "pull/414818/head",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "pmaports": {
       "flake": false,
       "locked": {
@@ -155,13 +155,13 @@
     },
     "root": {
       "inputs": {
-        "alsa-ucm-conf-cros": "alsa-ucm-conf-cros",
         "conf2nix": "conf2nix",
         "crane": "crane",
         "disko": "disko",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-alsa-ucm-conf": "nixpkgs-alsa-ucm-conf",
         "pmaports": "pmaports",
         "treefmt-nix": "treefmt-nix"
       }

@@ -1,10 +1,11 @@
+# TODO wait for https://nixpkgs-tracker.ocfox.me/?pr=414818
 { config, pkgs, ... }:
 let
   ucm2Env = config.environment.variables.ALSA_CONFIG_UCM2;
 in
 {
-  environment.systemPackages = with pkgs.kukui; [
-    alsa-ucm-conf-cros
+  environment.systemPackages = [
+    pkgs.kukui.alsa-ucm-conf
   ];
 
   # https://github.com/mobile-nixos/mobile-nixos/blob/development/modules/quirks/audio.nix
