@@ -73,7 +73,7 @@
               };
             };
           nixosConfigurations = {
-            test = inputs.nixpkgs.lib.nixosSystem {
+            installer = inputs.nixpkgs.lib.nixosSystem {
               modules = [
                 self.nixosModules.default
                 inputs.disko.nixosModules.disko
@@ -82,7 +82,7 @@
                   { ... }:
                   {
                     kukui.disko = {
-                      # device = "/dev/mmcblk0";
+                      diskName = "installer";
                       device = "/dev/sda";
                       partitions = {
                         root = {
@@ -103,7 +103,7 @@
                 )
               ];
             };
-            test-cross = config.flake.nixosConfigurations.test.extendModules {
+            installer-cross = config.flake.nixosConfigurations.installer.extendModules {
               modules = [
                 { nixpkgs.buildPlatform = "x86_64-linux"; }
               ];
@@ -136,16 +136,16 @@
             };
             checks =
               let
-                testSystem = self.nixosConfigurations.test.extendModules {
+                testSystem = self.nixosConfigurations.installer.extendModules {
                   modules = [
                     { nixpkgs.buildPlatform = system; }
                   ];
                 };
               in
               {
-                nixos-test-kernel = testSystem.config.boot.kernelPackages.kernel;
-                nixos-test-configfile = testSystem.config.boot.kernelPackages.kernel.configfile;
-                nixos-test-toplevel = testSystem.config.system.build.toplevel;
+                installer-kernel = testSystem.config.boot.kernelPackages.kernel;
+                installer-configfile = testSystem.config.boot.kernelPackages.kernel.configfile;
+                installer-toplevel = testSystem.config.system.build.toplevel;
               };
           };
       }
