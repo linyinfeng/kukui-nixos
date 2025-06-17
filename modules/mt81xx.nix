@@ -22,7 +22,7 @@ in
   };
   config = {
     boot.kernelPackages = pkgs.linuxPackagesFor linux;
-    hardware.deviceTree.filter = "mt81*.dtb";
+    hardware.deviceTree.filter = lib.mkDefault "mt81*.dtb";
     boot.initrd = {
       includeDefaultModules = false;
       availableKernelModules = [
