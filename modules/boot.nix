@@ -29,7 +29,7 @@ let
           lib.optionalString (!cfg.verbose) "2>/dev/null"
         } >&2
         echo 'flashing kpart image to ${cfg.kernelDevice}...' >&2
-        dd if=vmlinux.kpart of="${cfg.kernelDevice}" ${
+        dd if=vmlinux.kpart of="${cfg.kernelDevice}" conv=fdatasync ${
           lib.optionalString (!cfg.verbose) "2>/dev/null"
         } >&2
 
