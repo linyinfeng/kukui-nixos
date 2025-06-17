@@ -79,7 +79,7 @@
                 inputs.disko.nixosModules.disko
                 ./profiles/disko.nix
                 (
-                  { ... }:
+                  { pkgs, ... }:
                   {
                     kukui.disko = {
                       diskName = "installer";
@@ -96,6 +96,9 @@
                         };
                       };
                     };
+                    environment.systemPackages = with pkgs; [
+                      vboot_reference # for cgpt
+                    ];
                     nixpkgs.hostPlatform = "aarch64-linux";
                     nixpkgs.overlays = [ self.overlays.default ];
                     system.stateVersion = "25.05";
