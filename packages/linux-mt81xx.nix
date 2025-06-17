@@ -6,7 +6,7 @@
 let
   inherit (pkgs) pkgsCross hostPlatform lib;
   kukuiPkgs = if hostPlatform.isAarch64 then pkgs else pkgsCross.aarch64-multiplatform;
-  inherit (lib.kernel) module;
+  inherit (lib.kernel) yes module;
 in
 kukuiPkgs.linux_6_12.override (old: {
   enableCommonConfig = false;
@@ -20,6 +20,9 @@ kukuiPkgs.linux_6_12.override (old: {
       # extra fixes due to defconfig mismatch
       MHI_BUS = module;
       STM = module;
+
+      # tweaks for nixos
+      EROFS_FS = module; # for envfs support
     };
   kernelPatches =
     (old.kernelPatches or [ ])
