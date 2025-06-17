@@ -5,6 +5,7 @@
   lz4,
   vboot_reference,
   ubootTools,
+  findutils,
   lib,
 
   verbose ? false,
@@ -18,6 +19,7 @@ writeShellApplication {
     lz4
     vboot_reference
     ubootTools
+    findutils
   ];
   text = ''
     ${lib.optionalString verbose ''
