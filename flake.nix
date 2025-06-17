@@ -96,6 +96,7 @@
                         };
                       };
                     };
+                    users.users.root.initialHashedPassword = "";
                     environment.systemPackages = with pkgs; [
                       vboot_reference # for cgpt
                     ];
