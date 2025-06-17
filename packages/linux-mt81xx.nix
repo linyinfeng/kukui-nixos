@@ -22,7 +22,7 @@ kukuiPkgs.linux_6_12.override (old: {
       STM = module;
 
       # tweaks for nixos
-      EROFS_FS = module; # for envfs support
+      EROFS_FS = yes; # for envfs support
     };
   kernelPatches =
     (old.kernelPatches or [ ])
