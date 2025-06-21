@@ -51,6 +51,17 @@ in
         "hid_microsoft"
         "hid_cherry"
         # "hid_corsair"
+
+        # https://gitlab.postmarketos.org/postmarketOS/pmaports/-/blob/master/device/community/device-google-kukui/modules-initfs
+        "atmel_mxt_ts"
+        "cros_ec_keyb"
+        "elan_i2c"
+        "elants_i2c"
+        "gpu_sched"
+        "hid_multitouch"
+        "i2c_hid_of"
+        "i2c_hid_of_goodix"
+        "sbs_battery"
       ];
     };
   };
