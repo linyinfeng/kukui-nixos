@@ -1,5 +1,5 @@
 {
-  description = "NixOS form Chromebook Kukui";
+  description = "NixOS for Chromebook Kukui";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
