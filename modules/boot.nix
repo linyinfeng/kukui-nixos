@@ -21,20 +21,20 @@ let
         set -x
       ''}
 
-        working_dir="$(mktemp --directory -t kpart-install.XXXXXX)"
-        pushd "$working_dir" >/dev/null
+      working_dir="$(mktemp --directory -t kpart-install.XXXXXX)"
+      pushd "$working_dir" >/dev/null
 
-        echo 'making kpart image...' >&2
-        make-kpart /nix/var/nix/profiles/system/boot.json ${
-          lib.optionalString (!cfg.verbose) "2>/dev/null"
-        } >&2
-        echo 'flashing kpart image to ${cfg.kernelDevice}...' >&2
-        dd if=vmlinux.kpart of="${cfg.kernelDevice}" conv=fdatasync ${
-          lib.optionalString (!cfg.verbose) "2>/dev/null"
-        } >&2
+      echo 'making kpart image...' >&2
+      make-kpart /nix/var/nix/profiles/system/boot.json ${
+        lib.optionalString (!cfg.verbose) "2>/dev/null"
+      } >&2
+      echo 'flashing kpart image to ${cfg.kernelDevice}...' >&2
+      dd if=vmlinux.kpart of="${cfg.kernelDevice}" conv=fdatasync ${
+        lib.optionalString (!cfg.verbose) "2>/dev/null"
+      } >&2
 
-        popd >/dev/null
-        rm --recursive "$working_dir"
+      popd >/dev/null
+      rm --recursive "$working_dir"
     '';
   };
 in
