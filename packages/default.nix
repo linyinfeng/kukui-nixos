@@ -24,7 +24,7 @@ lib.makeScope newScope (
       conf2nixLib = inputs.conf2nix.lib;
       fullConfigFile = pkgs.runCommand "patched-full-config" { } ''
         touch "$out"
-        cp "${inputs.pmaports}/device/community/linux-postmarketos-mediatek-mt8183/config-postmarketos-mediatek-mt8183.aarch64" "$out"
+        cp "${inputs.pmaports}/device/community/linux-postmarketos-mediatek-mt81/config-postmarketos-mediatek-mt81.aarch64" "$out"
         echo >>"$out"
         # echo "CONFIG_RUST=y" >>"$out"
       '';

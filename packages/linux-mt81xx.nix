@@ -26,7 +26,7 @@ kukuiPkgs.linux_6_12.override (old: {
     };
   kernelPatches =
     (old.kernelPatches or [ ])
-    ++ (selfLib.listPatches "${inputs.pmaports}/device/community/linux-postmarketos-mediatek-mt8183")
+    ++ (selfLib.listPatches "${inputs.pmaports}/device/community/linux-postmarketos-mediatek-mt81")
     ++ [
       {
         name = "kukui-extra-defconfig";
