@@ -7,8 +7,15 @@ let
   inherit (pkgs) pkgsCross hostPlatform lib;
   kukuiPkgs = if hostPlatform.isAarch64 then pkgs else pkgsCross.aarch64-multiplatform;
   inherit (lib.kernel) yes module;
+  inherit (kukuiPkgs) fetchurl;
+  version = "6.12.36";
+  src = fetchurl {
+    url = "mirror://kernel/linux/kernel/v${lib.versions.major version}.x/linux-${version}.tar.xz";
+    hash = "sha256-ShaK7S3lqBqt2QuisVOGCpjZm/w0ZRk24X8Y5U8Buow=";
+  };
 in
-kukuiPkgs.linux_6_12.override (old: {
+kukuiPkgs.buildLinux {
+  inherit src version;
   enableCommonConfig = false;
   autoModules = false;
   structuredExtraConfig =
@@ -25,8 +32,9 @@ kukuiPkgs.linux_6_12.override (old: {
       EROFS_FS = yes; # for envfs support
     };
   kernelPatches =
-    (old.kernelPatches or [ ])
-    ++ (selfLib.listPatches "${inputs.pmaports}/device/community/linux-postmarketos-mediatek-mt8183")
+    (kukuiPkgs.linux_6_12.kernelPatches or [ ])
+    ++ (lib.filter (patch: lib.match "mt8133.*" patch.name != null)
+    (selfLib.listPatches "${inputs.pmaports}/device/community/linux-postmarketos-mediatek-mt81"))
     ++ [
       {
         name = "kukui-extra-defconfig";
@@ -48,4 +56,4 @@ kukuiPkgs.linux_6_12.override (old: {
         };
     in
     kukuiPkgs.stdenv // { inherit hostPlatform; };
-})
+}
