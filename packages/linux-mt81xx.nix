@@ -4,8 +4,8 @@
   selfLib,
 }:
 let
-  inherit (pkgs) pkgsCross hostPlatform lib;
-  kukuiPkgs = if hostPlatform.isAarch64 then pkgs else pkgsCross.aarch64-multiplatform;
+  inherit (pkgs) pkgsCross lib;
+  kukuiPkgs = if pkgs.stdenv.hostPlatform.isAarch64 then pkgs else pkgsCross.aarch64-multiplatform;
   inherit (lib.kernel) yes module;
   inherit (kukuiPkgs) fetchurl;
   version = "6.12.36";
