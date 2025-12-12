@@ -41,7 +41,8 @@ in
               size = cfg.kernelPartitionSize;
               type = gptTypes.crosKernel;
             };
-          } // cfg.partitions;
+          }
+          // cfg.partitions;
         };
       };
     };

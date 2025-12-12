@@ -33,8 +33,9 @@ kukuiPkgs.buildLinux {
     };
   kernelPatches =
     (kukuiPkgs.linux_6_12.kernelPatches or [ ])
-    ++ (lib.filter (patch: lib.match "mt8133.*" patch.name != null)
-    (selfLib.listPatches "${inputs.pmaports}/device/community/linux-postmarketos-mediatek-mt81"))
+    ++ (lib.filter (patch: lib.match "mt8133.*" patch.name != null) (
+      selfLib.listPatches "${inputs.pmaports}/device/community/linux-postmarketos-mediatek-mt81"
+    ))
     ++ [
       {
         name = "kukui-extra-defconfig";

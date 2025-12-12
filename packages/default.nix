@@ -30,9 +30,5 @@ lib.makeScope newScope (
       '';
     };
     make-kpart = callPackage ./make-kpart.nix { };
-    # TODO wait for https://nixpkgs-tracker.ocfox.me/?pr=414818
-    alsa-ucm-conf =
-      callPackage "${inputs.nixpkgs-alsa-ucm-conf}/pkgs/by-name/al/alsa-ucm-conf/package.nix"
-        { };
   }
 )

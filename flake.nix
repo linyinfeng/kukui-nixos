@@ -32,8 +32,6 @@
       url = "gitlab:postmarketOS/pmaports?host=gitlab.postmarketos.org";
       flake = false;
     };
-    # TODO wait for https://nixpkgs-tracker.ocfox.me/?pr=414818
-    nixpkgs-alsa-ucm-conf.url = "github:nixos/nixpkgs/pull/414818/head";
   };
 
   outputs =
