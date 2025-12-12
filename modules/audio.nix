@@ -9,7 +9,7 @@ let
 in
 {
   environment.systemPackages = [
-    pkgs.kukui.alsa-ucm-conf
+    pkgs.alsa-ucm-conf
   ];
 
   # https://gitlab.postmarketos.org/postmarketOS/pmaports/-/merge_requests/6556
