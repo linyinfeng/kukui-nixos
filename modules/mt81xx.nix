@@ -11,6 +11,7 @@ let
   linux = pkgs.kukui.linux-mt81xx.override cfg.kernel.overrides;
 in
 {
+  _file = ./mt81xx.nix;
   options.kukui = {
     kernel = {
       overrides = {
